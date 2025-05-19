@@ -29,39 +29,47 @@ public class Utils {
         return Math.round(value * scale) / scale;
     }
 
-    public static double[][] parseEquation(String[] equations){
-        double[][] matrix = new double[3][4];
-        for(int i = 0; i < equations.length; i++){
-            String[] parsedEquation = new String[2];
-            equations[i].indexOf('=');
-            parsedEquation[0] = equations[i].substring(0, equations[i].indexOf('=')).trim();
-            parsedEquation[1] = equations[i].substring(equations[i].indexOf('=') + 1, equations[i].length()).trim();
-            
-            matrix[i][0] = new ExpressionBuilder(parsedEquation[0])
-                                .variables("x", "y", "z")
-                                .build()
-                                .setVariable("x", 1)
-                                .setVariable("y", 0)
-                                .setVariable("z", 0)
-                                .evaluate();
-            matrix[i][1] = new ExpressionBuilder(parsedEquation[0])
-                                .variables("x", "y", "z")
-                                .build()
-                                .setVariable("x", 0)
-                                .setVariable("y", 1)
-                                .setVariable("z", 0)
-                                .evaluate();
-            matrix[i][2] = new ExpressionBuilder(parsedEquation[0])
-                                .variables("x", "y", "z")
-                                .build()
-                                .setVariable("x", 0)
-                                .setVariable("y", 0)
-                                .setVariable("z", 1)
-                                .evaluate();
-            matrix[i][3] = Double.parseDouble(parsedEquation[1]);                  
-        }
-        return matrix;
+    public static double[][] parseEquation(String[] equations) throws IllegalArgumentException {
+        int numEq = equations.length;
+        String[] variables = (numEq == 2) ? new String[]{"x", "y"} : new String[]{"x", "y", "z"};
+        double[][] matrix = new double[numEq][numEq + 1]; // includes constant column
 
+        for (int i = 0; i < numEq; i++) {
+            String equation = equations[i];
+            if (!equation.contains("=")) {
+                throw new IllegalArgumentException("Equation " + (i + 1) + " is missing '=' sign.");
+            }
+
+            String lhs = equation.substring(0, equation.indexOf('=')).trim();
+            String rhs = equation.substring(equation.indexOf('=') + 1).trim();
+
+            try {
+                for (int v = 0; v < variables.length; v++) {
+                    // Set the current variable to 1, others to 0
+                    ExpressionBuilder builder = new ExpressionBuilder(lhs).variables(variables);
+                    for (String var : variables) {
+                        builder = builder.variable(var);
+                    }
+
+                    var expr = builder.build();
+
+                    for (String var : variables) {
+                        expr.setVariable(var, 0);
+                    }
+                    expr.setVariable(variables[v], 1);
+
+                    matrix[i][v] = expr.evaluate();
+                }
+
+                // Parse RHS constant
+                matrix[i][numEq] = Double.parseDouble(rhs);
+
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("Invalid expression in equation " + (i + 1) + ": " + e.getMessage());
+            }
+        }
+
+        return matrix;
     }
 
     public static String convertExprToSymjaCompatible(String expr) {

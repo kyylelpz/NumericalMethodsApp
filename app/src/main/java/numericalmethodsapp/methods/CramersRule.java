@@ -7,12 +7,10 @@ package numericalmethodsapp.methods;
 
 
 import java.util.Arrays;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import numericalmethodsapp.utils.Utils;
-
-//import org.matheclipse.core.eval.ExprEvaluator;
-//import org.matheclipse.core.expression.F;
 
 /**
  *
@@ -20,13 +18,23 @@ import numericalmethodsapp.utils.Utils;
  */
 public class CramersRule {
     public static void run(Scanner input){
-        //pwede tong naka increment na number pero max ay 3 equations AHHAHAHAHA
-        System.out.println("Enter number of linear equations: ");
-        int numEq = input.nextInt();
+        int numEq = 0;
 
-        if (numEq > 3 || numEq < 2){
-            System.out.println("Number of linear equations should be at least 2 or not more than 3.");
-            return;
+        while(true){
+            try {
+                System.out.print("Enter number of linear equations (2 or 3 only): ");
+                numEq = input.nextInt();
+
+                if (numEq < 2 || numEq > 3) {
+                    System.out.println("Error: Number of linear equations must be 2 or 3.");
+                    continue;
+                }
+
+                break;
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter an integer (2 or 3).");
+                input.nextLine();
+            }
         }
 
         String[] equations = new String[numEq];
@@ -38,7 +46,14 @@ public class CramersRule {
             equations[i] = input.nextLine();
         }
 
-        double[][] matrix = Utils.parseEquation(equations);
+        double[][] matrix;
+        
+        try {
+            matrix = Utils.parseEquation(equations);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error parsing equations: " + e.getMessage());
+            return;
+        }
 
         // Display matrix (for testing)
         System.out.println("\nParsed Matrix:");
@@ -52,42 +67,75 @@ public class CramersRule {
         double[] answer = null;
 
         // Main Cramer's Rule Algorithm
-        if (matrix.length == 3){
+        if(matrix.length == 2){
+            answer = cramer2(matrix);
+        }
+        else if (matrix.length == 3){
             answer = cramer3(matrix);
         }
 
-        System.out.println(Arrays.toString(answer));
+        if (answer != null) {
+            System.out.println("Solution: " + Arrays.toString(answer));
+        } else {
+            System.out.println("The system has no unique solution (determinant is zero).");
+        }
     }
 
     public static double[] cramer3(double[][] matrix){
-        double d = matrix[0][0] * (matrix[1][1] * matrix[2][2] - matrix[1][2] * matrix[2][1])
-                    - matrix[0][1] * (matrix[1][0] * matrix[2][2] - matrix[1][2] * matrix[2][0])
-                    + matrix[0][2] * (matrix[1][0] * matrix[2][1] - matrix[1][1] * matrix[2][0]);
-        double dx = matrix[0][3] * (matrix[1][1] * matrix[2][2] - matrix[1][2] * matrix[2][1])
-                    - matrix[0][1] * (matrix[1][3] * matrix[2][2] - matrix[1][2] * matrix[2][3])
-                    + matrix[0][2] * (matrix[1][3] * matrix[2][1] - matrix[1][1] * matrix[2][3]);
-        double dy = matrix[0][0] * (matrix[1][3] * matrix[2][2] - matrix[1][2] * matrix[2][3])
-                    - matrix[0][3] * (matrix[1][0] * matrix[2][2] - matrix[1][2] * matrix[2][0])
-                    + matrix[0][2] * (matrix[1][0] * matrix[2][3] - matrix[1][3] * matrix[2][0]);
-        double dz = matrix[0][0] * (matrix[1][1] * matrix[2][3] - matrix[1][3] * matrix[2][1])
-                    - matrix[0][1] * (matrix[1][0] * matrix[2][3] - matrix[1][3] * matrix[2][0])
-                    + matrix[0][3] * (matrix[1][0] * matrix[2][1] - matrix[1][1] * matrix[2][0]);
+        double d = determinant3x3(matrix[0][0], matrix[0][1], matrix[0][2],
+                                  matrix[1][0], matrix[1][1], matrix[1][2],
+                                  matrix[2][0], matrix[2][1], matrix[2][2]);
+
+        if (Math.abs(d) < 1e-9) { // Determinant is zero
+            throw new ArithmeticException("Determinant is zero. System has no unique solution.");
+        }
+
+        double dx = determinant3x3(matrix[0][3], matrix[0][1], matrix[0][2],
+                                   matrix[1][3], matrix[1][1], matrix[1][2],
+                                   matrix[2][3], matrix[2][1], matrix[2][2]);
+
+        double dy = determinant3x3(matrix[0][0], matrix[0][3], matrix[0][2],
+                                   matrix[1][0], matrix[1][3], matrix[1][2],
+                                   matrix[2][0], matrix[2][3], matrix[2][2]);
+
+        double dz = determinant3x3(matrix[0][0], matrix[0][1], matrix[0][3],
+                                   matrix[1][0], matrix[1][1], matrix[1][3],
+                                   matrix[2][0], matrix[2][1], matrix[2][3]);
 
         double x = dx / d;
         double y = dy / d;
         double z = dz / d;
         
-        double[] answer = {x, y, z};
+        return new double[]{cleanZero(x), cleanZero(y), cleanZero(z)};
+    }
 
-        for (int i = 0; i < answer.length; i++) {
-            answer[i] = cleanZero(answer[i]);
+    private static double determinant3x3(double a, double b, double c,
+                                         double d, double e, double f,
+                                         double g, double h, double i) {
+        return a * (e * i - f * h)
+             - b * (d * i - f * g)
+             + c * (d * h - e * g);
+    }
+
+    public static double[] cramer2(double[][] matrix) {
+        double a1 = matrix[0][0], b1 = matrix[0][1], c1 = matrix[0][2];
+        double a2 = matrix[1][0], b2 = matrix[1][1], c2 = matrix[1][2];
+
+        double D  = a1 * b2 - a2 * b1;
+        double Dx = c1 * b2 - c2 * b1;
+        double Dy = a1 * c2 - a2 * c1;
+
+        if (Math.abs(D) < 1e-9) { // Determinant is zero
+            throw new ArithmeticException("Determinant is zero. System has no unique solution.");
         }
-        
-        return answer;
+
+        double x = Dx / D;
+        double y = Dy / D;
+
+        return new double[] { cleanZero(x), cleanZero(y) };
     }
 
     public static double cleanZero(double val) {
-        if (val == -0.0) return 0.0;
-        return val;
-    }
+        return val == -0.0 ? 0.0 : val;
+}
 }
