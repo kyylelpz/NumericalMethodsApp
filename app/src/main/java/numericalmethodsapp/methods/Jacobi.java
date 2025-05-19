@@ -121,7 +121,9 @@ public class Jacobi {
             System.out.println();
         }
 
-        Double[] initialGuess = {0.0,0.0,0.0};
+        Double[] initialGuess = new Double[numEq];
+        Arrays.fill(initialGuess, 0.0);
+
         ArrayList<Double[]> iterations = new ArrayList<>();
 
         Double[] solutions = jacobi(matrix, initialGuess, tolerance, decimalPlaces, 1, iterations, maxIteration);
@@ -133,66 +135,55 @@ public class Jacobi {
     }
 
     public static double[][] diagonallyDominant (double[][] matrix){
-        //check row1
-        if (!(matrix[0][0] > Math.abs(matrix[0][1]) + Math.abs(matrix[0][2]))){
-            double[] temp = matrix[0];
-            if (matrix[1][0] > Math.abs(matrix[1][1]) + Math.abs(matrix[1][2])){
-                matrix[0] = matrix[1];
-                matrix[1] = temp;
+        int n = matrix.length;
+        boolean[] used = new boolean[n];
+        double[][] newMatrix = new double[n][n + 1];
+
+        for (int i = 0; i < n; i++) {
+            boolean found = false;
+            for (int j = 0; j < n; j++) {
+                if (used[j]) continue;
+                double diag = Math.abs(matrix[j][i]);
+                double sum = 0;
+                for (int k = 0; k < n; k++) {
+                    if (k != i) sum += Math.abs(matrix[j][k]);
+                }
+                if (diag >= sum) {
+                    newMatrix[i] = matrix[j];
+                    used[j] = true;
+                    found = true;
+                    break;
+                }
             }
-            else if (matrix[2][0] > Math.abs(matrix[2][1]) + Math.abs(matrix[2][2])){
-                matrix[0] = matrix[2];
-                matrix[2] = temp;
+            if (!found) {
+                System.out.println("Warning: Could not make matrix diagonally dominant. Results may not converge.");
+                return matrix;
             }
         }
 
-        //check row2
-        if (!(matrix[1][1] > Math.abs(matrix[1][0]) + Math.abs(matrix[1][2]))){
-            double[] temp = matrix[1];
-            if (matrix[0][1] > Math.abs(matrix[0][0]) + Math.abs(matrix[0][2])){
-                matrix[1] = matrix[0];
-                matrix[0] = temp;
-            }
-            else if (matrix[2][1] > Math.abs(matrix[2][0]) + Math.abs(matrix[2][2])){
-                matrix[1] = matrix[2];
-                matrix[2] = temp;
-            }
-        }
-
-        //check row3
-        if (!(matrix[2][2] > Math.abs(matrix[2][0]) + Math.abs(matrix[2][1]))){
-            double[] temp = matrix[2];
-            if (matrix[0][2] > Math.abs(matrix[0][0]) + Math.abs(matrix[0][1])){
-                matrix[2] = matrix[0];
-                matrix[0] = temp;
-            }
-            else if (matrix[1][2] > Math.abs(matrix[1][0]) + Math.abs(matrix[1][1])){
-                matrix[2] = matrix[1];
-                matrix[1] = temp;
-            }
-        }
-
-        return matrix;
+        return newMatrix;
     }
 
     public static Double[] jacobi(double[][] matrix, Double[] currGuess, double tolerance, int decimalPlaces, int iteration, ArrayList<Double[]> iterations, int maxIteration){
+        int n = currGuess.length;
+        
         if (iteration > maxIteration){
             System.out.println("Max iteration (" + maxIteration + ") count reached. Iteration stopped.");
             return currGuess;
         }
 
-        Double nextGuess[] = new Double[3];
+        Double nextGuess[] = new Double[n];
 
-        nextGuess[0] = (-matrix[0][1]*currGuess[1] - matrix[0][2]*currGuess[2] + matrix[0][3]) / matrix[0][0];
-        nextGuess[0] = Utils.round(nextGuess[0], decimalPlaces);
-
-        nextGuess[1] = (-matrix[1][0]*currGuess[0] - matrix[1][2]*currGuess[2] + matrix[1][3]) / matrix[1][1];
-        nextGuess[1] = Utils.round(nextGuess[1], decimalPlaces);
-
-        nextGuess[2] = (-matrix[2][0]*currGuess[0] - matrix[2][1]*currGuess[1] + matrix[2][3]) / matrix[2][2];
-        nextGuess[2] = Utils.round(nextGuess[2], decimalPlaces);
+        for (int i = 0; i < n; i++) {
+            double sum = matrix[i][n]; // RHS value
+                for (int j = 0; j < n; j++) {
+                    if (j != i) {
+                        sum -= matrix[i][j] * currGuess[j];
+                    }
+                }
+            nextGuess[i] = Utils.round(sum / matrix[i][i], decimalPlaces);
+        }
         
-        //System.out.println("Iteration #" + iteration + ": " + Arrays.toString(nextGuess));
         iterations.add(nextGuess);
 
         if (iteration >= 1000) {
@@ -200,11 +191,17 @@ public class Jacobi {
             return nextGuess;
         }
 
-        if (Math.abs(nextGuess[0] - currGuess[0]) <= tolerance &&
-            Math.abs(nextGuess[1] - currGuess[1]) <= tolerance &&
-            Math.abs(nextGuess[2] - currGuess[2]) <= tolerance){
-            return nextGuess;
+        boolean converged = true;
+
+        for (int i = 0; i < n; i++) {
+        if (Math.abs(nextGuess[i] - currGuess[i]) > tolerance) {
+            converged = false;
+            break;
+            }
         }
+
+        if (converged) return nextGuess;
+
         return jacobi(matrix, nextGuess, tolerance, decimalPlaces, iteration+1, iterations, maxIteration);
     }
 
