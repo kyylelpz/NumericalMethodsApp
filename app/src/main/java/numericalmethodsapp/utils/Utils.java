@@ -5,6 +5,7 @@
 
 package numericalmethodsapp.utils;
 
+import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
 /**
@@ -59,5 +60,41 @@ public class Utils {
         }
         return matrix;
 
+    }
+
+    public static String convertExprToExp4jCompatible(String expr) {
+    return expr
+        .replace("E^x", "exp(x)")
+        .replace("E^(", "exp(")
+        .replace("log(", "ln(")
+        .replace("Log(", "ln(")
+        .replace("Sin(", "sin(")
+        .replace("Cos(", "cos(")
+        .replace("Tan(", "tan(")
+        .replace("Cot(", "1/tan(")
+        .replace("Csc(", "1/sin(")
+        .replace("Sec(", "1/cos(")
+        .replace("Abs(", "abs(")
+        .replace("Sqrt(", "sqrt(");
+    }
+
+    public static double evaluateFunction(String function, double x, int decimalPlaces) {
+        try {
+            Expression expr = new ExpressionBuilder(function)
+                    .variable("x")
+                    .build()
+                    .setVariable("x", x);
+
+            double result = expr.evaluate();
+            return Utils.round(result, decimalPlaces);
+        } catch (ArithmeticException e) {
+            System.out.println("Math Error: " + e.getMessage());
+            System.exit(1);
+            return Double.NaN;
+        } catch (Exception e) {
+            System.out.println("Invalid expression: " + e.getMessage());
+            System.exit(1);
+            return Double.NaN;
+        }
     }
 }

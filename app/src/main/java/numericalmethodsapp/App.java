@@ -37,48 +37,47 @@ public class App {
         int choice = input.nextInt();
 
         switch (choice){
-            case 1:
+            case 1 -> {
                 System.out.println("Fixed-Point Iteration Method");
                 FixedPoint.run(input);
-                break;
-            case 2:
+            }
+            case 2 -> {
                 System.out.println("Newton-Raphson Method");
                 NewtonRaphson.run(input);
-                break;
-            case 3:
+            }
+            case 3 -> {
                 System.out.println("Secant Method");
                 Secant.run(input);
-                break;
-            case 4:
+            }
+            case 4 -> {
                 System.out.println("Bisection Method");
                 Bisection.run(input);
-                break;
-            case 5:
+            }
+            case 5 -> {
                 System.out.println("False Position or Regula Falsi Method");
                 FalsePosition.run(input);
-                break;
-            case 6:
+            }
+            case 6 -> {
                 System.out.println("Matrix Product");
                 MatrixProduct.run(input);
-                break;
-            case 7:
+            }
+            case 7 -> {
                 System.out.println("Cramer's Rule");
                 CramersRule.run(input);
-                break;
-            case 8:
+            }
+            case 8 -> {
                 System.out.println("Gaussian Elimination");
                 GaussianElimination.run(input);
-                break;
-            case 9:
+            }
+            case 9 -> {
                 System.out.println("Jacobi Method");
                 Jacobi.run(input);
-                break;
-            case 10:
+            }
+            case 10 -> {
                 System.out.println("Gauss-Seidel Method");
                 GaussSeidel.run(input);
-                break;
-            default:
-                System.out.println("Invalid input");
+            }
+            default -> System.out.println("Invalid input");
         }
         
     }

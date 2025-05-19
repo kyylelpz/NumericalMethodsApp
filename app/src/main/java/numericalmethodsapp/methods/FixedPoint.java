@@ -4,13 +4,14 @@
  */
 
 package numericalmethodsapp.methods;
+
+import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import org.matheclipse.core.eval.ExprEvaluator;
 import org.matheclipse.core.interfaces.IExpr;
 
-import net.objecthunter.exp4j.Expression;
-import net.objecthunter.exp4j.ExpressionBuilder;
 import numericalmethodsapp.utils.Utils;
 
 /**
@@ -19,52 +20,105 @@ import numericalmethodsapp.utils.Utils;
  */
 public class FixedPoint {
     public static void run (Scanner input){
-         //Enter equation
-        System.out.print("Enter equation: ");
-        input.nextLine();
-        String equation = input.nextLine();
+        input.nextLine(); //burn input
 
+        //Enter g(x)
         System.out.print("Enter g(x): ");
         String gofx = input.nextLine();
 
-        System.out.print("Enter tolerance: ");
-        double tolerance = input.nextDouble();
+        gofx = Utils.convertExprToExp4jCompatible(gofx);
+
+        //Enter tolerance
+        double tolerance = 0.001;
+        while (true) {
+            try {
+                System.out.print("Enter tolerance: ");
+                tolerance = input.nextDouble();
+                if (tolerance <= 0) throw new IllegalArgumentException("Tolerance must be positive.");
+                break;
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid decimal number.");
+                input.nextLine();  // Clear invalid input
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+                input.nextLine();
+            }
+        }
 
         int decimalPlaces = Utils.getDecimalPlacesFromTolerance(tolerance);
 
+        //Get the derivative for convergence checking
         ExprEvaluator util = new ExprEvaluator();
         IExpr dgofx = util.evaluate("D(" + gofx + ", x)");
-        String dgofxStr = dgofx.toString();
 
-        System.out.println(dgofxStr);
+        //Convert expression to exp4j compatible formats
+        String dgofxStr = Utils.convertExprToExp4jCompatible(dgofx.toString());
+        System.out.println("g'(x): " + dgofxStr);
 
-        dgofxStr = dgofxStr.replace("E^x", "exp(x)");
-        System.out.println(dgofxStr);
+        double iGuess = 0;
 
-        double iGuess;
-        do{
-            System.out.print("Enter intial guess: ");
-            iGuess = input.nextDouble();
-        } while (evaluateFunction(dgofxStr, iGuess, tolerance, decimalPlaces) >= 1);
+        //Check for convergence
+        while (true) {
+            try {
+                System.out.print("Enter initial guess: ");
+                iGuess = input.nextDouble();
 
-        if (evaluateFunction(dgofxStr, iGuess, tolerance, decimalPlaces) < 1){
-            fixedPoint(dgofxStr, iGuess, tolerance, decimalPlaces, 1);
+                double absDerivative = Math.abs(Utils.evaluateFunction(dgofxStr, iGuess, decimalPlaces));
+                if (absDerivative >= 1) {
+                    System.out.printf("g'(%.4f) = %.4f which is >= 1. Try a different initial guess.\n", iGuess, absDerivative);
+                } else {
+                    break;
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid decimal number.");
+                input.nextLine();  // Clear invalid input
+            } catch (Exception e) {
+                System.out.println("Evaluation error: " + e.getMessage());
+                input.nextLine();
+            }
         }
+
+        //Start iteration
+        ArrayList<Double> iterations = new ArrayList<>();
+        Double solution = fixedPoint(gofx, iGuess, tolerance, decimalPlaces, 1, iterations);
+
+
+        // Print results
+        System.out.println("\nIterations:");
+        System.out.println();
+
+        for (int i = 0; i < iterations.size(); i++) {
+            System.out.println("Iteration " +  (i + 1) + ": " + "x = " + iterations.get(i));
+        }
+
+        System.out.println();
+
+        if (solution == null) {
+            System.out.println("Method diverged. No approximate solution found.");
+        } else {
+            System.out.printf("The approximate solution is: " + solution);
+}
     }
 
-    public static double fixedPoint (String derivativeStr, double currGuess, double tolerance, int decimalPlaces, int iteration){
-        double nextGuess = evaluateFunction(derivativeStr, currGuess, tolerance, decimalPlaces);
+    public static Double fixedPoint (String gofx, double currGuess, double tolerance, int decimalPlaces, int iteration, ArrayList<Double> iterations){
+        if (iteration > 1000) {
+            System.out.println("Method did not converge after 1000 iterations.");
+            return null;
+        }
+        
+        double nextGuess = Utils.evaluateFunction(gofx, currGuess, decimalPlaces);
 
-        if (Math.abs(nextGuess-currGuess) <= tolerance){
+        if (Double.isNaN(nextGuess) || Double.isInfinite(nextGuess) || Math.abs(nextGuess) > 1e10) {
+            System.out.println("Divergence detected. Iteration stopped.");
+            return null;
+        }
+
+        iterations.add(nextGuess);
+
+        if (Math.abs(nextGuess - currGuess) <= tolerance) {
             return nextGuess;
         }
 
-        return fixedPoint(derivativeStr, nextGuess, tolerance, decimalPlaces, iteration);
+        return fixedPoint(gofx, nextGuess, tolerance, decimalPlaces, iteration + 1, iterations);
     }
-
-    public static double evaluateFunction (String function, double x, double tolerance, int decimalPlaces) {
-        
-    }
-
-    
 }

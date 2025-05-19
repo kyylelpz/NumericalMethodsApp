@@ -20,7 +20,7 @@ public class NewtonRaphson {
     public static void run (Scanner input){
         input.nextLine();
 
-        System.out.print("Enter equation: ");
+        System.out.print("Enter f(x): ");
         String equation = input.nextLine();
 
         System.out.print("Enter initial guess: ");
@@ -33,6 +33,8 @@ public class NewtonRaphson {
 
         String function = equation.split("=")[0].trim();  // Get the expression before '='
 
+        System.out.println(function);
+
         // Compute the derivative
         ExprEvaluator util = new ExprEvaluator();
         IExpr derivative = util.evaluate("D(" + function + ", x)");
@@ -44,8 +46,8 @@ public class NewtonRaphson {
     }
 
     public static double newtonRaphson (String function, String derivativeStr, double x, double tolerance, int decimalPlaces, int iteration){
-        double fx = evaluateFunction(function, x, tolerance, decimalPlaces);
-        double fdx = evaluateFunction(derivativeStr, x, tolerance, decimalPlaces);
+        double fx = Utils.evaluateFunction(function, x, decimalPlaces);
+        double fdx = Utils.evaluateFunction(derivativeStr, x, decimalPlaces);
 
         double nextGuess = x - fx/fdx;
         nextGuess = Utils.round(nextGuess, decimalPlaces);
@@ -59,13 +61,3 @@ public class NewtonRaphson {
         return newtonRaphson(function, derivativeStr, nextGuess, tolerance, decimalPlaces, iteration+1);
     }
 
-    public static double evaluateFunction(String function, double x, double tolerance, int decimalPlaces) {
-        Expression expr = new ExpressionBuilder(function)
-                .variable("x")
-                .build()
-                .setVariable("x", x);
-
-        double result = expr.evaluate();
-        return Utils.round(result, decimalPlaces);
-    }
-}
