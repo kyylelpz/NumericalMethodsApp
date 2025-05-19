@@ -11,7 +11,7 @@ import numericalmethodsapp.methods.FixedPoint;
 import numericalmethodsapp.methods.GaussSeidel;
 import numericalmethodsapp.methods.GaussianElimination;
 import numericalmethodsapp.methods.Jacobi;
-import numericalmethodsapp.methods.MatrixProduct;
+import numericalmethodsapp.methods.Matrix;
 import numericalmethodsapp.methods.NewtonRaphson;
 import numericalmethodsapp.methods.Secant;
 
@@ -25,7 +25,7 @@ public class App {
         System.out.println("3. Secant Method");
         System.out.println("4. Bisection Method");
         System.out.println("5. False Position or Regula Falsi Method");
-        System.out.println("6. Matrix Product");
+        System.out.println("6. Matrix");
         System.out.println("7. Cramer's Rule");
         System.out.println("8. Gaussian Elimination");
         System.out.println("9. Jacobi Method");
@@ -58,8 +58,8 @@ public class App {
                 FalsePosition.run(input);
             }
             case 6 -> {
-                System.out.println("Matrix Product");
-                MatrixProduct.run(input);
+                System.out.println("Matrix");
+                Matrix.run(input);
             }
             case 7 -> {
                 System.out.println("Cramer's Rule");

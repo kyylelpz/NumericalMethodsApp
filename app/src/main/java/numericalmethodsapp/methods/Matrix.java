@@ -11,8 +11,23 @@ import java.util.Scanner;
  *
  * @author lopez
  */
-public class MatrixProduct {
+public class Matrix {
     public static void run (Scanner input){
+        System.out.println("Matrix Operations: ");
+        System.out.println("1. Addition");
+        System.out.println("2. Subtraction");
+        System.out.println("3. Multiplication");
+        System.out.println("4. Division");
+        System.out.print("Enter operation: ");
+
+        int choice = input.nextInt();
+        switch (choice){
+            case 3 -> multiplyMatrix(input);
+        }
+        
+    }
+
+    public static int[][] multiplyMatrix (Scanner input){
         //Matrix A
         System.out.println("MATRIX A");
         System.out.print("Enter # of row/s: ");
@@ -29,7 +44,7 @@ public class MatrixProduct {
 
         if (acol != brow) {
             System.out.println("Matrix multiplication is NOT possible. Columns of Matrix A must equal rows of Matrix B.");
-            return;
+            return null;
         }
         
         int[][] matrixA = new int[arow][acol];
@@ -66,5 +81,7 @@ public class MatrixProduct {
             }
             System.out.println();
         }
+
+        return result;
     }
 }
