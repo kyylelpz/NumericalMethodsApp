@@ -5,10 +5,10 @@
 
 package numericalmethodsapp.methods;
 
+import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
-import net.objecthunter.exp4j.Expression;
-import net.objecthunter.exp4j.ExpressionBuilder;
 import numericalmethodsapp.utils.Utils;
 
 /**
@@ -17,89 +17,137 @@ import numericalmethodsapp.utils.Utils;
  */
 public class Secant {
     public static void run (Scanner input){
-        //Enter equation
-        System.out.print("Enter equation: ");
         input.nextLine();
-        String exp = input.nextLine();
 
-        //clear string********
-        
-        //Enter initial guesses
-        System.out.print("Enter x0: ");
-        double x0 = input.nextDouble();
+        //Enter f(x)
+        String expression = "";
+        while (true) {
+            System.out.print("Enter f(x): ");
+            expression = input.nextLine();
+            expression = Utils.convertExprToSymjaCompatible(expression);
 
-        System.out.print("Enter x1: ");
-        double x1 = input.nextDouble();
-        
+            if (Utils.isValidSymjaExpression(expression)) {
+                break;
+            } else {
+                System.out.println("Invalid mathematical expression. Please check your syntax (e.g., unmatched parentheses, invalid functions). Try again.");
+            }
+        }
+
         //Enter tolerance
-        System.out.print("Enter tolerance (1e-3): ");
-        double tolerance = input.nextDouble();
+        double tolerance = 0.001;
+        while (true) {
+            try {
+                System.out.print("Enter tolerance: ");
+                tolerance = input.nextDouble();
+                if (tolerance <= 0) throw new IllegalArgumentException("Tolerance must be positive.");
+                break;
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid decimal number.");
+                input.nextLine();  // Clear invalid input
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+                input.nextLine();
+            }
+        }
 
         //Get decimal places
         int decimalPlaces = Utils.getDecimalPlacesFromTolerance(tolerance);
-        System.out.println(decimalPlaces);
+        
+        //Enter initial guesses
+        double x0 = 0.0, x1 = 0.0;
+        while (true) {
+            try {
+                System.out.print("Enter x0: ");
+                x0 = input.nextDouble();
+                Math.abs(Utils.evaluateFunction(expression, x0, decimalPlaces));
+                break;
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid decimal number.");
+                input.nextLine();  // Clear invalid input
+            } catch (Exception e) {
+                System.out.println("Evaluation error: " + e.getMessage());
+                input.nextLine();
+            }
+        }
+
+        while (true) {
+            try {
+                System.out.print("Enter x1: ");
+                x1 = input.nextDouble();
+                Math.abs(Utils.evaluateFunction(expression, x1, decimalPlaces));
+                break;
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid decimal number.");
+                input.nextLine();  // Clear invalid input
+            } catch (Exception e) {
+                System.out.println("Evaluation error: " + e.getMessage());
+                input.nextLine();
+            }
+        }
+        
+        // Start iterations
+        ArrayList<Double> iterations = new ArrayList<>();
+        iterations.add(x0);
+        iterations.add(x1);
         
         try {
-            double root = secant(exp, x0, x1, tolerance, decimalPlaces, 1);
-            System.out.printf("Approximate root: %.6f%n", root);
+            Double solution = secant(expression, x0, x1, tolerance, decimalPlaces, 1, iterations);
+
+            // Print results
+            System.out.println("\nIterations:");
+            System.out.println();
+
+            for (int i = 0; i < iterations.size()-2; i++) {
+                System.out.println("Iteration #" + (i+1) + ": a = " + iterations.get(i) + " b = " + iterations.get(i+1) + " c = " + iterations.get(i+2));
+            }
+
+            System.out.println();
+            
+            if (solution == null) {
+                System.out.println("Method diverged. No approximate solution found.");
+            } else {
+                System.out.printf("The approximate solution is: " + solution);
+            }
         } catch (IllegalArgumentException e) {
             System.out.println("Error: " + e.getMessage());
         }
     }
 
-    public static double secant (String function, double a, double b, double tolerance, int decimalPlaces, int iteration) {
-        //Pause 1 second
-        try {
-            Thread.sleep(250); // wait 1 second
-        }
-            
-        catch (InterruptedException e) {
-            e.printStackTrace();
+    public static Double secant (String function, double a, double b, double tolerance, int decimalPlaces, int iteration, ArrayList<Double> iterations) {
+        if (iteration >= 1000) {
+            throw new IllegalArgumentException("Maximum iterations reached without convergence.");
         }
 
         //Evaluate functions
-        double fa = evaluateFunction(function, a, tolerance, decimalPlaces);
-        //System.out.println("Function of a: " + fa);
-        double fb = evaluateFunction(function, b, tolerance, decimalPlaces);
-        //System.out.println("Function of b: " + fb);
+        double fa = Utils.evaluateFunction(function, a, decimalPlaces);
+        double fb = Utils.evaluateFunction(function, b, decimalPlaces);
 
         if (Double.isNaN(fa) || Double.isNaN(fb)) {
             throw new IllegalArgumentException("Function evaluation returned NaN at the initial points.");
         }
 
-        //INSERT TRY FOR DIVISION BY ZERO ***************
+        //INSERT TRY FOR DIVISION BY ZERO
+        if (Math.abs(fb - fa) < 1e-10) {
+            throw new IllegalArgumentException("Possible division by zero: fb and fa too close.");
+        }
+
         double c = b - fb * (b-a) / (fb-fa);
         c = Utils.round(c, decimalPlaces);
 
-        double fc = evaluateFunction(function, c, tolerance, decimalPlaces);
+        double fc = Utils.evaluateFunction(function, c, decimalPlaces);
 
         if (Double.isNaN(fc)) {
             throw new IllegalArgumentException("Function evaluation returned NaN at x(n+1).");
         }
 
-        //CHANGE THE FORMAT
-        System.out.printf("Iteration %d: a=%.6f, b=%.6f, c=%.6f, f(c)=%.6f%n", iteration, a, b, c, fc);
+        iterations.add(c);
 
         // Base case: If the root is found or maximum iterations reached
-        if (Math.abs(c-b) < tolerance) {
+        if (Math.abs(c-b) < tolerance || c == a || c == b) {
             return c;
         }
 
-        if (c == a || c == b){
-            return c;
-        }
-
-        // Recursive step
-        return secant(function, b, c, tolerance, decimalPlaces, iteration + 1);
+        return secant(function, b, c, tolerance, decimalPlaces, iteration + 1, iterations);
     }
 
-    public static double evaluateFunction(String function, double x, double tolerance, int decimalPlaces) {
-        Expression expr = new ExpressionBuilder(function)
-                .variable("x")
-                .build()
-                .setVariable("x", x);
-
-        double result = expr.evaluate();
-        return Utils.round(result, decimalPlaces);
-    }
 }

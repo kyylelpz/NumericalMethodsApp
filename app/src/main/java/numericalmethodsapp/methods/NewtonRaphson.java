@@ -21,15 +21,20 @@ public class NewtonRaphson {
         input.nextLine();
 
         //Enter f(x)
-        System.out.print("Enter f(x): ");
-        String expression = input.nextLine();
+        String expression = "";
+        while (true) {
+            System.out.print("Enter f(x): ");
+            expression = input.nextLine();
+            expression = Utils.convertExprToSymjaCompatible(expression);
 
-        expression = expression.split("=")[0].trim();  // Get the expression before '='
+            if (Utils.isValidSymjaExpression(expression)) {
+                break;
+            } else {
+                System.out.println("Invalid mathematical expression. Please check your syntax (e.g., unmatched parentheses, invalid functions). Try again.");
+            }
+        }
+
         expression = Utils.convertExprToSymjaCompatible(expression);
-
-        //Enter initial guess
-        System.out.print("Enter initial guess: ");
-        double iGuess = input.nextDouble();
 
         //Enter tolerance
         double tolerance = 0.001;
@@ -49,6 +54,24 @@ public class NewtonRaphson {
         }
 
         int decimalPlaces = Utils.getDecimalPlacesFromTolerance(tolerance);
+
+        //Enter initial guess
+        double iGuess = 0.0;
+        while (true) {
+            try {
+                System.out.print("Enter initial guess: ");
+                iGuess = input.nextDouble();
+                Math.abs(Utils.evaluateFunction(expression, iGuess, decimalPlaces));
+                break;
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid decimal number.");
+                input.nextLine();  // Clear invalid input
+            } catch (Exception e) {
+                System.out.println("Evaluation error: " + e.getMessage());
+                input.nextLine();
+            }
+        }
+
 
         // Compute the derivative
         ExprEvaluator util = new ExprEvaluator();
@@ -111,7 +134,7 @@ public class NewtonRaphson {
             return nextGuess;
         }
 
-        return newtonRaphson(expression, derivativeStr, nextGuess, tolerance, decimalPlaces, iteration+1, iterations);
+        return newtonRaphson(expression, derivativeStr, nextGuess, tolerance, decimalPlaces, iteration + 1, iterations);
     }
 
 }

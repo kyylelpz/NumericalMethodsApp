@@ -5,6 +5,8 @@
 
 package numericalmethodsapp.utils;
 
+import org.matheclipse.core.eval.ExprEvaluator;
+
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
@@ -118,4 +120,14 @@ public class Utils {
             return Double.NaN;
         }
     }
+
+    public static boolean isValidSymjaExpression(String expr) {
+    try {
+        ExprEvaluator evaluator = new ExprEvaluator();
+        evaluator.evaluate(expr);  // Just try evaluating it
+        return true;
+    } catch (Exception e) {
+        return false;
+    }
+}
 }

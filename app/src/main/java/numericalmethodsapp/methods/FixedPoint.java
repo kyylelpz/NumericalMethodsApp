@@ -23,10 +23,18 @@ public class FixedPoint {
         input.nextLine(); //burn input
 
         //Enter g(x)
-        System.out.print("Enter g(x): ");
-        String gofx = input.nextLine();
+        String gofx = "";
+        while (true) {
+            System.out.print("Enter g(x): ");
+            gofx = input.nextLine();
+            gofx = Utils.convertExprToSymjaCompatible(gofx);
 
-        gofx = Utils.convertExprToSymjaCompatible(gofx);
+            if (Utils.isValidSymjaExpression(gofx)) {
+                break;
+            } else {
+                System.out.println("Invalid mathematical expression. Please check your syntax (e.g., unmatched parentheses, invalid functions). Try again.");
+            }
+        }
 
         //Enter tolerance
         double tolerance = 0.001;
@@ -89,7 +97,7 @@ public class FixedPoint {
         System.out.println();
 
         for (int i = 0; i < iterations.size(); i++) {
-            System.out.println("Iteration #" +  (i + 1) + ": " + "x =\t" + iterations.get(i));
+            System.out.println("Iteration #" +  (i + 1) + ":\t" + "x = " + iterations.get(i));
         }
 
         System.out.println();
