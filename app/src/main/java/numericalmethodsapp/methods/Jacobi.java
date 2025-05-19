@@ -172,6 +172,11 @@ public class Jacobi {
             return currGuess;
         }
 
+        if (iteration > 1000) {
+            System.out.println("Jacobi method did not converge.");
+            return currGuess;
+        }
+
         Double nextGuess[] = new Double[n];
 
         for (int i = 0; i < n; i++) {
@@ -186,10 +191,7 @@ public class Jacobi {
         
         iterations.add(nextGuess);
 
-        if (iteration >= 1000) {
-            System.out.println("Jacobi method did not converge.");
-            return nextGuess;
-        }
+
 
         boolean converged = true;
 
