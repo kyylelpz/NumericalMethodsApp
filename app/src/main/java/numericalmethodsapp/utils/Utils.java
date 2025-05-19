@@ -62,20 +62,41 @@ public class Utils {
 
     }
 
+    public static String convertExprToSymjaCompatible(String expr) {
+        return expr
+            .replace("exp(", "Exp(")
+            .replace("log(", "Log(")
+            .replace("ln(", "Log(")
+            .replace("sin(", "Sin(")
+            .replace("cos(", "Cos(")
+            .replace("tan(", "Tan(")
+            .replace("1/tan(", "Cot(")
+            .replace("1/sin(", "Csc(")
+            .replace("1/cos(", "Sec(")
+            .replace("abs(", "Abs(")
+            .replace("sqrt(", "Sqrt(")
+            .replace(" ", "");
+        }
+
     public static String convertExprToExp4jCompatible(String expr) {
-    return expr
-        .replace("E^x", "exp(x)")
-        .replace("E^(", "exp(")
-        .replace("log(", "ln(")
-        .replace("Log(", "ln(")
-        .replace("Sin(", "sin(")
-        .replace("Cos(", "cos(")
-        .replace("Tan(", "tan(")
-        .replace("Cot(", "1/tan(")
-        .replace("Csc(", "1/sin(")
-        .replace("Sec(", "1/cos(")
-        .replace("Abs(", "abs(")
-        .replace("Sqrt(", "sqrt(");
+    
+        expr = expr.replaceAll("E\\^([^\\s\\)]+)", "exp($1)");
+        expr = expr.replaceAll("e\\^([^\\s\\)]+)", "exp($1)");
+        expr = expr.replaceAll("(?i)exp\\(", "exp(");
+        
+        return expr
+            .replace("ln(", "log(")
+            .replace("Ln(", "log(")
+            .replace("Log(", "log(")
+            .replace("Sin(", "sin(")
+            .replace("Cos(", "cos(")
+            .replace("Tan(", "tan(")
+            .replace("Cot(", "1/tan(")
+            .replace("Csc(", "1/sin(")
+            .replace("Sec(", "1/cos(")
+            .replace("Abs(", "abs(")
+            .replace("Sqrt(", "sqrt(")
+            .replace(" ", "");
     }
 
     public static double evaluateFunction(String function, double x, int decimalPlaces) {

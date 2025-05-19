@@ -26,7 +26,7 @@ public class FixedPoint {
         System.out.print("Enter g(x): ");
         String gofx = input.nextLine();
 
-        gofx = Utils.convertExprToExp4jCompatible(gofx);
+        gofx = Utils.convertExprToSymjaCompatible(gofx);
 
         //Enter tolerance
         double tolerance = 0.001;
@@ -57,12 +57,13 @@ public class FixedPoint {
 
         double iGuess = 0;
 
-        //Check for convergence
+        //Enter initial guess
         while (true) {
             try {
                 System.out.print("Enter initial guess: ");
                 iGuess = input.nextDouble();
 
+                //Check for convergence in derivative
                 double absDerivative = Math.abs(Utils.evaluateFunction(dgofxStr, iGuess, decimalPlaces));
                 if (absDerivative >= 1) {
                     System.out.printf("g'(%.4f) = %.4f which is >= 1. Try a different initial guess.\n", iGuess, absDerivative);
@@ -79,16 +80,16 @@ public class FixedPoint {
         }
 
         //Start iteration
+        gofx = Utils.convertExprToExp4jCompatible(gofx);
         ArrayList<Double> iterations = new ArrayList<>();
         Double solution = fixedPoint(gofx, iGuess, tolerance, decimalPlaces, 1, iterations);
-
 
         // Print results
         System.out.println("\nIterations:");
         System.out.println();
 
         for (int i = 0; i < iterations.size(); i++) {
-            System.out.println("Iteration " +  (i + 1) + ": " + "x = " + iterations.get(i));
+            System.out.println("Iteration #" +  (i + 1) + ": " + "x =\t" + iterations.get(i));
         }
 
         System.out.println();
