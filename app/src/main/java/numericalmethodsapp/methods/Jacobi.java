@@ -68,6 +68,23 @@ public class Jacobi {
         //Get decimal places
         int decimalPlaces = Utils.getDecimalPlacesFromTolerance(tolerance);
 
+        int maxIteration;
+
+        while (true) {
+            try {
+                System.out.print("Enter max iteration (min: 2): ");
+                maxIteration = input.nextInt();
+                if (maxIteration < 2) throw new IllegalArgumentException("Max iteration count must be at least 2.");
+                break;
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid integer number.");
+                input.nextLine();  // Clear invalid input
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+                input.nextLine();
+            }
+        }
+
         double[][] matrix;
 
         try {
@@ -107,7 +124,7 @@ public class Jacobi {
         Double[] initialGuess = {0.0,0.0,0.0};
         ArrayList<Double[]> iterations = new ArrayList<>();
 
-        Double[] solutions = jacobi(matrix, initialGuess, tolerance, decimalPlaces, 1, iterations);
+        Double[] solutions = jacobi(matrix, initialGuess, tolerance, decimalPlaces, 1, iterations, maxIteration);
 
         for (int i = 0; i < iterations.size(); i++){
             System.out.println("Iteration #" + (i+1) + ": " + Arrays.toString(iterations.get(i)));
@@ -158,8 +175,12 @@ public class Jacobi {
         return matrix;
     }
 
-    public static Double[] jacobi(double[][] matrix, Double[] currGuess, double tolerance, int decimalPlaces, int iteration, ArrayList<Double[]> iterations){
-        
+    public static Double[] jacobi(double[][] matrix, Double[] currGuess, double tolerance, int decimalPlaces, int iteration, ArrayList<Double[]> iterations, int maxIteration){
+        if (iteration > maxIteration){
+            System.out.println("Max iteration (" + maxIteration + ") count reached. Iteration stopped.");
+            return currGuess;
+        }
+
         Double nextGuess[] = new Double[3];
 
         nextGuess[0] = (-matrix[0][1]*currGuess[1] - matrix[0][2]*currGuess[2] + matrix[0][3]) / matrix[0][0];
@@ -184,7 +205,7 @@ public class Jacobi {
             Math.abs(nextGuess[2] - currGuess[2]) <= tolerance){
             return nextGuess;
         }
-        return jacobi(matrix, nextGuess, tolerance, decimalPlaces, iteration+1, iterations);
+        return jacobi(matrix, nextGuess, tolerance, decimalPlaces, iteration+1, iterations, maxIteration);
     }
 
 
