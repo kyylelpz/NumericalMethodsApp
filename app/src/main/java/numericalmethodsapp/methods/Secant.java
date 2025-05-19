@@ -115,35 +115,32 @@ public class Secant {
 
     public static Double secant (String function, double a, double b, double tolerance, int decimalPlaces, int iteration, ArrayList<Double> iterations) {
         if (iteration >= 1000) {
-            throw new IllegalArgumentException("Maximum iterations reached without convergence.");
+            System.out.println("Method did not converge after 1000 iterations.");
+            return null;
         }
 
         //Evaluate functions
         double fa = Utils.evaluateFunction(function, a, decimalPlaces);
         double fb = Utils.evaluateFunction(function, b, decimalPlaces);
 
-        if (Double.isNaN(fa) || Double.isNaN(fb)) {
-            throw new IllegalArgumentException("Function evaluation returned NaN at the initial points.");
+        if (Double.isNaN(fa) || Double.isInfinite(fa) ||
+            Double.isNaN(fb) || Double.isInfinite(fb)) {
+            System.out.println("Invalid function evaluation at initial points (NaN or Infinity). Iteration stopped.");
+            return null;
         }
 
-        //INSERT TRY FOR DIVISION BY ZERO
         if (Math.abs(fb - fa) < 1e-10) {
-            throw new IllegalArgumentException("Possible division by zero: fb and fa too close.");
+            System.out.println("Possible division by zero: f(b) and f(a) are too close. Iteration stopped.");
+            return null;
         }
 
         double c = b - fb * (b-a) / (fb-fa);
         c = Utils.round(c, decimalPlaces);
 
-        double fc = Utils.evaluateFunction(function, c, decimalPlaces);
-
-        if (Double.isNaN(fc)) {
-            throw new IllegalArgumentException("Function evaluation returned NaN at x(n+1).");
-        }
-
         iterations.add(c);
 
         // Base case: If the root is found or maximum iterations reached
-        if (Math.abs(c-b) < tolerance || c == a || c == b) {
+        if (Math.abs(c-b) < tolerance || Math.abs(c - a) <= tolerance || Math.abs(c - b) <= tolerance) {
             return c;
         }
 

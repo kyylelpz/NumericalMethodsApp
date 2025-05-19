@@ -66,6 +66,7 @@ public class Utils {
 
     public static String convertExprToSymjaCompatible(String expr) {
         return expr
+            .replace("X", "x")
             .replace("exp(", "Exp(")
             .replace("log(", "Log(")
             .replace("ln(", "Log(")
@@ -87,6 +88,7 @@ public class Utils {
         expr = expr.replaceAll("(?i)exp\\(", "exp(");
         
         return expr
+            .replace("X", "x")
             .replace("ln(", "log(")
             .replace("Ln(", "log(")
             .replace("Log(", "log(")
@@ -124,7 +126,7 @@ public class Utils {
     public static boolean isValidSymjaExpression(String expr) {
     try {
         ExprEvaluator evaluator = new ExprEvaluator();
-        evaluator.evaluate(expr);  // Just try evaluating it
+        evaluator.evaluate(expr);
         return true;
     } catch (Exception e) {
         return false;
