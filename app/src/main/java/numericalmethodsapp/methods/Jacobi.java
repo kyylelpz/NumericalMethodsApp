@@ -5,7 +5,9 @@
 
 package numericalmethodsapp.methods;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import numericalmethodsapp.utils.Utils;
@@ -18,13 +20,23 @@ import numericalmethodsapp.utils.Utils;
  */
 public class Jacobi {
     public static void run(Scanner input){
-        //pwede tong naka increment na number pero max ay 3 equations AHHAHAHAHA
-        System.out.println("Enter number of linear equations: ");
-        int numEq = input.nextInt();
+        int numEq = 0;
 
-        if (numEq > 3 || numEq < 2){
-            System.out.println("Number of linear equations should be at least 2 or not more than 3.");
-            return;
+        while (true){
+            try {
+                System.out.print("Enter number of linear equations (2 or 3): ");
+                numEq = input.nextInt();
+
+                if (numEq < 2 || numEq > 3) {
+                    System.out.println("Error: Number of linear equations should be 2 or 3.");
+                    continue;
+                }
+                
+                break;
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input! Please enter an integer.");
+                input.nextLine(); // clear buffer
+            }
         }
 
         String[] equations = new String[numEq];
@@ -36,14 +48,39 @@ public class Jacobi {
             equations[i] = input.nextLine();
         }
 
-        System.out.println("Enter tolerance (1e-3): ");
-        double tolerance = input.nextDouble();
+        //Enter tolerance
+        double tolerance = 0.001;
+        while (true) {
+            try {
+                System.out.print("Enter tolerance: ");
+                tolerance = input.nextDouble();
+                if (tolerance <= 0) throw new IllegalArgumentException("Tolerance must be positive.");
+                break;
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid decimal number.");
+                input.nextLine();  // Clear invalid input
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+                input.nextLine();
+            }
+        }
 
         //Get decimal places
         int decimalPlaces = Utils.getDecimalPlacesFromTolerance(tolerance);
-        System.out.println(decimalPlaces);
 
-        double[][] matrix = Utils.parseEquation(equations);
+        double[][] matrix;
+
+        try {
+            matrix = Utils.parseEquation(equations);
+
+            if (matrix.length != numEq || matrix[0].length != numEq + 1) {
+                System.out.println("Error: Invalid matrix size after parsing equations.");
+                return;
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println("Failed to parse equations. Make sure the format is correct.");
+            return;
+        }
 
         // Display matrix (for testing)
         System.out.println("\nParsed Matrix:");
@@ -67,72 +104,63 @@ public class Jacobi {
             System.out.println();
         }
 
-        double[] initialGuess = {0,0,0};
+        Double[] initialGuess = {0.0,0.0,0.0};
+        ArrayList<Double[]> iterations = new ArrayList<>();
 
-        double[] solutions = jacobi(matrix, initialGuess, tolerance, decimalPlaces, 1);
+        Double[] solutions = jacobi(matrix, initialGuess, tolerance, decimalPlaces, 1, iterations);
 
+        for (int i = 0; i < iterations.size(); i++){
+            System.out.println("Iteration #" + (i+1) + ": " + Arrays.toString(iterations.get(i)));
+        }
         System.out.println("The approximated solutions are: " + Arrays.toString(solutions));
     }
 
     public static double[][] diagonallyDominant (double[][] matrix){
-        //boolean row1 = true;
-        //boolean row2 = true;
-        //boolean row3 = true;
-
         //check row1
         if (!(matrix[0][0] > Math.abs(matrix[0][1]) + Math.abs(matrix[0][2]))){
-            //row1 = false;
             double[] temp = matrix[0];
             if (matrix[1][0] > Math.abs(matrix[1][1]) + Math.abs(matrix[1][2])){
                 matrix[0] = matrix[1];
                 matrix[1] = temp;
-                //row1 = true;
             }
             else if (matrix[2][0] > Math.abs(matrix[2][1]) + Math.abs(matrix[2][2])){
                 matrix[0] = matrix[2];
                 matrix[2] = temp;
-                //row1 = true;
             }
         }
 
         //check row2
         if (!(matrix[1][1] > Math.abs(matrix[1][0]) + Math.abs(matrix[1][2]))){
-            //row2 = false;
             double[] temp = matrix[1];
             if (matrix[0][1] > Math.abs(matrix[0][0]) + Math.abs(matrix[0][2])){
                 matrix[1] = matrix[0];
                 matrix[0] = temp;
-                //row2 = true;
             }
             else if (matrix[2][1] > Math.abs(matrix[2][0]) + Math.abs(matrix[2][2])){
                 matrix[1] = matrix[2];
                 matrix[2] = temp;
-                //row2 = true;
             }
         }
 
         //check row3
         if (!(matrix[2][2] > Math.abs(matrix[2][0]) + Math.abs(matrix[2][1]))){
-            //row3 = false;
             double[] temp = matrix[2];
             if (matrix[0][2] > Math.abs(matrix[0][0]) + Math.abs(matrix[0][1])){
                 matrix[2] = matrix[0];
                 matrix[0] = temp;
-                //row3 = true;
             }
             else if (matrix[1][2] > Math.abs(matrix[1][0]) + Math.abs(matrix[1][1])){
                 matrix[2] = matrix[1];
                 matrix[1] = temp;
-                //row3 = true;
             }
         }
 
         return matrix;
     }
 
-    public static double[] jacobi(double[][] matrix, double[] currGuess, double tolerance, int decimalPlaces, int iteration){
+    public static Double[] jacobi(double[][] matrix, Double[] currGuess, double tolerance, int decimalPlaces, int iteration, ArrayList<Double[]> iterations){
         
-        double nextGuess[] = new double[3];
+        Double nextGuess[] = new Double[3];
 
         nextGuess[0] = (-matrix[0][1]*currGuess[1] - matrix[0][2]*currGuess[2] + matrix[0][3]) / matrix[0][0];
         nextGuess[0] = Utils.round(nextGuess[0], decimalPlaces);
@@ -143,7 +171,8 @@ public class Jacobi {
         nextGuess[2] = (-matrix[2][0]*currGuess[0] - matrix[2][1]*currGuess[1] + matrix[2][3]) / matrix[2][2];
         nextGuess[2] = Utils.round(nextGuess[2], decimalPlaces);
         
-        System.out.println("Iteration #" + iteration + ": " + Arrays.toString(nextGuess));
+        //System.out.println("Iteration #" + iteration + ": " + Arrays.toString(nextGuess));
+        iterations.add(nextGuess);
 
         if (iteration >= 1000) {
             System.out.println("Jacobi method did not converge.");
@@ -155,7 +184,7 @@ public class Jacobi {
             Math.abs(nextGuess[2] - currGuess[2]) <= tolerance){
             return nextGuess;
         }
-        return jacobi(matrix, nextGuess, tolerance, decimalPlaces, iteration+1);
+        return jacobi(matrix, nextGuess, tolerance, decimalPlaces, iteration+1, iterations);
     }
 
 

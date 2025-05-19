@@ -6,6 +6,7 @@
 package numericalmethodsapp.methods;
 
 import java.util.Arrays;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import numericalmethodsapp.utils.Utils;
@@ -16,13 +17,23 @@ import numericalmethodsapp.utils.Utils;
  */
 public class GaussianElimination {
     public static void run (Scanner input){
-        //pwede tong naka increment na number pero max ay 3 equations AHHAHAHAHA
-        System.out.print("Enter number of linear equations: ");
-        int numEq = input.nextInt();
+        int numEq = 0;
 
-        if (numEq > 3 || numEq < 2){
-            System.out.println("Number of linear equations should be at least 2 or not more than 3.");
-            return;
+        while (true){
+            try {
+                System.out.print("Enter number of linear equations (2 or 3): ");
+                numEq = input.nextInt();
+
+                if (numEq < 2 || numEq > 3) {
+                    System.out.println("Error: Number of linear equations should be 2 or 3.");
+                    continue;
+                }
+                
+                break;
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input! Please enter an integer.");
+                input.nextLine(); // clear buffer
+            }
         }
 
         String[] equations = new String[numEq];
@@ -34,7 +45,14 @@ public class GaussianElimination {
             equations[i] = input.nextLine();
         }
 
-        double[][] matrix = Utils.parseEquation(equations);
+        double[][] matrix;
+
+        try {
+            matrix = Utils.parseEquation(equations);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error parsing equations: " + e.getMessage());
+            return;
+        }
 
         // Display matrix (for testing)
         System.out.println("\nParsed Matrix:");
