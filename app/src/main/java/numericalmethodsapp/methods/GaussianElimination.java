@@ -17,7 +17,7 @@ import numericalmethodsapp.utils.Utils;
 public class GaussianElimination {
     public static void run (Scanner input){
         //pwede tong naka increment na number pero max ay 3 equations AHHAHAHAHA
-        System.out.println("Enter number of linear equations: ");
+        System.out.print("Enter number of linear equations: ");
         int numEq = input.nextInt();
 
         if (numEq > 3 || numEq < 2){
@@ -52,16 +52,29 @@ public class GaussianElimination {
     }
 
     public static double[] gaussianElimination (double[][] matrix){
-
-        for(int i = 0; i < matrix.length; i++){
-            for(int j = i + 1; j < matrix.length; j++){
-                if(Math.abs(matrix[j][i]) > Math.abs(matrix[i][i])){
-                    double[] temp = matrix[i];
-                    matrix[i] = matrix[j];
-                    matrix[j] = temp;
+        int n = matrix.length;
+        
+        for(int i = 0; i < n; i++){
+            // Partial pivoting
+            int maxRow = i;
+            for (int j = i + 1; j < n; j++) {
+                if (Math.abs(matrix[j][i]) > Math.abs(matrix[maxRow][i])) {
+                    maxRow = j;
                 }
             }
 
+            if (maxRow != i) {
+                double[] temp = matrix[i];
+                matrix[i] = matrix[maxRow];
+                matrix[maxRow] = temp;
+            }
+
+            // Check for 0 or very small pivot value
+            if (Math.abs(matrix[i][i]) < 1e-12) {
+                throw new ArithmeticException("Zero pivot encountered, system may have no unique solution.");
+            }
+
+            // Eliminate elements below diagonal
             for (int j = i + 1; j < matrix.length; j++) {
                 double factor = matrix[j][i] / matrix[i][i];
                 for (int k = i; k <= matrix.length; k++) {
@@ -72,11 +85,14 @@ public class GaussianElimination {
         }
 
         // Back Substitution
-        double[] solution = new double[matrix.length];
-        for (int i = matrix.length - 1; i >= 0; i--) {
+        double[] solution = new double[n];
+        for (int i = n - 1; i >= 0; i--) {
             double sum = 0;
-            for (int j = i + 1; j < matrix.length; j++) {
+            for (int j = i + 1; j < n; j++) {
                 sum += matrix[i][j] * solution[j];
+            }
+            if (Math.abs(matrix[i][i]) < 1e-12) {
+                throw new ArithmeticException("Division by zero during back substitution.");
             }
             solution[i] = (matrix[i][matrix.length] - sum) / matrix[i][i];
         }

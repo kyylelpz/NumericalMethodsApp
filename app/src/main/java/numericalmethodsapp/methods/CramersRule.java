@@ -137,5 +137,5 @@ public class CramersRule {
 
     public static double cleanZero(double val) {
         return val == -0.0 ? 0.0 : val;
-}
+    }
 }
