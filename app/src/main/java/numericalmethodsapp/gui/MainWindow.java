@@ -25,10 +25,10 @@ public class MainWindow extends Application {
         btn3.setOnAction(e -> {new SecantWindow().show();});
 
         Button btn4 = new Button("4. Bisection");
-        //btn4.setOnAction(e -> Bisection.run(null));
+        btn4.setOnAction(e -> {new BisectionWindow().show();});
 
         Button btn5 = new Button("5. False Position");
-        //btn5.setOnAction(e -> FalsePosition.run(null));
+        btn5.setOnAction(e -> {new FalsePositionWindow().show();});
 
         Button btn6 = new Button("6. Matrix");
         //btn6.setOnAction(e -> Matrix.run(null));

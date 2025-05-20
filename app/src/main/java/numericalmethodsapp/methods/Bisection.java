@@ -87,7 +87,7 @@ public class Bisection {
         // Start iterations
         ArrayList<ArrayList<Double>> iterations = new ArrayList<>();
         try {
-            Double solution = bisection(expression, x0, x1, tolerance, decimalPlaces, 1, iterations);
+            Double solution = bisection(expression, x0, x1, tolerance, decimalPlaces, 1, iterations, null);
 
             for (int i = 0; i < iterations.size(); i++) {
                 ArrayList<Double> row = iterations.get(i);
@@ -105,9 +105,11 @@ public class Bisection {
         }
     }
 
-    public static Double bisection (String expression, double a, double b, double tolerance, int decimalPlaces, int iteration, ArrayList<ArrayList<Double>> iterations) {
+     public static Double bisection(String expression, double a, double b, double tolerance, int decimalPlaces,
+                                   int iteration, ArrayList<ArrayList<Double>> iterations, StringBuilder sb) {
         if (iteration > 1000) {
             System.out.println("Method did not converge after 1000 iterations.");
+            sb.append("Method did not converge after 1000 iterations.");
             return null;
         }
         
@@ -122,22 +124,27 @@ public class Bisection {
         if (Double.isNaN(fa) || Double.isInfinite(fa) ||
             Double.isNaN(fb) || Double.isInfinite(fb)) {
             System.out.println("Invalid function evaluation at interval endpoints (NaN or Infinity). Iteration stopped.");
+            sb.append("Invalid function evaluation at interval endpoints (NaN or Infinity). Iteration stopped.");
             return null;
         }
 
         //CHECK LATER
         
         if (fa * fb >= 0) {
-            throw new IllegalArgumentException("f(a) and f(b) must have opposite signs.");
+            System.out.println("f(a) and f(b) must have opposite signs.");
+            sb.append("f(a) and f(b) must have opposite signs.");
+            return null;
         }
 
         if (Double.isNaN(fmp) || Double.isInfinite(fmp)) {
             System.out.println("Invalid function evaluation at midpoint (NaN or Infinity). Iteration stopped.");
+            sb.append("Invalid function evaluation at midpoint (NaN or Infinity). Iteration stopped.");
             return null;
         }
 
         if (Math.abs(mp) > 1e10) {
             System.out.println("Divergence detected due to very large midpoint value. Iteration stopped.");
+            sb.append("Divergence detected due to very large midpoint value. Iteration stopped.");
             return null;
         }
 
@@ -156,10 +163,45 @@ public class Bisection {
 
         // Recursive step
         if (fa * fmp < 0) {
-            return bisection(expression, a, mp, tolerance, decimalPlaces, iteration + 1, iterations);
+            return bisection(expression, a, mp, tolerance, decimalPlaces, iteration + 1, iterations, sb);
         } else {
-            return bisection(expression, mp, b, tolerance, decimalPlaces, iteration + 1, iterations);
+            return bisection(expression, mp, b, tolerance, decimalPlaces, iteration + 1, iterations, sb);
         }
+    }
+
+    public static String solve(String expression, double a, double b, double tolerance) {
+        StringBuilder output = new StringBuilder();
+        int decimalPlaces = Utils.getDecimalPlacesFromTolerance(tolerance);
+
+        expression = Utils.convertExprToExp4jCompatible(expression);
+
+        ArrayList<ArrayList<Double>> iterations = new ArrayList<>();
+
+        Double solution;
+        try {
+            solution = bisection(expression, a, b, tolerance, decimalPlaces, 1, iterations, output);
+        } catch (IllegalArgumentException e) {
+            output.append("Error: ").append(e.getMessage()).append("\n");
+            return output.toString();
+        }
+
+        if (!iterations.isEmpty()) {
+            output.append("Iterations:\n\n");
+            for (int i = 0; i < iterations.size(); i++) {
+                ArrayList<Double> row = iterations.get(i);
+                output.append(String.format("Iteration #%d: a = %.8f, b = %.8f, mp = %.8f, f(mp) = %.8f\n",
+                        i + 1, row.get(0), row.get(1), row.get(2), row.get(3)));
+            }
+            output.append("\n");
+        }
+
+        if (solution == null) {
+            output.append("Method diverged. No approximate solution found.\n");
+        } else {
+            output.append("The approximate solution is: ").append(solution).append("\n");
+        }
+
+        return output.toString();
     }
 
 }

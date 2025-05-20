@@ -86,7 +86,7 @@ public class FalsePosition {
         //Start iteration
         LinkedList<LinkedList<Double>> iterations = new LinkedList<>();
         try {
-            Double solution = falsePosition(expression, x0, x1, tolerance, decimalPlaces, 1, iterations);
+            Double solution = falsePosition(expression, x0, x1, tolerance, decimalPlaces, 1, iterations, null);
 
             for (int i = 0; i < iterations.size(); i++) {
                 LinkedList<Double> row = iterations.get(i);
@@ -105,9 +105,11 @@ public class FalsePosition {
     }
 
     //False Position Start/Recursive
-    public static Double falsePosition(String function, double a, double b, double tolerance, int decimalPlaces, int iteration, LinkedList<LinkedList<Double>> iterations) {
+    public static Double falsePosition(String function, double a, double b, double tolerance,
+                    int decimalPlaces, int iteration, LinkedList<LinkedList<Double>> iterations, StringBuilder sb) {
         if (iteration > 1000) {
             System.out.println("Method did not converge after 1000 iterations.");
+            sb.append("Method did not converge after 1000 iterations.");
             return null;
         }
 
@@ -118,11 +120,13 @@ public class FalsePosition {
         if (Double.isNaN(fa) || Double.isInfinite(fa) ||
             Double.isNaN(fb) || Double.isInfinite(fb)) {
             System.out.println("Invalid function evaluation at interval endpoints (NaN or Infinity). Iteration stopped.");
+            sb.append("");
             return null;
         }
         
         if (fa * fb >= 0) {
-            throw new IllegalArgumentException("f(a) and f(b) must have opposite signs.");
+            System.out.println("f(a) and f(b) must have opposite signs.");
+            sb.append("f(a) and f(b) must have opposite signs.");
         }
 
         // Compute c using Regula Falsi formula
@@ -133,11 +137,13 @@ public class FalsePosition {
 
         if (Double.isNaN(c) || Double.isInfinite(c)) {
             System.out.println("Invalid function evaluation at x(n+1) (NaN or Infinity). Iteration stopped.");
+            sb.append("Invalid function evaluation at x(n+1) (NaN or Infinity). Iteration stopped.");
             return null;
         }
 
         if (Math.abs(c) > 1e10) {
             System.out.println("Divergence detected due to very large x(n+1) value. Iteration stopped.");
+            sb.append("Divergence detected due to very large x(n+1) value. Iteration stopped.");
             return null;
         }
 
@@ -159,11 +165,47 @@ public class FalsePosition {
 
         // Recursive step
         if (fa * fc < 0) {
-            return falsePosition(function, a, c, tolerance, decimalPlaces, iteration + 1, iterations);
+            return falsePosition(function, a, c, tolerance, decimalPlaces, iteration + 1, iterations, sb);
         } else {
-            return falsePosition(function, c, b, tolerance, decimalPlaces, iteration + 1, iterations);
+            return falsePosition(function, c, b, tolerance, decimalPlaces, iteration + 1, iterations, sb);
         }
 
+    }
+
+    public static String solve(String fx, double a, double b, double tolerance) {
+        StringBuilder sb = new StringBuilder();
+
+        int decimalPlaces = Utils.getDecimalPlacesFromTolerance(tolerance);
+        fx = Utils.convertExprToExp4jCompatible(fx);
+
+        LinkedList<LinkedList<Double>> iterations = new LinkedList<>();
+        try {
+            Double solution = falsePosition(fx, a, b, tolerance, decimalPlaces, 1, iterations, sb);
+
+            if (!iterations.isEmpty()) {
+                sb.append("Iterations:\n\n");
+                for (int i = 0; i < iterations.size(); i++) {
+                    LinkedList<Double> row = iterations.get(i);
+                    sb.append("Iteration #").append(i + 1)
+                        .append(": a = ").append(row.get(0))
+                        .append(" b = ").append(row.get(1))
+                        .append(" c = ").append(row.get(2))
+                        .append(" f(c) = ").append(row.get(3))
+                        .append("\n");
+                }
+                sb.append("\n");
+            }
+
+            if (solution == null) {
+                sb.append("Method diverged or failed. No approximate solution found.");
+            } else {
+                sb.append("The approximate solution is: ").append(solution);
+            }
+        } catch (IllegalArgumentException e) {
+            sb.append("Error: ").append(e.getMessage());
+        }
+
+        return sb.toString();
     }
 
 }
