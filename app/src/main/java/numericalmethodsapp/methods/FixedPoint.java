@@ -1,8 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 package numericalmethodsapp.methods;
 
 import java.util.ArrayList;
@@ -130,4 +125,53 @@ public class FixedPoint {
 
         return fixedPoint(gofx, nextGuess, tolerance, decimalPlaces, iteration + 1, iterations);
     }
+
+    public static String solve(String gofx, double tolerance, double iGuess) {
+        System.out.println("Tolerance received: " + tolerance);
+
+        StringBuilder output = new StringBuilder();
+
+        gofx = Utils.convertExprToSymjaCompatible(gofx);
+
+        //check if tolerance <= 0
+        if (tolerance <= 0) return "Tolerance must be positive.";
+
+        int decimalPlaces = Utils.getDecimalPlacesFromTolerance(tolerance);
+
+        ExprEvaluator util = new ExprEvaluator();
+        try {
+            IExpr dgofx = util.evaluate("D(" + gofx + ", x)");
+            String dgofxStr = Utils.convertExprToExp4jCompatible(dgofx.toString());
+
+            output.append("g'(x): ").append(dgofxStr).append("\n\n");
+
+            double absDerivative = Math.abs(Utils.evaluateFunction(dgofxStr, iGuess, decimalPlaces));
+            if (absDerivative >= 1) {
+                return String.format("g'(%.4f) = %.4f which is >= 1. Try a different initial guess.", iGuess, absDerivative);
+            }
+
+            // Start iterations
+            gofx = Utils.convertExprToExp4jCompatible(gofx);
+            ArrayList<Double> iterations = new ArrayList<>();
+            Double solution = fixedPoint(gofx, iGuess, tolerance, decimalPlaces, 1, iterations);
+
+            output.append("Iterations:\n\n");
+            for (int i = 0; i < iterations.size(); i++) {
+                output.append("Iteration #").append(i + 1).append(":\t x = ").append(iterations.get(i)).append("\n");
+            }
+            output.append("\n");
+
+            if (solution == null) {
+                output.append("Method diverged. No approximate solution found.");
+            } else {
+                output.append("The approximate solution is: ").append(solution);
+            }
+
+            return output.toString();
+
+        } catch (Exception e) {
+            return "Invalid expression: " + e.getMessage();
+        }
+    }
+
 }

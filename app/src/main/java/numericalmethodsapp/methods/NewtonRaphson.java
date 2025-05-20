@@ -55,6 +55,7 @@ public class NewtonRaphson {
 
         int decimalPlaces = Utils.getDecimalPlacesFromTolerance(tolerance);
 
+
         //Enter initial guess
         double iGuess = 0.0;
         while (true) {

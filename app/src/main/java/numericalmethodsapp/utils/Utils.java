@@ -121,23 +121,21 @@ public class Utils {
             double result = expr.evaluate();
             return Utils.round(result, decimalPlaces);
         } catch (ArithmeticException e) {
-            System.out.println("Math Error: " + e.getMessage());
-            System.exit(1);
-            return Double.NaN;
+            throw new IllegalArgumentException("Math error during evaluation: " + e.getMessage(), e);
         } catch (Exception e) {
-            System.out.println("Invalid expression: " + e.getMessage());
-            System.exit(1);
-            return Double.NaN;
+            throw new IllegalArgumentException("Invalid expression during evaluation: " + e.getMessage(), e);
         }
     }
 
+
     public static boolean isValidSymjaExpression(String expr) {
-    try {
-        ExprEvaluator evaluator = new ExprEvaluator();
-        evaluator.evaluate(expr);
-        return true;
-    } catch (Exception e) {
-        return false;
+        try {
+            ExprEvaluator evaluator = new ExprEvaluator();
+            evaluator.evaluate(expr);
+            return true; // ✅ Valid expression
+        } catch (Exception e) {
+            return false; // ❌ Return detailed error
+        }
     }
-}
+
 }
