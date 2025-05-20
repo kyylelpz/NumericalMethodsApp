@@ -85,7 +85,7 @@ public class FixedPoint {
         //Start iteration
         gofx = Utils.convertExprToExp4jCompatible(gofx);
         ArrayList<Double> iterations = new ArrayList<>();
-        Double solution = fixedPoint(gofx, iGuess, tolerance, decimalPlaces, 1, iterations);
+        Double solution = fixedPoint(gofx, iGuess, tolerance, decimalPlaces, 1, iterations, null);
 
         // Print results
         System.out.println("\nIterations:");
@@ -104,9 +104,10 @@ public class FixedPoint {
 }
     }
 
-    public static Double fixedPoint (String gofx, double currGuess, double tolerance, int decimalPlaces, int iteration, ArrayList<Double> iterations){
+    public static Double fixedPoint (String gofx, double currGuess, double tolerance, int decimalPlaces, int iteration, ArrayList<Double> iterations, StringBuilder sb){
         if (iteration > 1000) {
             System.out.println("Method did not converge after 1000 iterations.");
+            sb.append("Method did not converge after 1000 iterations.");
             return null;
         }
         
@@ -114,6 +115,7 @@ public class FixedPoint {
 
         if (Double.isNaN(nextGuess) || Double.isInfinite(nextGuess) || Math.abs(nextGuess) > 1e10) {
             System.out.println("Divergence detected. Iteration stopped.");
+            sb.append("Divergence detected. Iteration stopped.");
             return null;
         }
 
@@ -123,55 +125,34 @@ public class FixedPoint {
             return nextGuess;
         }
 
-        return fixedPoint(gofx, nextGuess, tolerance, decimalPlaces, iteration + 1, iterations);
+        return fixedPoint(gofx, nextGuess, tolerance, decimalPlaces, iteration + 1, iterations, sb);
     }
 
     public static String solve(String gofx, double tolerance, double iGuess) {
-        System.out.println("Tolerance received: " + tolerance);
-
         StringBuilder output = new StringBuilder();
 
-        gofx = Utils.convertExprToSymjaCompatible(gofx);
-
-        //check if tolerance <= 0
-        if (tolerance <= 0) return "Tolerance must be positive.";
-
         int decimalPlaces = Utils.getDecimalPlacesFromTolerance(tolerance);
+        gofx = Utils.convertExprToExp4jCompatible(gofx);
 
-        ExprEvaluator util = new ExprEvaluator();
-        try {
-            IExpr dgofx = util.evaluate("D(" + gofx + ", x)");
-            String dgofxStr = Utils.convertExprToExp4jCompatible(dgofx.toString());
+        ArrayList<Double> iterations = new ArrayList<>();
+        Double solution = fixedPoint(gofx, iGuess, tolerance, decimalPlaces, 1, iterations, output);
 
-            output.append("g'(x): ").append(dgofxStr).append("\n\n");
-
-            double absDerivative = Math.abs(Utils.evaluateFunction(dgofxStr, iGuess, decimalPlaces));
-            if (absDerivative >= 1) {
-                return String.format("g'(%.4f) = %.4f which is >= 1. Try a different initial guess.", iGuess, absDerivative);
-            }
-
-            // Start iterations
-            gofx = Utils.convertExprToExp4jCompatible(gofx);
-            ArrayList<Double> iterations = new ArrayList<>();
-            Double solution = fixedPoint(gofx, iGuess, tolerance, decimalPlaces, 1, iterations);
-
+        if (iterations.size() > 1) {
             output.append("Iterations:\n\n");
             for (int i = 0; i < iterations.size(); i++) {
                 output.append("Iteration #").append(i + 1).append(":\t x = ").append(iterations.get(i)).append("\n");
             }
             output.append("\n");
-
-            if (solution == null) {
-                output.append("Method diverged. No approximate solution found.");
-            } else {
-                output.append("The approximate solution is: ").append(solution);
-            }
-
-            return output.toString();
-
-        } catch (Exception e) {
-            return "Invalid expression: " + e.getMessage();
         }
-    }
 
+        if (solution == null) {
+            output.append("Method diverged. No approximate solution found.");
+        } else {
+            output.append("The approximate solution is: ").append(solution);
+        }
+
+        return output.toString();
+
+    }
+    
 }

@@ -91,7 +91,7 @@ public class Secant {
         iterations.add(x1);
         
         try {
-            Double solution = secant(expression, x0, x1, tolerance, decimalPlaces, 1, iterations);
+            Double solution = secant(expression, x0, x1, tolerance, decimalPlaces, 1, iterations, null);
 
             // Print results
             System.out.println("\nIterations:");
@@ -113,9 +113,12 @@ public class Secant {
         }
     }
 
-    public static Double secant (String function, double a, double b, double tolerance, int decimalPlaces, int iteration, ArrayList<Double> iterations) {
+    public static Double secant(String function, double a, double b, double tolerance,
+                            int decimalPlaces, int iteration, ArrayList<Double> iterations,
+                            StringBuilder sb) {
         if (iteration >= 1000) {
             System.out.println("Method did not converge after 1000 iterations.");
+            sb.append("Method did not converge after 1000 iterations.\n");
             return null;
         }
 
@@ -126,11 +129,13 @@ public class Secant {
         if (Double.isNaN(fa) || Double.isInfinite(fa) ||
             Double.isNaN(fb) || Double.isInfinite(fb)) {
             System.out.println("Invalid function evaluation at initial points (NaN or Infinity). Iteration stopped.");
+            sb.append("Invalid function evaluation at initial points (NaN or Infinity). Iteration stopped.\n");
             return null;
         }
 
         if (Math.abs(fb - fa) < 1e-10) {
             System.out.println("Possible division by zero: f(b) and f(a) are too close. Iteration stopped.");
+            sb.append("Possible division by zero: f(b) and f(a) are too close. Iteration stopped.\n");
             return null;
         }
 
@@ -144,7 +149,35 @@ public class Secant {
             return c;
         }
 
-        return secant(function, b, c, tolerance, decimalPlaces, iteration + 1, iterations);
+        return secant(function, b, c, tolerance, decimalPlaces, iteration + 1, iterations, sb);
+    }
+
+    public static String solve(String expression, double tolerance, double x0, double x1) {
+        int decimalPlaces = Utils.getDecimalPlacesFromTolerance(tolerance);
+        ArrayList<Double> iterations = new ArrayList<>();
+        iterations.add(x0);
+        iterations.add(x1);
+
+        StringBuilder sb = new StringBuilder();
+        Double solution = secant(expression, x0, x1, tolerance, decimalPlaces, 1, iterations, sb);
+
+        if (iterations.size() > 2) {
+            sb.append("Iterations:\n\n");
+            for (int i = 0; i < iterations.size() - 2; i++) {
+                sb.append(String.format("Iteration #%d:\ta = %.6f\tb = %.6f\tc = %.6f\n",
+                        i + 1, iterations.get(i), iterations.get(i + 1), iterations.get(i + 2)));
+            }
+            sb.append("\n");
+        }
+
+        if (solution == null) {
+            sb.append("\n");
+            sb.append("Method diverged or stopped due to a mathematical error.\n");
+        } else {
+            sb.append(String.format("The approximate solution is: %.6f", solution));
+        }
+
+        return sb.toString();
     }
 
 }

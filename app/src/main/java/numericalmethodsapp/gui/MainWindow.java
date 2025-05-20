@@ -19,10 +19,10 @@ public class MainWindow extends Application {
         btn1.setOnAction(e -> {new FixedPointWindow().show();});
 
         Button btn2 = new Button("2. Newton-Raphson");
-        //btn2.setOnAction(e -> NewtonRaphson.run(null));
+        btn2.setOnAction(e -> {new NewtonRaphsonWindow().show();});
 
         Button btn3 = new Button("3. Secant");
-        //btn3.setOnAction(e -> Secant.run(null));
+        btn3.setOnAction(e -> {new SecantWindow().show();});
 
         Button btn4 = new Button("4. Bisection");
         //btn4.setOnAction(e -> Bisection.run(null));

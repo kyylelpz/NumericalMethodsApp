@@ -82,7 +82,7 @@ public class NewtonRaphson {
 
         // Start iteration
         LinkedList<Double> iterations = new LinkedList<>();
-        Double solution = newtonRaphson(expression, derivativeStr, iGuess, tolerance, decimalPlaces, 1, iterations);
+        Double solution = newtonRaphson(expression, derivativeStr, iGuess, tolerance, decimalPlaces, 1, iterations, null);
 
         // Print results
         System.out.println("\nIterations:");
@@ -101,9 +101,11 @@ public class NewtonRaphson {
         }
     }
 
-    public static Double newtonRaphson (String expression, String derivativeStr, double x, double tolerance, int decimalPlaces, int iteration, LinkedList<Double> iterations){
+    public static Double newtonRaphson (String expression, String derivativeStr, double x, double tolerance,
+                                        int decimalPlaces, int iteration, LinkedList<Double> iterations, StringBuilder sb){
         if (iteration > 1000) {
             System.out.println("Method did not converge after 1000 iterations.");
+            sb.append("Method did not converge after 1000 iterations.");
             return null;
         }
         
@@ -113,11 +115,13 @@ public class NewtonRaphson {
         if (Double.isNaN(fx) || Double.isInfinite(fx) ||
             Double.isNaN(fdx) || Double.isInfinite(fdx)) {
             System.out.println("Invalid function or derivative evaluation (NaN or Infinity). Iteration stopped.");
+            sb.append("Invalid function or derivative evaluation (NaN or Infinity). Iteration stopped.");
             return null;
         }
 
         if (fdx == 0.0) {
             System.out.println("Zero derivative detected at x = " + x + ". Cannot proceed with Newton-Raphson.");
+            sb.append("Zero derivative detected at x = ").append(x).append(". Cannot proceed with Newton-Raphson.");
             return null;
         }
 
@@ -126,6 +130,7 @@ public class NewtonRaphson {
 
         if (Double.isNaN(nextGuess) || Double.isInfinite(nextGuess) || Math.abs(nextGuess) > 1e10) {
             System.out.println("Divergence detected. Iteration stopped.");
+            sb.append("Divergence detected. Iteration stopped.");
             return null;
         }
 
@@ -135,7 +140,29 @@ public class NewtonRaphson {
             return nextGuess;
         }
 
-        return newtonRaphson(expression, derivativeStr, nextGuess, tolerance, decimalPlaces, iteration + 1, iterations);
+        return newtonRaphson(expression, derivativeStr, nextGuess, tolerance, decimalPlaces, iteration + 1, iterations, sb);
+    }
+
+    public static String solve(String expression, String derivativeStr, double tolerance, double initialGuess) {
+        int decimalPlaces = Utils.getDecimalPlacesFromTolerance(tolerance);
+        LinkedList<Double> iterations = new LinkedList<>();
+        iterations.add(initialGuess);
+
+        StringBuilder sb = new StringBuilder();
+        Double result = newtonRaphson(expression, derivativeStr, initialGuess, tolerance, decimalPlaces, 1, iterations, sb);
+
+        if (result == null) {
+            sb.append("Method diverged or encountered an error. No approximate solution found.\n");
+        } else {
+            sb.append("Iterations:\n\n");
+            for (int i = 0; i < iterations.size() - 1; i++) {
+                sb.append(String.format("Iteration #%d:\tx(n) = %.6f\tx(n+1) = %.6f\n",
+                        i + 1, iterations.get(i), iterations.get(i + 1)));
+            }
+            sb.append(String.format("\nApproximate solution: %.6f", result));
+        }
+
+        return sb.toString();
     }
 
 }
