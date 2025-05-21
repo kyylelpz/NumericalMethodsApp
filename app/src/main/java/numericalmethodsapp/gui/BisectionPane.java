@@ -6,43 +6,43 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import numericalmethodsapp.methods.FalsePosition;
+import numericalmethodsapp.methods.Bisection;
 import numericalmethodsapp.utils.Utils;
 
-public class FalsePositionPane extends VBox {
+public class BisectionPane extends VBox {
+
     @SuppressWarnings("CallToPrintStackTrace")
-    public FalsePositionPane(TextArea outputArea) {
+    public BisectionPane(TextArea outputArea) {
         setSpacing(10);
         setPadding(new Insets(20));
 
         // Title label
-        Label titleLabel = new Label("False Position");
+        Label titleLabel = new Label("Bisection Method");
         titleLabel.setStyle("-fx-font-size: 30; -fx-font-weight: bold; -fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
 
-        // Output area first
+        // Output area
         outputArea.setEditable(false);
         outputArea.setPrefHeight(300);
 
-        // Labels for inputs
+        // Labels and inputs
         Label fxLabel = new Label("Enter f(x):");
         fxLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
-
         TextField fxInput = new TextField();
 
         Label tolLabel = new Label("Tolerance (e.g., 0.001):");
         tolLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
         TextField tolInput = new TextField();
 
-        Label aLabel = new Label("Enter a (x0):");
+        Label aLabel = new Label("Enter a (initial guess):");
         aLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
         TextField aInput = new TextField();
 
-        Label bLabel = new Label("Enter b (x1):");
+        Label bLabel = new Label("Enter b (initial guess):");
         bLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
         TextField bInput = new TextField();
 
         Button runButton = new Button("Calculate");
-        runButton.setStyle("-fx-text-fill: " + MainWindow.BACKGROUND_COLOR + ";");
+        runButton.setStyle("-fx-text-fill: " + MainWindow.BACKGROUND_COLOR + "; -fx-background-color: " + MainWindow.SECONDARY_COLOR + ";");
 
         runButton.setOnAction(e -> {
             String fx = fxInput.getText().trim();
@@ -70,18 +70,34 @@ public class FalsePositionPane extends VBox {
                 return;
             }
 
-            // Validate a and b
-            double a, b;
+            // Validate initial guesses
+            double aVal, bVal;
             try {
-                a = Double.parseDouble(aStr);
-                b = Double.parseDouble(bStr);
+                aVal = Double.parseDouble(aStr);
+                bVal = Double.parseDouble(bStr);
             } catch (NumberFormatException ex) {
-                outputArea.setText("Both a and b must be valid numbers.");
+                outputArea.setText("Initial guesses must be valid numbers.");
                 return;
             }
 
+            // Check f(a)*f(b) < 0
             try {
-                String result = FalsePosition.solve(fx, a, b, tol);
+                int decimalPlaces = Utils.getDecimalPlacesFromTolerance(tol);
+                String exp4jExpr = Utils.convertExprToExp4jCompatible(symjaExpr);
+                double fa = Utils.evaluateFunction(exp4jExpr, aVal, decimalPlaces);
+                double fb = Utils.evaluateFunction(exp4jExpr, bVal, decimalPlaces);
+                if (fa * fb >= 0) {
+                    outputArea.setText("f(a) and f(b) must have opposite signs. Please enter valid initial guesses.");
+                    return;
+                }
+            } catch (Exception ex) {
+                outputArea.setText("Error evaluating function at initial guesses: " + ex.getMessage());
+                return;
+            }
+
+            // Run solver
+            try {
+                String result = Bisection.solve(fx, aVal, bVal, tol);
                 outputArea.setText(result);
             } catch (Exception ex) {
                 outputArea.setText("An error occurred during solving: " + ex.getMessage());
@@ -90,14 +106,14 @@ public class FalsePositionPane extends VBox {
         });
 
         runButton.setOnMouseEntered(e -> runButton.setStyle(
-            "-fx-background-color: #D1D5DB;" // lighter gray, example hover color
+            "-fx-background-color: #D1D5DB; -fx-text-fill: " + MainWindow.BACKGROUND_COLOR + ";"
         ));
 
         runButton.setOnMouseExited(e -> runButton.setStyle(
-            "-fx-background-color: " + MainWindow.SECONDARY_COLOR + ";"
+            "-fx-background-color: " + MainWindow.SECONDARY_COLOR + "; -fx-text-fill: " + MainWindow.BACKGROUND_COLOR + ";"
         ));
 
-        // Add nodes to VBox in the correct order
+        // Add all to VBox
         getChildren().addAll(
             titleLabel,
             outputArea,

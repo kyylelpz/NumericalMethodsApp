@@ -138,13 +138,13 @@ public class MainWindow extends Application {
 
         // Create buttons with handlers that inject corresponding panes
         Button[] methodButtons = {
-            createStyledButton("Fixed-Point Iteration", e -> {/* TODO */}),
-            createStyledButton("Newton-Raphson", e -> {/* TODO */}),
-            createStyledButton("Secant", e -> {/* TODO */}),
-            createStyledButton("Bisection", e -> {/* TODO */}),
+            createStyledButton("Fixed-Point Iteration", e -> showFixedPositionPane()),
+            createStyledButton("Newton-Raphson", e -> showNewtonRaphsonPane()),
+            createStyledButton("Secant", e -> showSecantPane() ),
+            createStyledButton("Bisection", e -> showBisectionPane()),
             createStyledButton("False Position", e -> showFalsePositionPane()),
             createStyledButton("Matrix", e -> {/* TODO */}),
-            createStyledButton("Cramer's Rule", e -> {/* TODO */}),
+            createStyledButton("Cramer's Rule", e -> showCramersRulePane()),
             createStyledButton("Gaussian Elimination", e -> {/* TODO */}),
             createStyledButton("Jacobi", e -> {/* TODO */}),
             createStyledButton("Gauss-Seidel", e -> {/* TODO */})
@@ -208,11 +208,42 @@ public class MainWindow extends Application {
         return btn;
     }
 
+    //SHOW PANE METHODS
+
+    private void showFixedPositionPane() {
+        outputInputBox.getChildren().clear();
+        currentMethodPane = new FixedPointPane(outputArea);
+        outputInputBox.getChildren().addAll(currentMethodPane, outputArea);
+    }
+
     private void showFalsePositionPane() {
         outputInputBox.getChildren().clear();
         currentMethodPane = new FalsePositionPane(outputArea);
         outputInputBox.getChildren().addAll(currentMethodPane, outputArea);
     }
 
-    // Implement showNewtonRaphsonPane(), showSecantPane(), showBisectionPane() similarly...
+    private void showSecantPane() {
+        outputInputBox.getChildren().clear();
+        currentMethodPane = new SecantPane(outputArea);
+        outputInputBox.getChildren().addAll(currentMethodPane, outputArea);
+    }
+
+    private void showBisectionPane() {
+        outputInputBox.getChildren().clear();
+        currentMethodPane = new BisectionPane(outputArea);
+        outputInputBox.getChildren().addAll(currentMethodPane, outputArea);
+    }
+
+    private void showNewtonRaphsonPane() {
+        outputInputBox.getChildren().clear();
+        currentMethodPane = new NewtonRaphsonPane(outputArea);
+        outputInputBox.getChildren().addAll(currentMethodPane, outputArea);
+    }
+
+    private void showCramersRulePane() {
+        outputInputBox.getChildren().clear();
+        currentMethodPane = new CramersRulePane(outputArea);
+        outputInputBox.getChildren().addAll(currentMethodPane, outputArea);
+    }
+
 }

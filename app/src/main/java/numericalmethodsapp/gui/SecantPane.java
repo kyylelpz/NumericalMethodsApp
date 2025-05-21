@@ -6,49 +6,48 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import numericalmethodsapp.methods.FalsePosition;
+import numericalmethodsapp.methods.Secant;
 import numericalmethodsapp.utils.Utils;
 
-public class FalsePositionPane extends VBox {
+public class SecantPane extends VBox {
     @SuppressWarnings("CallToPrintStackTrace")
-    public FalsePositionPane(TextArea outputArea) {
+    public SecantPane(TextArea outputArea) {
         setSpacing(10);
         setPadding(new Insets(20));
 
         // Title label
-        Label titleLabel = new Label("False Position");
+        Label titleLabel = new Label("Secant Method");
         titleLabel.setStyle("-fx-font-size: 30; -fx-font-weight: bold; -fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
 
         // Output area first
         outputArea.setEditable(false);
         outputArea.setPrefHeight(300);
 
-        // Labels for inputs
+        // Labels and inputs
         Label fxLabel = new Label("Enter f(x):");
         fxLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
-
         TextField fxInput = new TextField();
 
         Label tolLabel = new Label("Tolerance (e.g., 0.001):");
         tolLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
         TextField tolInput = new TextField();
 
-        Label aLabel = new Label("Enter a (x0):");
-        aLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
-        TextField aInput = new TextField();
+        Label x0Label = new Label("Enter x0:");
+        x0Label.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
+        TextField x0Input = new TextField();
 
-        Label bLabel = new Label("Enter b (x1):");
-        bLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
-        TextField bInput = new TextField();
+        Label x1Label = new Label("Enter x1:");
+        x1Label.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
+        TextField x1Input = new TextField();
 
         Button runButton = new Button("Calculate");
-        runButton.setStyle("-fx-text-fill: " + MainWindow.BACKGROUND_COLOR + ";");
+        runButton.setStyle("-fx-text-fill: " + MainWindow.BACKGROUND_COLOR + "; -fx-background-color: " + MainWindow.SECONDARY_COLOR + ";");
 
         runButton.setOnAction(e -> {
             String fx = fxInput.getText().trim();
             String tolStr = tolInput.getText().trim();
-            String aStr = aInput.getText().trim();
-            String bStr = bInput.getText().trim();
+            String x0Str = x0Input.getText().trim();
+            String x1Str = x1Input.getText().trim();
 
             // Validate f(x)
             String symjaExpr = Utils.convertExprToSymjaCompatible(fx);
@@ -58,10 +57,10 @@ public class FalsePositionPane extends VBox {
             }
 
             // Validate tolerance
-            double tol;
+            double tolerance;
             try {
-                tol = Double.parseDouble(tolStr);
-                if (tol <= 0) {
+                tolerance = Double.parseDouble(tolStr);
+                if (tolerance <= 0) {
                     outputArea.setText("Tolerance must be a positive number.");
                     return;
                 }
@@ -70,41 +69,57 @@ public class FalsePositionPane extends VBox {
                 return;
             }
 
-            // Validate a and b
-            double a, b;
+            // Validate x0
+            double x0;
             try {
-                a = Double.parseDouble(aStr);
-                b = Double.parseDouble(bStr);
+                x0 = Double.parseDouble(x0Str);
+                Math.abs(Utils.evaluateFunction(symjaExpr, x0, Utils.getDecimalPlacesFromTolerance(tolerance)));
             } catch (NumberFormatException ex) {
-                outputArea.setText("Both a and b must be valid numbers.");
+                outputArea.setText("x0 must be a valid number.");
+                return;
+            } catch (Exception ex) {
+                outputArea.setText("x0 caused evaluation error: " + ex.getMessage());
                 return;
             }
 
+            // Validate x1
+            double x1;
             try {
-                String result = FalsePosition.solve(fx, a, b, tol);
+                x1 = Double.parseDouble(x1Str);
+                Math.abs(Utils.evaluateFunction(symjaExpr, x1, Utils.getDecimalPlacesFromTolerance(tolerance)));
+            } catch (NumberFormatException ex) {
+                outputArea.setText("x1 must be a valid number.");
+                return;
+            } catch (Exception ex) {
+                outputArea.setText("x1 caused evaluation error: " + ex.getMessage());
+                return;
+            }
+
+            // Solve
+            try {
+                String result = Secant.solve(symjaExpr, tolerance, x0, x1);
                 outputArea.setText(result);
             } catch (Exception ex) {
-                outputArea.setText("An error occurred during solving: " + ex.getMessage());
+                outputArea.setText("Error during solving: " + ex.getMessage());
                 ex.printStackTrace();
             }
         });
 
         runButton.setOnMouseEntered(e -> runButton.setStyle(
-            "-fx-background-color: #D1D5DB;" // lighter gray, example hover color
+            "-fx-background-color: #D1D5DB; -fx-text-fill: " + MainWindow.BACKGROUND_COLOR + ";"
         ));
 
         runButton.setOnMouseExited(e -> runButton.setStyle(
-            "-fx-background-color: " + MainWindow.SECONDARY_COLOR + ";"
+            "-fx-background-color: " + MainWindow.SECONDARY_COLOR + "; -fx-text-fill: " + MainWindow.BACKGROUND_COLOR + ";"
         ));
 
-        // Add nodes to VBox in the correct order
         getChildren().addAll(
             titleLabel,
             outputArea,
             fxLabel, fxInput,
             tolLabel, tolInput,
-            aLabel, aInput,
-            bLabel, bInput,
+            x0Label, x0Input,
+            x1Label, x1Input,
             runButton
         );
     }

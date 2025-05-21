@@ -138,4 +138,54 @@ public class CramersRule {
     public static double cleanZero(double val) {
         return val == -0.0 ? 0.0 : val;
     }
+
+    public static String solve(String[] equations) {
+        StringBuilder output = new StringBuilder();
+
+        int numEq = equations.length;
+        if (numEq < 2 || numEq > 3) {
+            return "Error: Number of linear equations must be 2 or 3.";
+        }
+
+        output.append("Solving system with ").append(numEq).append(" equations...\n\n");
+
+        double[][] matrix;
+        try {
+            matrix = Utils.parseEquation(equations);
+        } catch (IllegalArgumentException e) {
+            return "Error parsing equations: " + e.getMessage();
+        }
+
+        output.append("Parsed augmented matrix:\n");
+        for (int i = 0; i < numEq; i++) {
+            for (int j = 0; j < numEq + 1; j++) {
+                output.append(String.format("%10.4f", matrix[i][j])).append(" ");
+            }
+            output.append("\n");
+        }
+        output.append("\n");
+
+        double[] solution;
+        try {
+            if (numEq == 2) {
+                solution = cramer2(matrix);
+            } else { // numEq == 3
+                solution = cramer3(matrix);
+            }
+        } catch (ArithmeticException ex) {
+            return "No unique solution: " + ex.getMessage();
+        }
+
+        output.append("Solution:\n");
+        if (numEq == 2) {
+            output.append("x = ").append(solution[0]).append("\n");
+            output.append("y = ").append(solution[1]).append("\n");
+        } else {
+            output.append("x = ").append(solution[0]).append("\n");
+            output.append("y = ").append(solution[1]).append("\n");
+            output.append("z = ").append(solution[2]).append("\n");
+        }
+
+        return output.toString();
+    }
 }

@@ -6,49 +6,46 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import numericalmethodsapp.methods.FalsePosition;
+import numericalmethodsapp.methods.NewtonRaphson;
 import numericalmethodsapp.utils.Utils;
+import org.matheclipse.core.eval.ExprEvaluator;
+import org.matheclipse.core.interfaces.IExpr;
 
-public class FalsePositionPane extends VBox {
+public class NewtonRaphsonPane extends VBox {
+
     @SuppressWarnings("CallToPrintStackTrace")
-    public FalsePositionPane(TextArea outputArea) {
+    public NewtonRaphsonPane(TextArea outputArea) {
         setSpacing(10);
         setPadding(new Insets(20));
 
         // Title label
-        Label titleLabel = new Label("False Position");
+        Label titleLabel = new Label("Newton-Raphson Method");
         titleLabel.setStyle("-fx-font-size: 30; -fx-font-weight: bold; -fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
 
         // Output area first
         outputArea.setEditable(false);
         outputArea.setPrefHeight(300);
 
-        // Labels for inputs
+        // Labels and inputs
         Label fxLabel = new Label("Enter f(x):");
         fxLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
-
         TextField fxInput = new TextField();
 
         Label tolLabel = new Label("Tolerance (e.g., 0.001):");
         tolLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
         TextField tolInput = new TextField();
 
-        Label aLabel = new Label("Enter a (x0):");
-        aLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
-        TextField aInput = new TextField();
-
-        Label bLabel = new Label("Enter b (x1):");
-        bLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
-        TextField bInput = new TextField();
+        Label guessLabel = new Label("Initial guess:");
+        guessLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
+        TextField guessInput = new TextField();
 
         Button runButton = new Button("Calculate");
-        runButton.setStyle("-fx-text-fill: " + MainWindow.BACKGROUND_COLOR + ";");
+        runButton.setStyle("-fx-text-fill: " + MainWindow.BACKGROUND_COLOR + "; -fx-background-color: " + MainWindow.SECONDARY_COLOR + ";");
 
         runButton.setOnAction(e -> {
             String fx = fxInput.getText().trim();
             String tolStr = tolInput.getText().trim();
-            String aStr = aInput.getText().trim();
-            String bStr = bInput.getText().trim();
+            String guessStr = guessInput.getText().trim();
 
             // Validate f(x)
             String symjaExpr = Utils.convertExprToSymjaCompatible(fx);
@@ -70,41 +67,43 @@ public class FalsePositionPane extends VBox {
                 return;
             }
 
-            // Validate a and b
-            double a, b;
+            // Validate initial guess
+            double guess;
             try {
-                a = Double.parseDouble(aStr);
-                b = Double.parseDouble(bStr);
+                guess = Double.parseDouble(guessStr);
             } catch (NumberFormatException ex) {
-                outputArea.setText("Both a and b must be valid numbers.");
+                outputArea.setText("Initial guess must be a valid number.");
                 return;
             }
 
+            // Derivative calculation and validation
             try {
-                String result = FalsePosition.solve(fx, a, b, tol);
+                ExprEvaluator util = new ExprEvaluator();
+                IExpr derivative = util.evaluate("D(" + symjaExpr + ", x)");
+                String derivativeStr = Utils.convertExprToExp4jCompatible(derivative.toString());
+
+                String result = NewtonRaphson.solve(symjaExpr, derivativeStr, tol, guess);
                 outputArea.setText(result);
             } catch (Exception ex) {
-                outputArea.setText("An error occurred during solving: " + ex.getMessage());
+                outputArea.setText("Error during solving: " + ex.getMessage());
                 ex.printStackTrace();
             }
         });
 
         runButton.setOnMouseEntered(e -> runButton.setStyle(
-            "-fx-background-color: #D1D5DB;" // lighter gray, example hover color
+            "-fx-background-color: #D1D5DB;" // lighter gray on hover
         ));
-
         runButton.setOnMouseExited(e -> runButton.setStyle(
-            "-fx-background-color: " + MainWindow.SECONDARY_COLOR + ";"
+            "-fx-text-fill: " + MainWindow.BACKGROUND_COLOR + "; -fx-background-color: " + MainWindow.SECONDARY_COLOR + ";"
         ));
 
-        // Add nodes to VBox in the correct order
+        // Add nodes to VBox in order
         getChildren().addAll(
             titleLabel,
             outputArea,
             fxLabel, fxInput,
             tolLabel, tolInput,
-            aLabel, aInput,
-            bLabel, bInput,
+            guessLabel, guessInput,
             runButton
         );
     }
