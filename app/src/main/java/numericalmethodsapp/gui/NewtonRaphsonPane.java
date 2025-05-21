@@ -1,5 +1,8 @@
 package numericalmethodsapp.gui;
 
+import org.matheclipse.core.eval.ExprEvaluator;
+import org.matheclipse.core.interfaces.IExpr;
+
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -8,8 +11,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import numericalmethodsapp.methods.NewtonRaphson;
 import numericalmethodsapp.utils.Utils;
-import org.matheclipse.core.eval.ExprEvaluator;
-import org.matheclipse.core.interfaces.IExpr;
 
 public class NewtonRaphsonPane extends VBox {
 
@@ -51,6 +52,7 @@ public class NewtonRaphsonPane extends VBox {
             String fx = fxInput.getText().trim();
             String tolStr = tolInput.getText().trim();
             String guessStr = guessInput.getText().trim();
+            StringBuilder sb = new StringBuilder();
 
             // Validate f(x)
             String symjaExpr = Utils.convertExprToSymjaCompatible(fx);
@@ -82,12 +84,14 @@ public class NewtonRaphsonPane extends VBox {
             }
 
             // Derivative calculation and validation
+            String derivativeStr;
             try {
                 ExprEvaluator util = new ExprEvaluator();
                 IExpr derivative = util.evaluate("D(" + symjaExpr + ", x)");
-                String derivativeStr = Utils.convertExprToExp4jCompatible(derivative.toString());
+                derivativeStr = Utils.convertExprToExp4jCompatible(derivative.toString());
+                String exp4jExpr = Utils.convertExprToExp4jCompatible(symjaExpr);
 
-                String result = NewtonRaphson.solve(symjaExpr, derivativeStr, tol, guess);
+                String result = NewtonRaphson.solve(exp4jExpr, derivativeStr, tol, guess, sb);
                 outputArea.setText(result);
             } catch (Exception ex) {
                 outputArea.setText("Error during solving: " + ex.getMessage());

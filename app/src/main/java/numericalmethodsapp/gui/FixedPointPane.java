@@ -14,7 +14,9 @@ import numericalmethodsapp.utils.Utils;
 
 public class FixedPointPane extends VBox {
 
+    @SuppressWarnings("CallToPrintStackTrace")
     public FixedPointPane(TextArea outputArea) {
+
         setSpacing(10);
         setPadding(new Insets(20));
 
@@ -52,6 +54,7 @@ public class FixedPointPane extends VBox {
             String gx = gxInput.getText().trim();
             String tolStr = tolInput.getText().trim();
             String guessStr = guessInput.getText().trim();
+            StringBuilder sb = new StringBuilder();
 
             String symjaExpr = Utils.convertExprToSymjaCompatible(gx);
             if (!Utils.isValidSymjaExpression(symjaExpr)) {
@@ -86,10 +89,20 @@ public class FixedPointPane extends VBox {
                 IExpr dgofx = util.evaluate("D(" + symjaExpr + ", x)");
                 dgofxStr = Utils.convertExprToExp4jCompatible(dgofx.toString());
                 int decimalPlaces = Utils.getDecimalPlacesFromTolerance(tol);
+                guess = Utils.round(guess, decimalPlaces);
                 absDerivative = Math.abs(Utils.evaluateFunction(dgofxStr, guess, decimalPlaces));
 
                 if (absDerivative >= 1) {
-                    outputArea.setText(String.format("g'(%.4f) = %.4f which is >= 1. Try a different initial guess.", guess, absDerivative));
+                    sb.append("Test of Convergence:\n\n");
+                    sb.append("g(x) = ").append(gx).append("\n");
+                    sb.append("g'(x) = ").append(dgofxStr).append("\n");
+        
+                    sb.append("x(n) = ").append(guess).append("\n");
+                    
+
+                    sb.append("| g'(").append(guess).append(") | = ").append(absDerivative).append(" >= 1: Iterations will NOT likely converge.\n\n");
+                    sb.append("Enter another initial guess.\n");
+                    outputArea.setText(sb.toString());
                     return;
                 }
             } catch (Exception ex) {
@@ -98,7 +111,7 @@ public class FixedPointPane extends VBox {
             }
 
             try {
-                String result = FixedPoint.solve(gx, tol, guess, dgofxStr, absDerivative);
+                String result = FixedPoint.solve(gx, tol, guess, dgofxStr, absDerivative, sb);
                 outputArea.setText(result);
             } catch (Exception ex) {
                 outputArea.setText("An error occurred during solving: " + ex.getMessage());

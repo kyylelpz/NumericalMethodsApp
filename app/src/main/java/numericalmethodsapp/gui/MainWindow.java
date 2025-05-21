@@ -216,6 +216,7 @@ public class MainWindow extends Application {
     private void showFixedPositionPane() {
         outputInputBox.getChildren().clear();
         outputArea.clear();
+        outputArea.setFont(Font.font("Courier New", 16));
         currentMethodPane = new FixedPointPane(outputArea);
         outputInputBox.getChildren().addAll(currentMethodPane, outputArea);
     }
