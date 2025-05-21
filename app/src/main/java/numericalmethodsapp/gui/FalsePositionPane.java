@@ -30,25 +30,54 @@ public class FalsePositionPane extends VBox {
             "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
 
         TextField fxInput = new TextField();
+        MainWindow.styleWebflowInput(fxInput);
 
         Label tolLabel = new Label("Tolerance (e.g., 0.001):");
-        tolLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
-            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
+        tolLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
         TextField tolInput = new TextField();
+        MainWindow.styleWebflowInput(tolInput);
 
-        Label aLabel = new Label("Enter a (x0):");
-        aLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
-            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
+        Label aLabel = new Label("Enter x0:");
+        aLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
         TextField aInput = new TextField();
+        MainWindow.styleWebflowInput(aInput);
 
-        Label bLabel = new Label("Enter b (x1):");
-        bLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
-            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
+        Label bLabel = new Label("Enter x1:");
+        bLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
         TextField bInput = new TextField();
+        MainWindow.styleWebflowInput(bInput);
 
         Button runButton = new Button("Calculate");
-        runButton.setStyle("-fx-text-fill: " + MainWindow.BACKGROUND_COLOR + ";"+
-            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
+        runButton.setStyle(
+            "-fx-background-color: " + MainWindow.PRIMARY_COLOR + ";" +
+            "-fx-text-fill: white;" +
+            "-fx-font-size: 12px;" +
+            "-fx-padding: 8 20;" +
+            "-fx-background-radius: 4px;" +
+            "-fx-border-radius: 4px;" +
+            "-fx-effect: dropshadow(gaussian, rgba(79, 70, 229, 0.3), 10, 0, 0, 0);"
+        );
+
+        // Add hover effects
+        runButton.setOnMouseEntered(e -> runButton.setStyle(
+            "-fx-background-color: #6366F1;" +  // Lighter purple on hover
+            "-fx-text-fill: white;" +
+            "-fx-font-size: 12px;" +
+            "-fx-padding: 8 20;" +
+            "-fx-background-radius: 4px;" +
+            "-fx-border-radius: 4px;" +
+            "-fx-effect: dropshadow(gaussian, rgba(99, 102, 241, 0.4), 15, 0, 0, 0);"
+        ));
+
+        runButton.setOnMouseExited(e -> runButton.setStyle(
+            "-fx-background-color: " + MainWindow.PRIMARY_COLOR + ";" +
+            "-fx-text-fill: white;" +
+            "-fx-font-size: 12px;" +
+            "-fx-padding: 8 20;" +
+            "-fx-background-radius: 4px;" +
+            "-fx-border-radius: 4px;" +
+            "-fx-effect: dropshadow(gaussian, rgba(79, 70, 229, 0.3), 10, 0, 0, 0);"
+        ));
 
         runButton.setOnAction(e -> {
             String fx = fxInput.getText().trim();
@@ -94,16 +123,6 @@ public class FalsePositionPane extends VBox {
                 ex.printStackTrace();
             }
         });
-
-        runButton.setOnMouseEntered(e -> runButton.setStyle(
-            "-fx-background-color: #D1D5DB;" +
-            "-fx-font-family: " + MainWindow.MAIN_FONT + ";"
-        ));
-
-        runButton.setOnMouseExited(e -> runButton.setStyle(
-            "-fx-background-color: " + MainWindow.SECONDARY_COLOR + ";"+
-            "-fx-font-family: " + MainWindow.MAIN_FONT + ";"
-        ));
 
         // Add nodes to VBox in the correct order
         getChildren().addAll(

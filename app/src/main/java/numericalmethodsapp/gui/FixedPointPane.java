@@ -28,27 +28,54 @@ public class FixedPointPane extends VBox {
         outputArea.setPrefHeight(300);
 
         Label gxLabel = new Label("Enter g(x):");
-        gxLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
-            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
+        gxLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
 
         TextField gxInput = new TextField();
+        MainWindow.styleWebflowInput(gxInput);
 
         Label tolLabel = new Label("Tolerance (e.g., 0.001):");
-        tolLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
-            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
+        tolLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
 
         TextField tolInput = new TextField();
+        MainWindow.styleWebflowInput(tolInput);
 
         Label guessLabel = new Label("Initial guess:");
-        guessLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
-            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
+        guessLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
 
         TextField guessInput = new TextField();
+        MainWindow.styleWebflowInput(guessInput);
 
         Button runButton = new Button("Calculate");
-        runButton.setStyle("-fx-background-color: " + MainWindow.SECONDARY_COLOR + ";"+
-            "-fx-text-fill: " + MainWindow.BACKGROUND_COLOR + ";"+
-            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
+        runButton.setStyle(
+            "-fx-background-color: " + MainWindow.PRIMARY_COLOR + ";" +
+            "-fx-text-fill: white;" +
+            "-fx-font-size: 12px;" +
+            "-fx-padding: 8 20;" +
+            "-fx-background-radius: 4px;" +
+            "-fx-border-radius: 4px;" +
+            "-fx-effect: dropshadow(gaussian, rgba(79, 70, 229, 0.3), 10, 0, 0, 0);"
+        );
+
+        // Add hover effects
+        runButton.setOnMouseEntered(e -> runButton.setStyle(
+            "-fx-background-color: #6366F1;" +  // Lighter purple on hover
+            "-fx-text-fill: white;" +
+            "-fx-font-size: 12px;" +
+            "-fx-padding: 8 20;" +
+            "-fx-background-radius: 4px;" +
+            "-fx-border-radius: 4px;" +
+            "-fx-effect: dropshadow(gaussian, rgba(99, 102, 241, 0.4), 15, 0, 0, 0);"
+        ));
+
+        runButton.setOnMouseExited(e -> runButton.setStyle(
+            "-fx-background-color: " + MainWindow.PRIMARY_COLOR + ";" +
+            "-fx-text-fill: white;" +
+            "-fx-font-size: 12px;" +
+            "-fx-padding: 8 20;" +
+            "-fx-background-radius: 4px;" +
+            "-fx-border-radius: 4px;" +
+            "-fx-effect: dropshadow(gaussian, rgba(79, 70, 229, 0.3), 10, 0, 0, 0);"
+        ));
 
         runButton.setOnAction(e -> {
             String gx = gxInput.getText().trim();
@@ -118,12 +145,6 @@ public class FixedPointPane extends VBox {
                 ex.printStackTrace();
             }
         });
-
-        // Optional: add hover style for runButton
-        runButton.setOnMouseEntered(e -> runButton.setStyle("-fx-background-color: #D1D5DB; -fx-text-fill: #111827;"+
-            "-fx-font-family: " + MainWindow.MAIN_FONT + ";"));
-        runButton.setOnMouseExited(e -> runButton.setStyle("-fx-background-color: " + MainWindow.SECONDARY_COLOR + "; -fx-text-fill: " + MainWindow.BACKGROUND_COLOR + ";"+
-            "-fx-font-family: " + MainWindow.MAIN_FONT + ";"));
 
         getChildren().addAll(
             titleLabel,

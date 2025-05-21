@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -29,6 +30,11 @@ public class MainWindow extends Application {
     public static final String SECONDARY_COLOR = "#CCCCCC";
     public static final String BACKGROUND_COLOR = "#161517";
 
+    public static final String INPUT_BACKGROUND = "rgba(57, 63, 84, 0.8)";
+    public static final String INPUT_TEXT_INACTIVE = "#7881A1";
+    public static final String INPUT_TEXT_ACTIVE = "#FFFFFF";
+    public static final String GRADIENT_COLORS = "#4F46E5, #6366F1, #818CF8";
+
     public static TextArea outputArea = new TextArea();
     public VBox outputInputBox = new VBox();
     
@@ -43,7 +49,7 @@ public class MainWindow extends Application {
         primaryStage.setResizable(false);
 
         root = new StackPane();
-        root.setStyle("-fx-background-color: " + BACKGROUND_COLOR + ";");
+        root.setStyle("-fx-background-color: linear-gradient(to right, #101212 0%, #1E173D 50%, #291452 100%);");
 
         scene = new Scene(root, 1200, 720);
 
@@ -118,7 +124,6 @@ public class MainWindow extends Application {
 
     public void showMain() {
         root.getChildren().clear();
-        root.setStyle("-fx-background-color: " + BACKGROUND_COLOR + ";");
 
         HBox showMainBox = new HBox(10);
         showMainBox.setAlignment(Pos.CENTER_LEFT);
@@ -165,6 +170,9 @@ public class MainWindow extends Application {
 
         showMainBox.getChildren().addAll(methodSelection, outputInputBox);
         root.getChildren().add(showMainBox);
+        
+        // Automatically load Fixed Point Iteration pane
+        showFixedPositionPane();
     }
 
     private Button createStyledButton(String text, javafx.event.EventHandler<javafx.event.ActionEvent> action) {
@@ -260,6 +268,38 @@ public class MainWindow extends Application {
         outputArea.clear();
         currentMethodPane = new CramersRulePane(outputArea);
         outputInputBox.getChildren().addAll(currentMethodPane, outputArea);
+    }
+
+    public static void styleWebflowInput(TextField input) {
+        input.setStyle(
+            "-fx-background-color: " + INPUT_BACKGROUND + ";" +
+            "-fx-text-fill: " + INPUT_TEXT_ACTIVE + ";" +
+            "-fx-font-size: 12px;" +
+            "-fx-padding: 4 20 4 10;" +
+            "-fx-background-radius: 2px;" +
+            "-fx-border-radius: 2px;" +
+            "-fx-border-width: 0 0 2 0;" +
+            "-fx-border-color: transparent;" +
+            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 0);"
+        );
+
+        // Create the animated gradient border effect
+        input.setOnMouseEntered(e -> {
+            input.setStyle(
+                input.getStyle() +
+                "-fx-border-color: linear-gradient(to right, " + GRADIENT_COLORS + ");" +
+                "-fx-border-width: 0 0 2 0;"
+            );
+        });
+
+        input.setOnMouseExited(e -> {
+            input.setStyle(
+                input.getStyle().replace(
+                    "-fx-border-color: linear-gradient(to right, " + GRADIENT_COLORS + ");",
+                    "-fx-border-color: transparent;"
+                )
+            );
+        });
     }
 
 }

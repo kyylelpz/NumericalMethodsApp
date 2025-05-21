@@ -33,22 +33,19 @@ public class CramersRulePane extends VBox {
 
         // Create TextFields for 3 equations max
         Label eq1Label = new Label("Equation 1:");
-        eq1Label.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
-            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
+        eq1Label.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
         TextField eq1Input = new TextField();
-        //eq1Input.setPromptText("Equation 1 (e.g., 3x + 2y = 5)");
+        MainWindow.styleWebflowInput(eq1Input);
 
         Label eq2Label = new Label("Equation 2:");
-        eq2Label.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
-            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
+        eq2Label.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
         TextField eq2Input = new TextField();
-        //eq2Input.setPromptText("Equation 2 (e.g., x - y = 1)");
+        MainWindow.styleWebflowInput(eq2Input);
 
         Label eq3Label = new Label("Equation 3:");
-        eq3Label.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
-            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
+        eq3Label.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
         TextField eq3Input = new TextField();
-        //eq3Input.setPromptText("Equation 3 (e.g., x + y + z = 7)");
+        MainWindow.styleWebflowInput(eq3Input);
 
         // Initially hide eq3Input because default is 2 equations
         eq3Label.setVisible(false);
@@ -70,8 +67,36 @@ public class CramersRulePane extends VBox {
         });
 
         Button runButton = new Button("Calculate");
-        runButton.setStyle("-fx-text-fill: " + MainWindow.BACKGROUND_COLOR + ";"+
-            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
+        runButton.setStyle(
+            "-fx-background-color: " + MainWindow.PRIMARY_COLOR + ";" +
+            "-fx-text-fill: white;" +
+            "-fx-font-size: 12px;" +
+            "-fx-padding: 8 20;" +
+            "-fx-background-radius: 4px;" +
+            "-fx-border-radius: 4px;" +
+            "-fx-effect: dropshadow(gaussian, rgba(79, 70, 229, 0.3), 10, 0, 0, 0);"
+        );
+
+        // Add hover effects
+        runButton.setOnMouseEntered(e -> runButton.setStyle(
+            "-fx-background-color: #6366F1;" +  // Lighter purple on hover
+            "-fx-text-fill: white;" +
+            "-fx-font-size: 12px;" +
+            "-fx-padding: 8 20;" +
+            "-fx-background-radius: 4px;" +
+            "-fx-border-radius: 4px;" +
+            "-fx-effect: dropshadow(gaussian, rgba(99, 102, 241, 0.4), 15, 0, 0, 0);"
+        ));
+
+        runButton.setOnMouseExited(e -> runButton.setStyle(
+            "-fx-background-color: " + MainWindow.PRIMARY_COLOR + ";" +
+            "-fx-text-fill: white;" +
+            "-fx-font-size: 12px;" +
+            "-fx-padding: 8 20;" +
+            "-fx-background-radius: 4px;" +
+            "-fx-border-radius: 4px;" +
+            "-fx-effect: dropshadow(gaussian, rgba(79, 70, 229, 0.3), 10, 0, 0, 0);"
+        ));
 
         runButton.setOnAction(e -> {
             int numEq = numEqComboBox.getValue();
@@ -99,11 +124,6 @@ public class CramersRulePane extends VBox {
                 ex.printStackTrace();
             }
         });
-
-        runButton.setOnMouseEntered(e -> runButton.setStyle("-fx-background-color: #D1D5DB;"+
-            "-fx-font-family: " + MainWindow.MAIN_FONT + ";"));
-        runButton.setOnMouseExited(e -> runButton.setStyle("-fx-background-color: " + MainWindow.SECONDARY_COLOR + ";"+
-            "-fx-font-family: " + MainWindow.MAIN_FONT + ";"));
 
         getChildren().addAll(
             titleLabel,
