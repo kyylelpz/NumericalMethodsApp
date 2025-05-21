@@ -169,42 +169,48 @@ public class MainWindow extends Application {
 
     private Button createStyledButton(String text, javafx.event.EventHandler<javafx.event.ActionEvent> action) {
         Button btn = new Button(text);
-        btn.setStyle(
-            "-fx-background-color: " + SECONDARY_COLOR + ";" +
-            "-fx-text-fill: #111827;" +
+       btn.setStyle(
+            "-fx-background-color: #1E1E2A;" +  // Darker background
+            "-fx-text-fill: #818CF8;" +         // Lighter primary color for text
             "-fx-font-size: 14;" +
             "-fx-font-family: '" + MAIN_FONT + "';" +
-            "-fx-padding: 10 10;" +
+            "-fx-font-weight: 500;" +           // Medium font weight
+            "-fx-padding: 12 16;" +
             "-fx-background-radius: 8;" +
-            "-fx-border-color: #E5E7EB;" +
+            "-fx-border-color: #4F46E5;" +      // Using your primary color for border
             "-fx-border-width: 1;" +
             "-fx-border-radius: 8;" +
-            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);"
+            "-fx-effect: dropshadow(gaussian, #4F46E5, 10, 0, 0, 0);" +  // Glow effect using primary color
+            "-fx-text-effect: dropshadow(gaussian, #818CF8, 5, 0, 0, 0);"  // Text glow effect
         );
         btn.setOnAction(action);
         btn.setOnMouseEntered(e -> btn.setStyle(
-            "-fx-background-color: #D1D5DB;" +  // lighter gray, example hover color
-            "-fx-text-fill: #111827;" +
+            "-fx-background-color: #252535;" +  // Slightly lighter dark background on hover
+            "-fx-text-fill: #A5B4FC;" +         // Even lighter text color on hover
             "-fx-font-size: 14;" +
             "-fx-font-family: '" + MAIN_FONT + "';" +
-            "-fx-padding: 10 10;" +
+            "-fx-font-weight: 600;" +           // Slightly bolder on hover
+            "-fx-padding: 12 16;" +
             "-fx-background-radius: 8;" +
-            "-fx-border-color: #E5E7EB;" +
+            "-fx-border-color: #6366F1;" +      // Lighter border on hover
             "-fx-border-width: 1;" +
             "-fx-border-radius: 8;" +
-            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 7, 0, 0, 3);"
+            "-fx-effect: dropshadow(gaussian, #6366F1, 15, 0, 0, 0);" +  // Stronger glow on hover
+            "-fx-text-effect: dropshadow(gaussian, #A5B4FC, 8, 0, 0, 0);"  // Stronger text glow on hover
         ));
         btn.setOnMouseExited(e -> btn.setStyle(
-            "-fx-background-color: " + SECONDARY_COLOR + ";" +
-            "-fx-text-fill: #111827;" +
+            "-fx-background-color: #1E1E2A;" +  // Back to darker background
+            "-fx-text-fill: #818CF8;" +         // Back to lighter primary color
             "-fx-font-size: 14;" +
             "-fx-font-family: '" + MAIN_FONT + "';" +
-            "-fx-padding: 10 10;" +
+            "-fx-font-weight: 500;" +           // Back to medium weight
+            "-fx-padding: 12 16;" +
             "-fx-background-radius: 8;" +
-            "-fx-border-color: #E5E7EB;" +
+            "-fx-border-color: #4F46E5;" +
             "-fx-border-width: 1;" +
             "-fx-border-radius: 8;" +
-            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);"
+            "-fx-effect: dropshadow(gaussian, #4F46E5, 10, 0, 0, 0);" +
+            "-fx-text-effect: dropshadow(gaussian, #818CF8, 5, 0, 0, 0);"  // Back to normal text glow
         ));
         btn.setMaxWidth(Double.MAX_VALUE);
         HBox.setHgrow(btn, Priority.ALWAYS);
