@@ -1,43 +1,48 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 package numericalmethodsapp.gui;
 
-import javafx.scene.Scene;
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import numericalmethodsapp.methods.FalsePosition;
 import numericalmethodsapp.utils.Utils;
 
-/**
- *
- * @author lopez
- */
-public class FalsePositionWindow extends Stage {
+public class FalsePositionPane extends VBox {
     @SuppressWarnings("CallToPrintStackTrace")
-    public FalsePositionWindow() {
-        setTitle("False Position Method");
+    public FalsePositionPane(TextArea outputArea) {
+        setSpacing(10);
+        setPadding(new Insets(20));
+
+        // Title label
+        Label titleLabel = new Label("False Position Method");
+        titleLabel.setStyle("-fx-font-size: 30; -fx-font-weight: bold; -fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
+
+        // Output area first
+        outputArea.setEditable(false);
+        outputArea.setPrefHeight(300);
+
+        // Labels for inputs
+        Label fxLabel = new Label("Enter f(x):");
+        fxLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
 
         TextField fxInput = new TextField();
-        fxInput.setPromptText("Enter f(x)");
 
+        Label tolLabel = new Label("Tolerance (e.g., 0.001):");
+        tolLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
         TextField tolInput = new TextField();
-        tolInput.setPromptText("Tolerance (e.g., 0.001)");
 
+        Label aLabel = new Label("Enter a (x0):");
+        aLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
         TextField aInput = new TextField();
-        aInput.setPromptText("Enter a (x0)");
 
+        Label bLabel = new Label("Enter b (x1):");
+        bLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
         TextField bInput = new TextField();
-        bInput.setPromptText("Enter b (x1)");
 
-        Button runButton = new Button("Run");
-        TextArea outputArea = new TextArea();
-        outputArea.setEditable(false);
+        Button runButton = new Button("Calculate");
+        runButton.setStyle("-fx-text-fill: " + MainWindow.BACKGROUND_COLOR + ";");
 
         runButton.setOnAction(e -> {
             String fx = fxInput.getText().trim();
@@ -84,9 +89,23 @@ public class FalsePositionWindow extends Stage {
             }
         });
 
-        VBox layout = new VBox(10, fxInput, tolInput, aInput, bInput, runButton, outputArea);
-        layout.setPrefSize(450, 350);
+        runButton.setOnMouseEntered(e -> runButton.setStyle(
+            "-fx-background-color: #D1D5DB;" // lighter gray, example hover color
+        ));
 
-        setScene(new Scene(layout));
+        runButton.setOnMouseExited(e -> runButton.setStyle(
+            "-fx-background-color: " + MainWindow.SECONDARY_COLOR + ";"
+        ));
+
+        // Add nodes to VBox in the correct order
+        getChildren().addAll(
+            titleLabel,
+            outputArea,
+            fxLabel, fxInput,
+            tolLabel, tolInput,
+            aLabel, aInput,
+            bLabel, bInput,
+            runButton
+        );
     }
 }

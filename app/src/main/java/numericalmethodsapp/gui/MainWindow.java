@@ -1,56 +1,218 @@
 package numericalmethodsapp.gui;
 
+import java.util.Arrays;
+
 import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 public class MainWindow extends Application {
+    
+    private StackPane root;
+    private Scene scene;
+    public static final String MAIN_FONT = "Poppins";
+    public static final String PRIMARY_COLOR = "#4F46E5";
+    public static final String SECONDARY_COLOR = "#CCCCCC";
+    public static final String BACKGROUND_COLOR = "#161517";
+
+    public static TextArea outputArea = new TextArea();
+    public VBox outputInputBox = new VBox();
+
+    // Current method pane reference so you can clear/replace later
+    private VBox currentMethodPane;
 
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Numerical Methods");
+        primaryStage.setResizable(false);
 
-        Label label = new Label("Select a Numerical Method:");
+        root = new StackPane();
+        root.setStyle("-fx-background-color: " + BACKGROUND_COLOR + ";");
 
-        Button btn1 = new Button("1. Fixed-Point Iteration");
-        btn1.setOnAction(e -> {new FixedPointWindow().show();});
+        scene = new Scene(root, 1200, 720);
 
-        Button btn2 = new Button("2. Newton-Raphson");
-        btn2.setOnAction(e -> {new NewtonRaphsonWindow().show();});
+        // Main content container
+        HBox mainBox = new HBox(10);
+        mainBox.setAlignment(Pos.CENTER);
+        mainBox.setPadding(new Insets(20));
+        mainBox.setMaxWidth(1200);
 
-        Button btn3 = new Button("3. Secant");
-        btn3.setOnAction(e -> {new SecantWindow().show();});
+        VBox mainContent = new VBox(30);
+        mainContent.setAlignment(Pos.CENTER_LEFT);
+        mainContent.setPadding(new Insets(20));
+        mainContent.setMaxWidth(500);
+        mainContent.setMaxHeight(720);
 
-        Button btn4 = new Button("4. Bisection");
-        btn4.setOnAction(e -> {new BisectionWindow().show();});
+        VBox picBox = new VBox(30);
+        picBox.setAlignment(Pos.CENTER);
+        picBox.setPadding(new Insets(20));
+        picBox.setMaxWidth(700);
 
-        Button btn5 = new Button("5. False Position");
-        btn5.setOnAction(e -> {new FalsePositionWindow().show();});
+        // Title with line break
+        Label title = new Label("Xynapse");
+        title.setStyle("-fx-text-fill: " + PRIMARY_COLOR + ";");
+        title.setFont(Font.font(MAIN_FONT, FontWeight.BOLD, 50));
+        title.setAlignment(Pos.CENTER);
+        //title.setLineSpacing(0);
 
-        Button btn6 = new Button("6. Matrix");
-        //btn6.setOnAction(e -> Matrix.run(null));
+        // Subtitle
+        Label subtitle = new Label("Precision meets power. Solve numerical method\nequations confidence.");
+        subtitle.setStyle(
+            "-fx-text-fill:rgb(213, 218, 228);" +
+            "-fx-font-family: '" + MAIN_FONT + "';" +
+            "-fx-font-size: 16;"
+        );
+        subtitle.setAlignment(Pos.CENTER);
+        subtitle.setMaxWidth(400);
 
-        Button btn7 = new Button("7. Cramer's Rule");
-        //btn7.setOnAction(e -> CramersRule.run(null));
+        // Button with proper spacing
+        Button continueBtn = new Button("Calculate");
+        continueBtn.setStyle(
+            "-fx-background-color: " + PRIMARY_COLOR + ";" +
+            "-fx-text-fill: " + SECONDARY_COLOR + ";" +
+            "-fx-font-size: 16;" +
+            "-fx-font-family: '" + MAIN_FONT + "';" +
+            "-fx-padding: 12 24;" +
+            "-fx-background-radius: 8;"
+        );
+        continueBtn.setOnAction(e -> showMain());
 
-        Button btn8 = new Button("8. Gaussian Elimination");
-        //btn8.setOnAction(e -> GaussianElimination.run(null));
+        //Image
+        Image mainPicImg = new Image(getClass().getResourceAsStream("/img/mainPicTest.png"));
+        ImageView mainPicImgV = new ImageView(mainPicImg);
 
-        Button btn9 = new Button("9. Jacobi");
-        //btn9.setOnAction(e -> Jacobi.run(null));
+        // Optional: set image size
+        mainPicImgV.setFitWidth(600);
+        mainPicImgV.setFitHeight(600);
 
-        Button btn10 = new Button("10. Gauss-Seidel");
-        //btn10.setOnAction(e -> GaussSeidel.run(null));
+        // Add all elements to main content
+        picBox.getChildren().add(mainPicImgV);
+        mainContent.getChildren().addAll(title, subtitle, continueBtn);
+        mainBox.getChildren().addAll(mainContent, picBox);
 
-        VBox root = new VBox(10, label, btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn10);
-        root.setStyle("-fx-padding: 20; -fx-alignment: center;");
+        // Use BorderPane for better footer placement
+        BorderPane borderPane = new BorderPane();
+        borderPane.setCenter(mainBox);
 
-        Scene scene = new Scene(root, 400, 600);
-        
+        root.getChildren().add(borderPane);
+
         primaryStage.setScene(scene);
         primaryStage.show();
     }
+
+    public void showMain() {
+        root.getChildren().clear();
+        root.setStyle("-fx-background-color: " + BACKGROUND_COLOR + ";");
+
+        HBox showMainBox = new HBox(10);
+        showMainBox.setAlignment(Pos.CENTER_LEFT);
+        showMainBox.setPadding(new Insets(20));
+        showMainBox.setMaxWidth(1200);
+
+        VBox methodSelection = new VBox(20);
+        methodSelection.setAlignment(Pos.CENTER);
+        methodSelection.setPadding(new Insets(20));
+        methodSelection.setMinWidth(300);
+
+        outputInputBox.setStyle("-fx-background-color: " + BACKGROUND_COLOR + ";");
+        outputInputBox.setAlignment(Pos.CENTER);
+        outputInputBox.setPadding(new Insets(20));
+
+        Label label = new Label("Xynapse");
+        label.setStyle("-fx-text-fill: " + PRIMARY_COLOR + ";");
+        label.setFont(Font.font(MAIN_FONT, FontWeight.BOLD, 40));
+
+        // Create buttons with handlers that inject corresponding panes
+        Button[] methodButtons = {
+            createStyledButton("Fixed-Point Iteration", e -> {/* TODO */}),
+            createStyledButton("Newton-Raphson", e -> {/* TODO */}),
+            createStyledButton("Secant", e -> {/* TODO */}),
+            createStyledButton("Bisection", e -> {/* TODO */}),
+            createStyledButton("False Position", e -> showFalsePositionPane()),
+            createStyledButton("Matrix", e -> {/* TODO */}),
+            createStyledButton("Cramer's Rule", e -> {/* TODO */}),
+            createStyledButton("Gaussian Elimination", e -> {/* TODO */}),
+            createStyledButton("Jacobi", e -> {/* TODO */}),
+            createStyledButton("Gauss-Seidel", e -> {/* TODO */})
+        };
+
+        outputArea.setPrefWidth(920);
+        outputArea.setPrefHeight(350);
+        outputArea.setEditable(false);
+
+        methodSelection.getChildren().addAll(label);
+        methodSelection.getChildren().addAll(Arrays.asList(methodButtons));
+
+        // Initially empty outputInputBox children - will be replaced when clicking buttons
+        outputInputBox.getChildren().clear();
+
+        showMainBox.getChildren().addAll(methodSelection, outputInputBox);
+        root.getChildren().add(showMainBox);
+    }
+
+    private Button createStyledButton(String text, javafx.event.EventHandler<javafx.event.ActionEvent> action) {
+        Button btn = new Button(text);
+        btn.setStyle(
+            "-fx-background-color: " + SECONDARY_COLOR + ";" +
+            "-fx-text-fill: #111827;" +
+            "-fx-font-size: 14;" +
+            "-fx-font-family: '" + MAIN_FONT + "';" +
+            "-fx-padding: 10 10;" +
+            "-fx-background-radius: 8;" +
+            "-fx-border-color: #E5E7EB;" +
+            "-fx-border-width: 1;" +
+            "-fx-border-radius: 8;" +
+            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);"
+        );
+        btn.setOnAction(action);
+        btn.setOnMouseEntered(e -> btn.setStyle(
+            "-fx-background-color: #D1D5DB;" +  // lighter gray, example hover color
+            "-fx-text-fill: #111827;" +
+            "-fx-font-size: 14;" +
+            "-fx-font-family: '" + MAIN_FONT + "';" +
+            "-fx-padding: 10 10;" +
+            "-fx-background-radius: 8;" +
+            "-fx-border-color: #E5E7EB;" +
+            "-fx-border-width: 1;" +
+            "-fx-border-radius: 8;" +
+            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 7, 0, 0, 3);"
+        ));
+        btn.setOnMouseExited(e -> btn.setStyle(
+            "-fx-background-color: " + SECONDARY_COLOR + ";" +
+            "-fx-text-fill: #111827;" +
+            "-fx-font-size: 14;" +
+            "-fx-font-family: '" + MAIN_FONT + "';" +
+            "-fx-padding: 10 10;" +
+            "-fx-background-radius: 8;" +
+            "-fx-border-color: #E5E7EB;" +
+            "-fx-border-width: 1;" +
+            "-fx-border-radius: 8;" +
+            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);"
+        ));
+        btn.setMaxWidth(Double.MAX_VALUE);
+        HBox.setHgrow(btn, Priority.ALWAYS);
+        return btn;
+    }
+
+    private void showFalsePositionPane() {
+        outputInputBox.getChildren().clear();
+        currentMethodPane = new FalsePositionPane(outputArea);
+        outputInputBox.getChildren().addAll(currentMethodPane, outputArea);
+    }
+
+    // Implement showNewtonRaphsonPane(), showSecantPane(), showBisectionPane() similarly...
 }
