@@ -100,8 +100,10 @@ public class CramersRulePane extends VBox {
             }
         });
 
-        runButton.setOnMouseEntered(e -> runButton.setStyle("-fx-background-color: #D1D5DB;"));
-        runButton.setOnMouseExited(e -> runButton.setStyle("-fx-background-color: " + MainWindow.SECONDARY_COLOR + ";"));
+        runButton.setOnMouseEntered(e -> runButton.setStyle("-fx-background-color: #D1D5DB;"+
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";"));
+        runButton.setOnMouseExited(e -> runButton.setStyle("-fx-background-color: " + MainWindow.SECONDARY_COLOR + ";"+
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";"));
 
         getChildren().addAll(
             titleLabel,

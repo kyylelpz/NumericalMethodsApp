@@ -96,11 +96,13 @@ public class FalsePositionPane extends VBox {
         });
 
         runButton.setOnMouseEntered(e -> runButton.setStyle(
-            "-fx-background-color: #D1D5DB;" // lighter gray, example hover color
+            "-fx-background-color: #D1D5DB;" +
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";"
         ));
 
         runButton.setOnMouseExited(e -> runButton.setStyle(
-            "-fx-background-color: " + MainWindow.SECONDARY_COLOR + ";"
+            "-fx-background-color: " + MainWindow.SECONDARY_COLOR + ";"+
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";"
         ));
 
         // Add nodes to VBox in the correct order

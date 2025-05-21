@@ -96,10 +96,12 @@ public class NewtonRaphsonPane extends VBox {
         });
 
         runButton.setOnMouseEntered(e -> runButton.setStyle(
-            "-fx-background-color: #D1D5DB;" // lighter gray on hover
+            "-fx-background-color: #D1D5DB;"+
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";"
         ));
         runButton.setOnMouseExited(e -> runButton.setStyle(
-            "-fx-text-fill: " + MainWindow.BACKGROUND_COLOR + "; -fx-background-color: " + MainWindow.SECONDARY_COLOR + ";"
+            "-fx-text-fill: " + MainWindow.BACKGROUND_COLOR + "; -fx-background-color: " + MainWindow.SECONDARY_COLOR + ";"+
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";"
         ));
 
         // Add nodes to VBox in order

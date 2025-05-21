@@ -72,7 +72,7 @@ public class MainWindow extends Application {
         //title.setLineSpacing(0);
 
         // Subtitle
-        Label subtitle = new Label("Precision meets power. Solve numerical method\nequations confidence.");
+        Label subtitle = new Label("Precision meets power. Solve numerical method\nequations with confidence.");
         subtitle.setStyle(
             "-fx-text-fill:rgb(213, 218, 228);" +
             "-fx-font-family: " + MAIN_FONT + ";" +

@@ -104,8 +104,10 @@ public class FixedPointPane extends VBox {
         });
 
         // Optional: add hover style for runButton
-        runButton.setOnMouseEntered(e -> runButton.setStyle("-fx-background-color: #D1D5DB; -fx-text-fill: #111827;"));
-        runButton.setOnMouseExited(e -> runButton.setStyle("-fx-background-color: " + MainWindow.SECONDARY_COLOR + "; -fx-text-fill: " + MainWindow.BACKGROUND_COLOR + ";"));
+        runButton.setOnMouseEntered(e -> runButton.setStyle("-fx-background-color: #D1D5DB; -fx-text-fill: #111827;"+
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";"));
+        runButton.setOnMouseExited(e -> runButton.setStyle("-fx-background-color: " + MainWindow.SECONDARY_COLOR + "; -fx-text-fill: " + MainWindow.BACKGROUND_COLOR + ";"+
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";"));
 
         getChildren().addAll(
             titleLabel,
