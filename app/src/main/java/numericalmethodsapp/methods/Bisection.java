@@ -128,6 +128,9 @@ public class Bisection {
         double fb = Utils.evaluateFunction(expression, b, decimalPlaces);
         double fmp = Utils.evaluateFunction(expression, mp, decimalPlaces);
 
+        sb.append("f(xL) = ").append(substituted1).append(" = ").append(fa).append("\n");
+        sb.append("f(xR) = ").append(substituted2).append(" = ").append(fb).append("\n");
+
         if (Double.isNaN(fa) || Double.isInfinite(fa) ||
             Double.isNaN(fb) || Double.isInfinite(fb)) {
             System.out.println("Invalid function evaluation at interval endpoints (NaN or Infinity). Iteration stopped.");
@@ -137,10 +140,7 @@ public class Bisection {
 
         //CHECK LATER
 
-        sb.append("f(xL) = ").append(substituted1).append(" = ").append(fa).append("\n");
-        sb.append("f(xR) = ").append(substituted2).append(" = ").append(fb).append("\n");
-        
-        if (fa * fb >= 0) {
+        if (fa * fb > 0) {
             System.out.println("f(xL) and f(xR) must have opposite signs.");
             sb.append("f(xL) and f(xR) must have opposite signs.\n");
             return null;
@@ -171,8 +171,8 @@ public class Bisection {
         // PAGHIWALAYIN NALANG THIS
         double check = Math.abs(fmp);
 
-        if (Math.abs(fmp) <= tolerance){ // || Math.abs(mp - a) <= tolerance || Math.abs(mp - b) <= tolerance) {
-            sb.append("| f(xM) | = ").append(" | ").append(fmp).append(" | = ").append(check).append(" is less than or equal to tolerance.\n");
+        if (Math.abs(fmp) <= tolerance){
+            sb.append("| f(xM) | = ").append(check).append(" is less than or equal to tolerance.\n");
             sb.append("Stopping the iteration...\n\n\n");
             return mp;
         }
@@ -193,24 +193,26 @@ public class Bisection {
             return mp;
         }
 
-        sb.append("| f(xM) | = ").append(" | ").append(fmp).append(" | = ").append(check).append(" is greater than tolerance.\n");
-        sb.append("Continuing to next iteration...\n");
+        sb.append("| f(xM) | = ").append(check).append(" is greater than tolerance.\n");
 
-        double nextIteration = Utils.round((fa*fmp), decimalPlaces);
-        double nextIteration2 = Utils.round((fb*fmp), decimalPlaces);
+        double nextIteration = fa*fmp;
+        double nextIteration2 = fb*fmp;
 
         if (nextIteration < 0) {
             sb.append("f(xL)*f(xM) = ").append(fa).append(" * ").append(fmp).append("\n\t= ").append(nextIteration).append(" is less than 0.\n");
-            sb.append("Setting xR = xM\n\n");
+            sb.append("Setting xR = xM\n");
+            sb.append("Continuing to next iteration...\n\n");
             
             return bisection(expression, a, mp, tolerance, decimalPlaces, iteration + 1, iterations, sb);
         } else {
             sb.append("f(xR)*f(xM) = ").append(fb).append(" * ").append(fmp).append("\n\t= ").append(nextIteration2).append(" is less than 0.\n");
-            sb.append("Setting xL = xM\n\n");
+            sb.append("Setting xL = xM\n");
+            sb.append("Continuing to next iteration...\n\n");
 
             return bisection(expression, mp, b, tolerance, decimalPlaces, iteration + 1, iterations, sb);
         }
     }
+    
 
     public static String solve(String expression, double a, double b, double tolerance, StringBuilder sb) {
         int decimalPlaces = Utils.getDecimalPlacesFromTolerance(tolerance);
@@ -245,7 +247,7 @@ public class Bisection {
         }
 
         if (solution == null) {
-            sb.append("\nMethod diverged or stopped due to a mathematical error. No approximate root found.\n");
+            sb.append("Method diverged or stopped due to a mathematical error. No approximate root found.\n");
         } else {
             sb.append("The approximate solution is: ").append(solution).append("\n");
         }

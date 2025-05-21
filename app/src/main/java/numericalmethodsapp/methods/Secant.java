@@ -37,16 +37,14 @@ public class Secant {
 
         if (Double.isNaN(fa) || Double.isInfinite(fa) ||
             Double.isNaN(fb) || Double.isInfinite(fb)) {
-            String error = "Invalid function evaluation at initial points (NaN or Infinity). Iteration stopped.";
+            String error = "Invalid function evaluation at initial points (NaN or Infinity). Iteration stopped.\n";
             System.out.println(error);
-            sb.append(error).append("\n");
             return null;
         }
 
         if (Math.abs(fb - fa) < 1e-10) {
-            String error = "Possible division by zero: f(b) and f(a) are too close. Iteration stopped.";
+            String error = "Possible division by zero: f(b) and f(a) are too close. Iteration stopped.\n";
             System.out.println(error);
-            sb.append(error).append("\n");
             return null;
         }
 

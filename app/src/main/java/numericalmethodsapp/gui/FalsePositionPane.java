@@ -55,6 +55,7 @@ public class FalsePositionPane extends VBox {
             String tolStr = tolInput.getText().trim();
             String aStr = aInput.getText().trim();
             String bStr = bInput.getText().trim();
+            StringBuilder sb = new StringBuilder();
 
             // Validate f(x)
             String symjaExpr = Utils.convertExprToSymjaCompatible(fx);
@@ -87,7 +88,7 @@ public class FalsePositionPane extends VBox {
             }
 
             try {
-                String result = FalsePosition.solve(fx, a, b, tol);
+                String result = FalsePosition.solve(fx, a, b, tol, sb);
                 outputArea.setText(result);
             } catch (Exception ex) {
                 outputArea.setText("An error occurred during solving: " + ex.getMessage());

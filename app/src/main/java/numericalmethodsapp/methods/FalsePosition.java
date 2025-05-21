@@ -113,9 +113,18 @@ public class FalsePosition {
             return null;
         }
 
+        sb.append("Iteration #").append(iteration).append(":\n");
+        function = function.replaceAll("(?<=[0-9])x", "*x");
+
+        String substituted1 = function.replaceAll("\\bx\\b", Double.toString(a));
+        String substituted2 = function.replaceAll("\\bx\\b", Double.toString(b));
+
         //Evaluate functions
         double fa = Utils.evaluateFunction(function, a, decimalPlaces);
         double fb = Utils.evaluateFunction(function, b, decimalPlaces);
+
+        sb.append("f(xL) = ").append(substituted1).append(" = ").append(fa).append("\n");
+        sb.append("f(xR) = ").append(substituted2).append(" = ").append(fb).append("\n");
 
         if (Double.isNaN(fa) || Double.isInfinite(fa) ||
             Double.isNaN(fb) || Double.isInfinite(fb)) {
@@ -125,15 +134,30 @@ public class FalsePosition {
         }
         
         if (fa * fb >= 0) {
-            System.out.println("f(a) and f(b) must have opposite signs.");
-            sb.append("f(a) and f(b) must have opposite signs.");
+            System.out.println("f(xL) and f(xR) must have opposite signs.");
+            sb.append("f(xL) and f(xR) must have opposite signs.\n");
+            return null;
         }
 
+        if (Math.abs(fb - fa) < 1e-10) {
+            String error = "Possible division by zero: f(xR) and f(xL) are too close. Iteration stopped.";
+            System.out.println(error);
+            sb.append(error).append("\n");
+            return null;
+        }
+        
         // Compute c using Regula Falsi formula
-        double c = a + (((b-a)*(-fa))/(fb-fa));
+        double i = (((b-a)*(-fa))/(fb-fa));
+        i = Utils.round(i, decimalPlaces);
+        double c = a + i;
         c = Utils.round(c, decimalPlaces);
 
+        String substituted3 = function.replaceAll("\\bx\\b", Double.toString(c));
         double fc = Utils.evaluateFunction(function, c, decimalPlaces);
+
+        sb.append("xM = xL + I = ").append(a).append(" + ").append(i).append(" = ").append(c).append("\n");
+        sb.append("f(xM) = ").append(substituted3).append(" = ").append(fc).append("\n");
+        
 
         if (Double.isNaN(c) || Double.isInfinite(c)) {
             System.out.println("Invalid function evaluation at x(n+1) (NaN or Infinity). Iteration stopped.");
@@ -147,8 +171,6 @@ public class FalsePosition {
             return null;
         }
 
-        //System.out.printf("Iteration %d: a=%.6f, b=%.6f, c=%.6f, f(c)=%.6f%n", iteration, a, b, c, fc);
-
         LinkedList<Double> row = new LinkedList<>();
         row.offer(a);
         row.offer(b);
@@ -157,26 +179,55 @@ public class FalsePosition {
 
         iterations.add(row);
 
-        // Base case: If the root is found or maximum iterations reached
-        if (Math.abs(fc) <= tolerance || c == a || c == b) { // check if kailangan pa ung Math.abs(c - a) <= tolerance || Math.abs(c - b) <= tolerance
+        if (Math.abs(fc) <= tolerance){ //|| c == a || c == b) { // check if kailangan pa ung Math.abs(c - a) <= tolerance || Math.abs(c - b) <= tolerance
+            sb.append("| f(xM) | = | ").append(Math.abs(fc)).append(" is less than or equal to tolerance.\n");
+            sb.append("Stopping the iteration...\n\n\n");
             return c;
         }
-        // 
+        
+        if (c == a){
+            sb.append("xM == xL (").append(c).append(" == ").append(a).append(")\n");
+            sb.append("Stopping the iteration...\n\n\n");
+            return c;
+        }
 
-        // Recursive step
+        if (c == b){
+            sb.append("xM == xR (").append(c).append(" == ").append(b).append(")\n");
+            sb.append("Stopping the iteration...\n\n\n");
+            return c;
+        }
+
+        sb.append("| f(xM) | = ").append(Math.abs(fc)).append(" is greater than tolerance.\n");
+
+        double nextIteration = Utils.round((fa*fc), decimalPlaces);
+        double nextIteration2 = Utils.round((fb*fc), decimalPlaces);
+
         if (fa * fc < 0) {
+            sb.append("f(xL)*f(xM) = ").append(fa).append(" * ").append(fc).append("\n\t= ").append(nextIteration).append(" is less than 0.\n");
+            sb.append("Setting xR = xM\n");
+            sb.append("Continuing to next iteration...\n\n");
+
             return falsePosition(function, a, c, tolerance, decimalPlaces, iteration + 1, iterations, sb);
         } else {
+            sb.append("f(xR)*f(xM) = ").append(fb).append(" * ").append(fc).append("\n\t= ").append(nextIteration2).append(" is less than 0.\n");
+            sb.append("Setting xL = xM\n");
+            sb.append("Continuing to next iteration...\n\n");
+
             return falsePosition(function, c, b, tolerance, decimalPlaces, iteration + 1, iterations, sb);
         }
 
     }
 
-    public static String solve(String fx, double a, double b, double tolerance) {
-        StringBuilder sb = new StringBuilder();
-
+    public static String solve(String fx, double a, double b, double tolerance, StringBuilder sb) {
         int decimalPlaces = Utils.getDecimalPlacesFromTolerance(tolerance);
         fx = Utils.convertExprToExp4jCompatible(fx);
+
+        sb.append("f(x) = ").append(fx).append("\n");
+        sb.append("xL = ").append(a).append("\n");
+        sb.append("xR = ").append(b).append("\n\n");
+        sb.append("I (interpolation term) = [(xR-XL)(-f(xL)]/[f(xR)-f(xL)] will be evaluated without detailed solution.").append("\n\n");
+
+        sb.append("Start of False Position or Regula-Falsi Method:\n\n");
 
         LinkedList<LinkedList<Double>> iterations = new LinkedList<>();
         try {
