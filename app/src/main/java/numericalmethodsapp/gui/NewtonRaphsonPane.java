@@ -20,7 +20,8 @@ public class NewtonRaphsonPane extends VBox {
 
         // Title label
         Label titleLabel = new Label("Newton-Raphson Method");
-        titleLabel.setStyle("-fx-font-size: 30; -fx-font-weight: bold; -fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
+        titleLabel.setStyle("-fx-font-size: 30; -fx-font-weight: bold; -fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
 
         // Output area first
         outputArea.setEditable(false);
@@ -28,19 +29,23 @@ public class NewtonRaphsonPane extends VBox {
 
         // Labels and inputs
         Label fxLabel = new Label("Enter f(x):");
-        fxLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
+        fxLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
         TextField fxInput = new TextField();
 
         Label tolLabel = new Label("Tolerance (e.g., 0.001):");
-        tolLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
+        tolLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
         TextField tolInput = new TextField();
 
         Label guessLabel = new Label("Initial guess:");
-        guessLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
+        guessLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
         TextField guessInput = new TextField();
 
         Button runButton = new Button("Calculate");
-        runButton.setStyle("-fx-text-fill: " + MainWindow.BACKGROUND_COLOR + "; -fx-background-color: " + MainWindow.SECONDARY_COLOR + ";");
+        runButton.setStyle("-fx-text-fill: " + MainWindow.BACKGROUND_COLOR + "; -fx-background-color: " + MainWindow.SECONDARY_COLOR + ";"+
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
 
         runButton.setOnAction(e -> {
             String fx = fxInput.getText().trim();

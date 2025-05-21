@@ -25,23 +25,28 @@ public class SecantPane extends VBox {
 
         // Labels and inputs
         Label fxLabel = new Label("Enter f(x):");
-        fxLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
+        fxLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
         TextField fxInput = new TextField();
 
         Label tolLabel = new Label("Tolerance (e.g., 0.001):");
-        tolLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
+        tolLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
         TextField tolInput = new TextField();
 
         Label x0Label = new Label("Enter x0:");
-        x0Label.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
+        x0Label.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
         TextField x0Input = new TextField();
 
         Label x1Label = new Label("Enter x1:");
-        x1Label.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
+        x1Label.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
         TextField x1Input = new TextField();
 
         Button runButton = new Button("Calculate");
-        runButton.setStyle("-fx-text-fill: " + MainWindow.BACKGROUND_COLOR + "; -fx-background-color: " + MainWindow.SECONDARY_COLOR + ";");
+        runButton.setStyle("-fx-text-fill: " + MainWindow.BACKGROUND_COLOR + "; -fx-background-color: " + MainWindow.SECONDARY_COLOR + ";"+
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
 
         runButton.setOnAction(e -> {
             String fx = fxInput.getText().trim();

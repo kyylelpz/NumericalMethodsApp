@@ -17,7 +17,8 @@ public class FalsePositionPane extends VBox {
 
         // Title label
         Label titleLabel = new Label("False Position");
-        titleLabel.setStyle("-fx-font-size: 30; -fx-font-weight: bold; -fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
+        titleLabel.setStyle("-fx-font-size: 30; -fx-font-weight: bold; -fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
 
         // Output area first
         outputArea.setEditable(false);
@@ -25,24 +26,29 @@ public class FalsePositionPane extends VBox {
 
         // Labels for inputs
         Label fxLabel = new Label("Enter f(x):");
-        fxLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
+        fxLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
 
         TextField fxInput = new TextField();
 
         Label tolLabel = new Label("Tolerance (e.g., 0.001):");
-        tolLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
+        tolLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
         TextField tolInput = new TextField();
 
         Label aLabel = new Label("Enter a (x0):");
-        aLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
+        aLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
         TextField aInput = new TextField();
 
         Label bLabel = new Label("Enter b (x1):");
-        bLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
+        bLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
         TextField bInput = new TextField();
 
         Button runButton = new Button("Calculate");
-        runButton.setStyle("-fx-text-fill: " + MainWindow.BACKGROUND_COLOR + ";");
+        runButton.setStyle("-fx-text-fill: " + MainWindow.BACKGROUND_COLOR + ";"+
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
 
         runButton.setOnAction(e -> {
             String fx = fxInput.getText().trim();

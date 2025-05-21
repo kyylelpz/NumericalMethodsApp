@@ -16,31 +16,37 @@ public class CramersRulePane extends VBox {
 
         // Title label
         Label titleLabel = new Label("Cramer's Rule");
-        titleLabel.setStyle("-fx-font-size: 30; -fx-font-weight: bold; -fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
+        titleLabel.setStyle("-fx-font-size: 30; -fx-font-weight: bold; -fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
 
         outputArea.setEditable(false);
         outputArea.setPrefHeight(300);
 
         Label numEqLabel = new Label("Number of Equations:");
-        numEqLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
+        numEqLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
 
         ComboBox<Integer> numEqComboBox = new ComboBox<>();
         numEqComboBox.getItems().addAll(2, 3);
         numEqComboBox.setValue(2); // default value
+        numEqComboBox.setStyle("-fx-font-family: " + MainWindow.MAIN_FONT + ";");
 
         // Create TextFields for 3 equations max
         Label eq1Label = new Label("Equation 1:");
-        eq1Label.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
+        eq1Label.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
         TextField eq1Input = new TextField();
         //eq1Input.setPromptText("Equation 1 (e.g., 3x + 2y = 5)");
 
         Label eq2Label = new Label("Equation 2:");
-        eq2Label.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
+        eq2Label.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
         TextField eq2Input = new TextField();
         //eq2Input.setPromptText("Equation 2 (e.g., x - y = 1)");
 
         Label eq3Label = new Label("Equation 3:");
-        eq3Label.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
+        eq3Label.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
         TextField eq3Input = new TextField();
         //eq3Input.setPromptText("Equation 3 (e.g., x + y + z = 7)");
 
@@ -64,7 +70,8 @@ public class CramersRulePane extends VBox {
         });
 
         Button runButton = new Button("Calculate");
-        runButton.setStyle("-fx-text-fill: " + MainWindow.BACKGROUND_COLOR + ";");
+        runButton.setStyle("-fx-text-fill: " + MainWindow.BACKGROUND_COLOR + ";"+
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
 
         runButton.setOnAction(e -> {
             int numEq = numEqComboBox.getValue();

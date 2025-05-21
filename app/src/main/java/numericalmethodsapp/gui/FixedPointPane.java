@@ -18,28 +18,34 @@ public class FixedPointPane extends VBox {
         setPadding(new Insets(20));
 
         Label titleLabel = new Label("Fixed Point Iteration");
-        titleLabel.setStyle("-fx-font-size: 30; -fx-font-weight: bold; -fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
+        titleLabel.setStyle("-fx-font-size: 30; -fx-font-weight: bold; -fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
 
         outputArea.setEditable(false);
         outputArea.setPrefHeight(300);
 
         Label gxLabel = new Label("Enter g(x):");
-        gxLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
+        gxLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
 
         TextField gxInput = new TextField();
 
         Label tolLabel = new Label("Tolerance (e.g., 0.001):");
-        tolLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
+        tolLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
 
         TextField tolInput = new TextField();
 
         Label guessLabel = new Label("Initial guess:");
-        guessLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
+        guessLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
 
         TextField guessInput = new TextField();
 
         Button runButton = new Button("Calculate");
-        runButton.setStyle("-fx-background-color: " + MainWindow.SECONDARY_COLOR + "; -fx-text-fill: " + MainWindow.BACKGROUND_COLOR + ";");
+        runButton.setStyle("-fx-background-color: " + MainWindow.SECONDARY_COLOR + ";"+
+            "-fx-text-fill: " + MainWindow.BACKGROUND_COLOR + ";"+
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
 
         runButton.setOnAction(e -> {
             String gx = gxInput.getText().trim();

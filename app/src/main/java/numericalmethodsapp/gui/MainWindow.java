@@ -31,12 +31,14 @@ public class MainWindow extends Application {
 
     public static TextArea outputArea = new TextArea();
     public VBox outputInputBox = new VBox();
+    
 
     // Current method pane reference so you can clear/replace later
     private VBox currentMethodPane;
 
     @Override
     public void start(Stage primaryStage) {
+
         primaryStage.setTitle("Numerical Methods");
         primaryStage.setResizable(false);
 
@@ -73,7 +75,7 @@ public class MainWindow extends Application {
         Label subtitle = new Label("Precision meets power. Solve numerical method\nequations confidence.");
         subtitle.setStyle(
             "-fx-text-fill:rgb(213, 218, 228);" +
-            "-fx-font-family: '" + MAIN_FONT + "';" +
+            "-fx-font-family: " + MAIN_FONT + ";" +
             "-fx-font-size: 16;"
         );
         subtitle.setAlignment(Pos.CENTER);
