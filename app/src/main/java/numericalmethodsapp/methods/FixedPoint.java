@@ -33,7 +33,7 @@ public class FixedPoint {
 
         iterations.offer(nextGuess);
 
-        double check = Utils.round(Math.abs(nextGuess - currGuess), decimalPlaces);
+        double check = Math.abs(Utils.round(Math.abs(nextGuess - currGuess), decimalPlaces));
 
         if (check <= tolerance) {
             sb.append("| x(n+1) - x(n) | = ").append(" | (").append(nextGuess).append(" - ").append(currGuess).append(") | = ").append(check).append(" is less than or equal to tolerance.\n");

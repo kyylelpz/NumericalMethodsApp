@@ -4,12 +4,7 @@
  */
 
 package numericalmethodsapp.methods;
-import java.util.InputMismatchException;
 import java.util.LinkedList;
-import java.util.Scanner;
-
-import org.matheclipse.core.eval.ExprEvaluator;
-import org.matheclipse.core.interfaces.IExpr;
 
 import numericalmethodsapp.utils.Utils;
 /**
@@ -17,89 +12,6 @@ import numericalmethodsapp.utils.Utils;
  * @author lopez
  */
 public class NewtonRaphson {
-    public static void run (Scanner input){
-        input.nextLine();
-
-        //Enter f(x)
-        String expression = "";
-        while (true) {
-            System.out.print("Enter f(x): ");
-            expression = input.nextLine();
-            expression = Utils.convertExprToSymjaCompatible(expression);
-
-            if (Utils.isValidSymjaExpression(expression)) {
-                break;
-            } else {
-                System.out.println("Invalid mathematical expression. Please check your syntax (e.g., unmatched parentheses, invalid functions). Try again.");
-            }
-        }
-
-        expression = Utils.convertExprToSymjaCompatible(expression);
-
-        //Enter tolerance
-        double tolerance = 0.001;
-        while (true) {
-            try {
-                System.out.print("Enter tolerance: ");
-                tolerance = input.nextDouble();
-                if (tolerance <= 0) throw new IllegalArgumentException("Tolerance must be positive.");
-                break;
-            } catch (InputMismatchException e) {
-                System.out.println("Invalid input. Please enter a valid decimal number.");
-                input.nextLine();  // Clear invalid input
-            } catch (IllegalArgumentException e) {
-                System.out.println(e.getMessage());
-                input.nextLine();
-            }
-        }
-
-        int decimalPlaces = Utils.getDecimalPlacesFromTolerance(tolerance);
-
-
-        //Enter initial guess
-        double iGuess = 0.0;
-        while (true) {
-            try {
-                System.out.print("Enter initial guess: ");
-                iGuess = input.nextDouble();
-                Math.abs(Utils.evaluateFunction(expression, iGuess, decimalPlaces));
-                break;
-            } catch (InputMismatchException e) {
-                System.out.println("Invalid input. Please enter a valid decimal number.");
-                input.nextLine();  // Clear invalid input
-            } catch (Exception e) {
-                System.out.println("Evaluation error: " + e.getMessage());
-                input.nextLine();
-            }
-        }
-
-
-        // Compute the derivative
-        ExprEvaluator util = new ExprEvaluator();
-        IExpr derivative = util.evaluate("D(" + expression + ", x)");
-        String derivativeStr = Utils.convertExprToExp4jCompatible(derivative.toString());
-        System.out.println("f'(x): " + derivativeStr);
-
-        // Start iteration
-        LinkedList<Double> iterations = new LinkedList<>();
-        Double solution = newtonRaphson(expression, derivativeStr, iGuess, tolerance, decimalPlaces, 1, iterations, null);
-
-        // Print results
-        System.out.println("\nIterations:");
-        System.out.println();
-
-        for (int i = 0; i < iterations.size()-1; i++) {
-            System.out.println("Iteration #" + (i + 1) + ":\tx(n) = " + iterations.get(i) + "\tx(n+1) = " + iterations.get(i+1));
-        }
-
-        System.out.println();
-        
-        if (solution == null) {
-            System.out.println("Method diverged. No approximate solution found.");
-        } else {
-            System.out.printf("The approximate solution is: " + solution);
-        }
-    }
 
     public static Double newtonRaphson (String expression, String derivativeStr, double currGuess, double tolerance,
                                         int decimalPlaces, int iteration, LinkedList<Double> iterations, StringBuilder sb){
@@ -146,7 +58,7 @@ public class NewtonRaphson {
 
         iterations.add(nextGuess);
 
-        double check = Utils.round(Math.abs(nextGuess - currGuess), decimalPlaces);
+        double check = Math.abs(Utils.round(Math.abs(nextGuess - currGuess), decimalPlaces));
 
         if (Math.abs(nextGuess-currGuess) <= tolerance){
             sb.append("| x(n+1) - x(n) | = ").append(" | (").append(nextGuess).append(" - ").append(currGuess).append(") | = ").append(check).append(" is less than or equal to tolerance.\n");
@@ -164,7 +76,8 @@ public class NewtonRaphson {
         int decimalPlaces = Utils.getDecimalPlacesFromTolerance(tolerance);
 
         sb.append("f(x) = ").append(expression).append("\n");
-        sb.append("f'(x) = ").append(derivativeStr).append("\n\n");
+        sb.append("f'(x) = ").append(derivativeStr).append("\n");
+        sb.append("x(n) = ").append(initialGuess).append("\n\n");
         
         LinkedList<Double> iterations = new LinkedList<>();
 

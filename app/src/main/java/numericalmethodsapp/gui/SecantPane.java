@@ -53,6 +53,7 @@ public class SecantPane extends VBox {
             String tolStr = tolInput.getText().trim();
             String x0Str = x0Input.getText().trim();
             String x1Str = x1Input.getText().trim();
+            StringBuilder sb = new StringBuilder();
 
             // Validate f(x)
             String symjaExpr = Utils.convertExprToSymjaCompatible(fx);
@@ -60,6 +61,8 @@ public class SecantPane extends VBox {
                 outputArea.setText("Invalid f(x) expression syntax. Please check parentheses and functions.");
                 return;
             }
+
+            String exp4jExpr = Utils.convertExprToExp4jCompatible(symjaExpr);
 
             // Validate tolerance
             double tolerance;
@@ -78,7 +81,7 @@ public class SecantPane extends VBox {
             double x0;
             try {
                 x0 = Double.parseDouble(x0Str);
-                Math.abs(Utils.evaluateFunction(symjaExpr, x0, Utils.getDecimalPlacesFromTolerance(tolerance)));
+                Math.abs(Utils.evaluateFunction(exp4jExpr, x0, Utils.getDecimalPlacesFromTolerance(tolerance)));
             } catch (NumberFormatException ex) {
                 outputArea.setText("x0 must be a valid number.");
                 return;
@@ -91,7 +94,7 @@ public class SecantPane extends VBox {
             double x1;
             try {
                 x1 = Double.parseDouble(x1Str);
-                Math.abs(Utils.evaluateFunction(symjaExpr, x1, Utils.getDecimalPlacesFromTolerance(tolerance)));
+                Math.abs(Utils.evaluateFunction(exp4jExpr, x1, Utils.getDecimalPlacesFromTolerance(tolerance)));
             } catch (NumberFormatException ex) {
                 outputArea.setText("x1 must be a valid number.");
                 return;
@@ -102,7 +105,7 @@ public class SecantPane extends VBox {
 
             // Solve
             try {
-                String result = Secant.solve(symjaExpr, tolerance, x0, x1);
+                String result = Secant.solve(exp4jExpr, tolerance, x0, x1, sb);
                 outputArea.setText(result);
             } catch (Exception ex) {
                 outputArea.setText("Error during solving: " + ex.getMessage());
