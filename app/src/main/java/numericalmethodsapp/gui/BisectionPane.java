@@ -55,6 +55,7 @@ public class BisectionPane extends VBox {
             String tolStr = tolInput.getText().trim();
             String aStr = aInput.getText().trim();
             String bStr = bInput.getText().trim();
+            StringBuilder sb = new StringBuilder();
 
             // Validate f(x)
             String symjaExpr = Utils.convertExprToSymjaCompatible(fx);
@@ -86,24 +87,9 @@ public class BisectionPane extends VBox {
                 return;
             }
 
-            // Check f(a)*f(b) < 0
-            try {
-                int decimalPlaces = Utils.getDecimalPlacesFromTolerance(tol);
-                String exp4jExpr = Utils.convertExprToExp4jCompatible(symjaExpr);
-                double fa = Utils.evaluateFunction(exp4jExpr, aVal, decimalPlaces);
-                double fb = Utils.evaluateFunction(exp4jExpr, bVal, decimalPlaces);
-                if (fa * fb >= 0) {
-                    outputArea.setText("f(a) and f(b) must have opposite signs. Please enter valid initial guesses.");
-                    return;
-                }
-            } catch (Exception ex) {
-                outputArea.setText("Error evaluating function at initial guesses: " + ex.getMessage());
-                return;
-            }
-
             // Run solver
             try {
-                String result = Bisection.solve(fx, aVal, bVal, tol);
+                String result = Bisection.solve(fx, aVal, bVal, tol, sb);
                 outputArea.setText(result);
             } catch (Exception ex) {
                 outputArea.setText("An error occurred during solving: " + ex.getMessage());

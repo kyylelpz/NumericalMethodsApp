@@ -91,7 +91,7 @@ public class NewtonRaphson {
         Double result = newtonRaphson(expression, derivativeStr, initialGuess, tolerance, decimalPlaces, 1, iterations, sb);
 
         if (result == null) {
-            sb.append("Method diverged or encountered an error. No approximate solution found.\n");
+            sb.append("Method diverged or stopped due to a mathematical error. No approximate root found.\n");
         } else {
             sb.append("Summary of Iterations:\n\n");
             for (int i = 0; i < iterations.size() - 1; i++) {

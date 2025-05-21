@@ -109,12 +109,19 @@ public class Bisection {
                                    int iteration, ArrayList<ArrayList<Double>> iterations, StringBuilder sb) {
         if (iteration > 1000) {
             System.out.println("Method did not converge after 1000 iterations.");
-            sb.append("Method did not converge after 1000 iterations.");
+            sb.append("Method did not converge after 1000 iterations.\n");
             return null;
         }
+
+        sb.append("Iteration #").append(iteration).append("\n");
+        expression = expression.replaceAll("(?<=[0-9])x", "*x");
         
         double mp = (a + b) / 2;
         mp = Utils.round(mp, decimalPlaces);
+
+        String substituted1 = expression.replaceAll("\\bx\\b", Double.toString(a));
+        String substituted2 = expression.replaceAll("\\bx\\b", Double.toString(b));
+        String substituted3 = expression.replaceAll("\\bx\\b", Double.toString(mp));
         
         //Evaluate functions
         double fa = Utils.evaluateFunction(expression, a, decimalPlaces);
@@ -124,27 +131,32 @@ public class Bisection {
         if (Double.isNaN(fa) || Double.isInfinite(fa) ||
             Double.isNaN(fb) || Double.isInfinite(fb)) {
             System.out.println("Invalid function evaluation at interval endpoints (NaN or Infinity). Iteration stopped.");
-            sb.append("Invalid function evaluation at interval endpoints (NaN or Infinity). Iteration stopped.");
+            sb.append("Invalid function evaluation at interval endpoints (NaN or Infinity). Iteration stopped.\n");
             return null;
         }
 
         //CHECK LATER
+
+        sb.append("f(xL) = ").append(substituted1).append(" = ").append(fa).append("\n");
+        sb.append("f(xR) = ").append(substituted2).append(" = ").append(fb).append("\n");
         
         if (fa * fb >= 0) {
-            System.out.println("f(a) and f(b) must have opposite signs.");
-            sb.append("f(a) and f(b) must have opposite signs.");
+            System.out.println("f(xL) and f(xR) must have opposite signs.");
+            sb.append("f(xL) and f(xR) must have opposite signs.\n");
             return null;
         }
 
+        sb.append("f(xM) = ").append(substituted3).append(" = ").append(fmp).append("\n");
+
         if (Double.isNaN(fmp) || Double.isInfinite(fmp)) {
             System.out.println("Invalid function evaluation at midpoint (NaN or Infinity). Iteration stopped.");
-            sb.append("Invalid function evaluation at midpoint (NaN or Infinity). Iteration stopped.");
+            sb.append("Invalid function evaluation at midpoint (NaN or Infinity). Iteration stopped.\n");
             return null;
         }
 
         if (Math.abs(mp) > 1e10) {
             System.out.println("Divergence detected due to very large midpoint value. Iteration stopped.");
-            sb.append("Divergence detected due to very large midpoint value. Iteration stopped.");
+            sb.append("Divergence detected due to very large midpoint value. Iteration stopped.\n");
             return null;
         }
 
@@ -156,52 +168,89 @@ public class Bisection {
 
         iterations.add(row);
 
-        // Base case: If the root is found or maximum iterations reached
-        if (Math.abs(fmp) <= tolerance || Math.abs(mp - a) <= tolerance || Math.abs(mp - b) <= tolerance) {
+        // PAGHIWALAYIN NALANG THIS
+        double check = Math.abs(fmp);
+
+        if (Math.abs(fmp) <= tolerance){ // || Math.abs(mp - a) <= tolerance || Math.abs(mp - b) <= tolerance) {
+            sb.append("| f(xM) | = ").append(" | ").append(fmp).append(" | = ").append(check).append(" is less than or equal to tolerance.\n");
+            sb.append("Stopping the iteration...\n\n\n");
             return mp;
         }
 
-        // Recursive step
-        if (fa * fmp < 0) {
+        double check1 = Math.abs(mp - a);
+
+        if (Math.abs(mp - a) <= tolerance){
+            sb.append("| xM - xL | = ").append(" | (").append(mp).append(" - ").append(a).append(") | = ").append(check1).append(" is less than or equal to tolerance.\n");
+            sb.append("Stopping the iteration...\n\n\n");
+            return mp;
+        }
+
+        double check2 = Math.abs(mp - b);
+
+        if (Math.abs(mp - b) <= tolerance){
+            sb.append("| xM - xR | = ").append(" | (").append(mp).append(" - ").append(b).append(") | = ").append(check2).append(" is less than or equal to tolerance.\n");
+            sb.append("Stopping the iteration...\n\n\n");
+            return mp;
+        }
+
+        sb.append("| f(xM) | = ").append(" | ").append(fmp).append(" | = ").append(check).append(" is greater than tolerance.\n");
+        sb.append("Continuing to next iteration...\n");
+
+        double nextIteration = Utils.round((fa*fmp), decimalPlaces);
+        double nextIteration2 = Utils.round((fb*fmp), decimalPlaces);
+
+        if (nextIteration < 0) {
+            sb.append("f(xL)*f(xM) = ").append(fa).append(" * ").append(fmp).append("\n\t= ").append(nextIteration).append(" is less than 0.\n");
+            sb.append("Setting xR = xM\n\n");
+            
             return bisection(expression, a, mp, tolerance, decimalPlaces, iteration + 1, iterations, sb);
         } else {
+            sb.append("f(xR)*f(xM) = ").append(fb).append(" * ").append(fmp).append("\n\t= ").append(nextIteration2).append(" is less than 0.\n");
+            sb.append("Setting xL = xM\n\n");
+
             return bisection(expression, mp, b, tolerance, decimalPlaces, iteration + 1, iterations, sb);
         }
     }
 
-    public static String solve(String expression, double a, double b, double tolerance) {
-        StringBuilder output = new StringBuilder();
+    public static String solve(String expression, double a, double b, double tolerance, StringBuilder sb) {
         int decimalPlaces = Utils.getDecimalPlacesFromTolerance(tolerance);
 
         expression = Utils.convertExprToExp4jCompatible(expression);
 
+        sb.append("f(x) = ").append(expression).append("\n");
+        sb.append("x(L) = ").append(a).append("\n");
+        sb.append("x(R) = ").append(b).append("\n\n");
+
         ArrayList<ArrayList<Double>> iterations = new ArrayList<>();
+
+        sb.append("Start of Bisection Method:\n\n");
 
         Double solution;
         try {
-            solution = bisection(expression, a, b, tolerance, decimalPlaces, 1, iterations, output);
+            solution = bisection(expression, a, b, tolerance, decimalPlaces, 1, iterations, sb);
         } catch (IllegalArgumentException e) {
-            output.append("Error: ").append(e.getMessage()).append("\n");
-            return output.toString();
+            sb.append("Error: ").append(e.getMessage()).append("\n");
+            return sb.toString();
         }
 
         if (!iterations.isEmpty()) {
-            output.append("Iterations:\n\n");
+            sb.append("Summary of Iterations:\n\n");
             for (int i = 0; i < iterations.size(); i++) {
                 ArrayList<Double> row = iterations.get(i);
-                output.append(String.format("Iteration #%d: a = %.8f, b = %.8f, mp = %.8f, f(mp) = %.8f\n",
-                        i + 1, row.get(0), row.get(1), row.get(2), row.get(3)));
+                String format = String.format("Iteration #%%d:\txL = %%.%df\txR = %%.%df\txM = %%.%df\t f(xM) =  %%.%df\n",
+                              decimalPlaces, decimalPlaces, decimalPlaces, decimalPlaces, decimalPlaces);
+                sb.append(String.format(format, i + 1, row.get(0), row.get(1), row.get(2), row.get(3)));
             }
-            output.append("\n");
+            sb.append("\n");
         }
 
         if (solution == null) {
-            output.append("Method diverged. No approximate solution found.\n");
+            sb.append("\nMethod diverged or stopped due to a mathematical error. No approximate root found.\n");
         } else {
-            output.append("The approximate solution is: ").append(solution).append("\n");
+            sb.append("The approximate solution is: ").append(solution).append("\n");
         }
 
-        return output.toString();
+        return sb.toString();
     }
 
 }
