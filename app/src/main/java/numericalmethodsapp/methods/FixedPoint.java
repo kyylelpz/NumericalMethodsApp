@@ -1,7 +1,8 @@
 package numericalmethodsapp.methods;
 
-import java.util.ArrayList;
 import java.util.InputMismatchException;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Scanner;
 
 import org.matheclipse.core.eval.ExprEvaluator;
@@ -84,7 +85,7 @@ public class FixedPoint {
 
         //Start iteration
         gofx = Utils.convertExprToExp4jCompatible(gofx);
-        ArrayList<Double> iterations = new ArrayList<>();
+        Queue<Double> iterations = new LinkedList<>();
         Double solution = fixedPoint(gofx, iGuess, tolerance, decimalPlaces, 1, iterations, null);
 
         // Print results
@@ -92,7 +93,7 @@ public class FixedPoint {
         System.out.println();
 
         for (int i = 0; i < iterations.size(); i++) {
-            System.out.println("Iteration #" +  (i + 1) + ":\t" + "x = " + iterations.get(i));
+            System.out.println("Iteration #" +  (i + 1) + ":\t" + "x = " + iterations.poll());
         }
 
         System.out.println();
@@ -104,43 +105,69 @@ public class FixedPoint {
 }
     }
 
-    public static Double fixedPoint (String gofx, double currGuess, double tolerance, int decimalPlaces, int iteration, ArrayList<Double> iterations, StringBuilder sb){
+    public static Double fixedPoint (String gofx, double currGuess, double tolerance, int decimalPlaces, int iteration, Queue<Double> iterations, StringBuilder sb){
         if (iteration > 1000) {
             System.out.println("Method did not converge after 1000 iterations.");
-            sb.append("Method did not converge after 1000 iterations.");
+            sb.append("Method did not converge after 1000 iterations.\n");
             return null;
         }
-        
+
+        gofx = gofx.replaceAll("(?<=[0-9])x", "*x"); // turns 2x into 2*x
+        String substituted = gofx.replaceAll("\\bx\\b", Double.toString(currGuess));
         double nextGuess = Utils.evaluateFunction(gofx, currGuess, decimalPlaces);
 
         if (Double.isNaN(nextGuess) || Double.isInfinite(nextGuess) || Math.abs(nextGuess) > 1e10) {
             System.out.println("Divergence detected. Iteration stopped.");
-            sb.append("Divergence detected. Iteration stopped.");
+            sb.append("Divergence detected. Iteration stopped.\n");
             return null;
         }
 
-        iterations.add(nextGuess);
+        iterations.offer(nextGuess);
+        sb.append("Iteration #").append(iteration).append(": \n");
+        sb.append("x(n+1) = ").append(substituted).append(" = ").append(nextGuess).append("\n");
 
-        if (Math.abs(nextGuess - currGuess) <= tolerance) {
+        double check = Utils.round(Math.abs(nextGuess - currGuess), decimalPlaces);
+
+        if (check <= tolerance) {
+            sb.append("| x(n+1) - x(n) | = ").append(" | (").append(nextGuess).append(" - ").append(currGuess).append(") | = ").append(check).append(" is less than or equal to tolerance.\n");
+            sb.append("Stopping the iteration...\n\n\n");
             return nextGuess;
         }
+
+        sb.append("| x(n+1) - x(n) | = ").append(" | (").append(nextGuess).append(" - ").append(currGuess).append(" | = ").append(check).append(" is greater than tolerance.\n");
+        sb.append("Continuing to next iteration...\n\n");
 
         return fixedPoint(gofx, nextGuess, tolerance, decimalPlaces, iteration + 1, iterations, sb);
     }
 
-    public static String solve(String gofx, double tolerance, double iGuess) {
+    public static String solve(String gofx, double tolerance, double iGuess, String dgofxStr, double absDerivative) {
         StringBuilder output = new StringBuilder();
 
+        output.append("g(x) = ").append(gofx).append("\n");
+        output.append("g'(x) = ").append(dgofxStr).append("\n");
+        
+        output.append("x(n) = ").append(iGuess).append("\n");
+        
+
+        output.append("| g'(").append(iGuess).append(") | = ").append(absDerivative).append(" < 1: Iterations will likely converge.\n\n");
+    
         int decimalPlaces = Utils.getDecimalPlacesFromTolerance(tolerance);
         gofx = Utils.convertExprToExp4jCompatible(gofx);
 
-        ArrayList<Double> iterations = new ArrayList<>();
+        output.append("Set tolerance to: ").append(tolerance).append("\n");
+        output.append("Set decimal figures to: ").append(decimalPlaces).append("\n\n");
+
+        output.append("Start of Fixed-Point Iteration Method:\n\n");
+
+        Queue<Double> iterations = new LinkedList<>();
         Double solution = fixedPoint(gofx, iGuess, tolerance, decimalPlaces, 1, iterations, output);
 
         if (iterations.size() > 1) {
-            output.append("Iterations:\n\n");
-            for (int i = 0; i < iterations.size(); i++) {
-                output.append("Iteration #").append(i + 1).append(":\t x = ").append(iterations.get(i)).append("\n");
+            output.append("Summary of Iterations:\n\n");
+            int i = 0;
+            while(!iterations.isEmpty()) {
+                output.append(String.format("Iteration #%2d", i + 1)).append(":     x = ").append(iterations.poll()).append("\n");
+                i++;
             }
             output.append("\n");
         }
@@ -148,7 +175,7 @@ public class FixedPoint {
         if (solution == null) {
             output.append("Method diverged. No approximate solution found.");
         } else {
-            output.append("The approximate solution is: ").append(solution);
+            output.append("The approximate root is: ").append(solution);
         }
 
         return output.toString();

@@ -1,5 +1,8 @@
 package numericalmethodsapp.gui;
 
+import org.matheclipse.core.eval.ExprEvaluator;
+import org.matheclipse.core.interfaces.IExpr;
+
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -8,8 +11,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import numericalmethodsapp.methods.FixedPoint;
 import numericalmethodsapp.utils.Utils;
-import org.matheclipse.core.eval.ExprEvaluator;
-import org.matheclipse.core.interfaces.IExpr;
 
 public class FixedPointPane extends VBox {
 
@@ -71,19 +72,21 @@ public class FixedPointPane extends VBox {
             }
 
             double guess;
+
             try {
                 guess = Double.parseDouble(guessStr);
             } catch (NumberFormatException ex) {
                 outputArea.setText("Initial guess must be a valid number.");
                 return;
             }
-
+            String dgofxStr;
+            double absDerivative;
             try {
                 ExprEvaluator util = new ExprEvaluator();
                 IExpr dgofx = util.evaluate("D(" + symjaExpr + ", x)");
-                String dgofxStr = Utils.convertExprToExp4jCompatible(dgofx.toString());
+                dgofxStr = Utils.convertExprToExp4jCompatible(dgofx.toString());
                 int decimalPlaces = Utils.getDecimalPlacesFromTolerance(tol);
-                double absDerivative = Math.abs(Utils.evaluateFunction(dgofxStr, guess, decimalPlaces));
+                absDerivative = Math.abs(Utils.evaluateFunction(dgofxStr, guess, decimalPlaces));
 
                 if (absDerivative >= 1) {
                     outputArea.setText(String.format("g'(%.4f) = %.4f which is >= 1. Try a different initial guess.", guess, absDerivative));
@@ -95,7 +98,7 @@ public class FixedPointPane extends VBox {
             }
 
             try {
-                String result = FixedPoint.solve(gx, tol, guess);
+                String result = FixedPoint.solve(gx, tol, guess, dgofxStr, absDerivative);
                 outputArea.setText(result);
             } catch (Exception ex) {
                 outputArea.setText("An error occurred during solving: " + ex.getMessage());

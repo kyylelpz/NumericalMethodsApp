@@ -153,8 +153,9 @@ public class MainWindow extends Application {
         };
 
         outputArea.setPrefWidth(920);
-        outputArea.setPrefHeight(350);
+        outputArea.setPrefHeight(500);
         outputArea.setEditable(false);
+        outputArea.setFont(Font.font("Courier New", 16));
 
         methodSelection.getChildren().addAll(label);
         methodSelection.getChildren().addAll(Arrays.asList(methodButtons));
@@ -214,36 +215,42 @@ public class MainWindow extends Application {
 
     private void showFixedPositionPane() {
         outputInputBox.getChildren().clear();
+        outputArea.clear();
         currentMethodPane = new FixedPointPane(outputArea);
         outputInputBox.getChildren().addAll(currentMethodPane, outputArea);
     }
 
     private void showFalsePositionPane() {
         outputInputBox.getChildren().clear();
+        outputArea.clear();
         currentMethodPane = new FalsePositionPane(outputArea);
         outputInputBox.getChildren().addAll(currentMethodPane, outputArea);
     }
 
     private void showSecantPane() {
         outputInputBox.getChildren().clear();
+        outputArea.clear();
         currentMethodPane = new SecantPane(outputArea);
         outputInputBox.getChildren().addAll(currentMethodPane, outputArea);
     }
 
     private void showBisectionPane() {
         outputInputBox.getChildren().clear();
+        outputArea.clear();
         currentMethodPane = new BisectionPane(outputArea);
         outputInputBox.getChildren().addAll(currentMethodPane, outputArea);
     }
 
     private void showNewtonRaphsonPane() {
         outputInputBox.getChildren().clear();
+        outputArea.clear();
         currentMethodPane = new NewtonRaphsonPane(outputArea);
         outputInputBox.getChildren().addAll(currentMethodPane, outputArea);
     }
 
     private void showCramersRulePane() {
         outputInputBox.getChildren().clear();
+        outputArea.clear();
         currentMethodPane = new CramersRulePane(outputArea);
         outputInputBox.getChildren().addAll(currentMethodPane, outputArea);
     }

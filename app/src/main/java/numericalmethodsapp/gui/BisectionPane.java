@@ -36,12 +36,12 @@ public class BisectionPane extends VBox {
             "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
         TextField tolInput = new TextField();
 
-        Label aLabel = new Label("Enter a (initial guess):");
+        Label aLabel = new Label("Enter x0:");
         aLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
             "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
         TextField aInput = new TextField();
 
-        Label bLabel = new Label("Enter b (initial guess):");
+        Label bLabel = new Label("Enter x1:");
         bLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
             "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
         TextField bInput = new TextField();
