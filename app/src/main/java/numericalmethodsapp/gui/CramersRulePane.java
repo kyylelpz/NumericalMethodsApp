@@ -15,7 +15,7 @@ public class CramersRulePane extends VBox {
         setPadding(new Insets(20));
 
         // Title label
-        Label titleLabel = new Label("Cramer's Rule");
+        Label titleLabel = new Label("Cramer's Rule Method");
         titleLabel.setStyle("-fx-font-size: 30; -fx-font-weight: bold; -fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
             "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
 

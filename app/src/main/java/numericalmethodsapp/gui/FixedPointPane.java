@@ -20,7 +20,7 @@ public class FixedPointPane extends VBox {
         setSpacing(10);
         setPadding(new Insets(20));
 
-        Label titleLabel = new Label("Fixed Point Iteration");
+        Label titleLabel = new Label("Fixed Point Iteration Method");
         titleLabel.setStyle("-fx-font-size: 30; -fx-font-weight: bold; -fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
             "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
 

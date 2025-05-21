@@ -16,7 +16,7 @@ public class FalsePositionPane extends VBox {
         setPadding(new Insets(20));
 
         // Title label
-        Label titleLabel = new Label("False Position");
+        Label titleLabel = new Label("False Position or Regula-Falsi Method");
         titleLabel.setStyle("-fx-font-size: 30; -fx-font-weight: bold; -fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
             "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
 
