@@ -169,4 +169,62 @@ public class GaussSeidel {
         return gaussSeidel(matrix, nextGuess, tolerance, decimalPlaces, iteration + 1, iterations, maxIteration);
     }
 
+    public static String solve(String[] equations, StringBuilder sb, double tolerance, int maxIterations) {
+    int numEq = equations.length;
+
+    if (numEq < 2 || numEq > 3) {
+        sb.append("Error: Number of linear equations must be 2 or 3.\n");
+        return sb.toString();
+    }
+
+    for (int i = 0; i < numEq; i++) {
+        sb.append("Equation #").append(i + 1).append(": ").append(equations[i]).append("\n");
+    }
+    sb.append("\n");
+
+    double[][] matrix;
+    try {
+        matrix = Utils.parseEquation(equations);
+    } catch (IllegalArgumentException e) {
+        sb.append("Error parsing equations: ").append(e.getMessage()).append("\n");
+        return sb.toString();
+    }
+
+    sb.append("Parsed Augmented Matrix:\n\n");
+        for (int i = 0; i < numEq; i++) {
+            for (int j = 0; j < numEq + 1; j++) {
+                sb.append(String.format("%10.4f ", matrix[i][j]));
+            }
+            sb.append("\n");
+        }
+        sb.append("\n");
+
+        // Make matrix diagonally dominant
+        matrix = numericalmethodsapp.methods.Jacobi.diagonallyDominant(matrix);
+
+        sb.append("Diagonally Dominant Matrix:\n\n");
+        for (int i = 0; i < numEq; i++) {
+            for (int j = 0; j < numEq + 1; j++) {
+                sb.append(String.format("%10.4f ", matrix[i][j]));
+            }
+            sb.append("\n");
+        }
+        sb.append("\n");
+
+        Double[] guess = new Double[numEq];
+        Arrays.fill(guess, 0.0);
+        ArrayList<Double[]> iterations = new ArrayList<>();
+        int decimalPlaces = Utils.getDecimalPlacesFromTolerance(tolerance);
+
+        Double[] solutions = gaussSeidel(matrix, guess, tolerance, decimalPlaces, 1, iterations, maxIterations);
+
+        for (int i = 0; i < iterations.size(); i++) {
+            sb.append("Iteration #").append(i + 1).append(": ")
+                    .append(Arrays.toString(iterations.get(i))).append("\n");
+        }
+
+        sb.append("\nFinal Approximated Solution: ").append(Arrays.toString(solutions)).append("\n");
+        return sb.toString();
+    }
+
 }

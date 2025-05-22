@@ -149,7 +149,7 @@ public class MainWindow extends Application {
             createStyledButton("Cramer's Rule", e -> showCramersRulePane()),
             createStyledButton("Gaussian Elimination", e -> showGaussianEliminationPane()),
             createStyledButton("Jacobi", e -> showJacobiPane()),
-            createStyledButton("Gauss-Seidel", e -> {/* TODO */})
+            createStyledButton("Gauss-Seidel", e -> showGaussSeidelPane())
         };
 
         outputArea.setPrefWidth(920);
@@ -273,6 +273,13 @@ public class MainWindow extends Application {
         outputInputBox.getChildren().clear();
         outputArea.clear();
         currentMethodPane = new JacobiPane(outputArea);
+        outputInputBox.getChildren().addAll(currentMethodPane, outputArea);
+    }
+
+    private void showGaussSeidelPane() {
+        outputInputBox.getChildren().clear();
+        outputArea.clear();
+        currentMethodPane = new GaussSeidelPane(outputArea);
         outputInputBox.getChildren().addAll(currentMethodPane, outputArea);
     }
 
