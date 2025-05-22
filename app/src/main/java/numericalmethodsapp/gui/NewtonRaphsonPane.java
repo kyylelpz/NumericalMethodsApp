@@ -35,12 +35,14 @@ public class NewtonRaphsonPane extends VBox {
         MainWindow.styleWebflowInput(fxInput);
 
         Label tolLabel = new Label("Tolerance (e.g., 0.001):");
-        tolLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
+        tolLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
         TextField tolInput = new TextField();
         MainWindow.styleWebflowInput(tolInput);
 
         Label guessLabel = new Label("Initial guess:");
-        guessLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
+        guessLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
         TextField guessInput = new TextField();
         MainWindow.styleWebflowInput(guessInput);
 

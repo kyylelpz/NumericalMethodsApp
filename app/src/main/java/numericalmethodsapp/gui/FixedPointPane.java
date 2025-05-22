@@ -27,19 +27,22 @@ public class FixedPointPane extends VBox {
             "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
 
         Label gxLabel = new Label("Enter g(x):");
-        gxLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
+        gxLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
 
         TextField gxInput = new TextField();
         MainWindow.styleWebflowInput(gxInput);
 
         Label tolLabel = new Label("Tolerance (e.g., 0.001):");
-        tolLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
+        tolLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
 
         TextField tolInput = new TextField();
         MainWindow.styleWebflowInput(tolInput);
 
         Label guessLabel = new Label("Initial guess:");
-        guessLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
+        guessLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
 
         TextField guessInput = new TextField();
         MainWindow.styleWebflowInput(guessInput);
@@ -92,14 +95,6 @@ public class FixedPointPane extends VBox {
                 if (tol <= 0) {
                     outputArea.setText("Tolerance must be a positive number.");
                     secondaryOutputArea.setText("");
-                    return;
-                }
-                else if (tol < 0.00001) {
-                    outputArea.setText("Tolerance must be at at least 0.00001.");
-                    return;
-                }
-                else if (tol > 1){
-                    outputArea.setText("Tolerance cannot exceed 1.");
                     return;
                 }
                 else if (tol < 0.00001) {

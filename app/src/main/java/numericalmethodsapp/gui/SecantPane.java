@@ -31,17 +31,20 @@ public class SecantPane extends VBox {
         MainWindow.styleWebflowInput(fxInput);
 
         Label tolLabel = new Label("Tolerance (e.g., 0.001):");
-        tolLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
+        tolLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
         TextField tolInput = new TextField();
         MainWindow.styleWebflowInput(tolInput);
 
         Label x0Label = new Label("Enter x0:");
-        x0Label.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
+        x0Label.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
         TextField x0Input = new TextField();
         MainWindow.styleWebflowInput(x0Input);
 
         Label x1Label = new Label("Enter x1:");
-        x1Label.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
+        x1Label.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
         TextField x1Input = new TextField();
         MainWindow.styleWebflowInput(x1Input);
 

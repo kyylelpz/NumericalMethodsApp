@@ -32,17 +32,20 @@ public class FalsePositionPane extends VBox {
         MainWindow.styleWebflowInput(fxInput);
 
         Label tolLabel = new Label("Tolerance (e.g., 0.001):");
-        tolLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
+        tolLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
         TextField tolInput = new TextField();
         MainWindow.styleWebflowInput(tolInput);
 
         Label aLabel = new Label("Enter x0:");
-        aLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
+        aLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
         TextField aInput = new TextField();
         MainWindow.styleWebflowInput(aInput);
 
         Label bLabel = new Label("Enter x1:");
-        bLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
+        bLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
         TextField bInput = new TextField();
         MainWindow.styleWebflowInput(bInput);
 
