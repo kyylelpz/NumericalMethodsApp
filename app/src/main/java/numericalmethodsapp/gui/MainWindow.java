@@ -103,7 +103,7 @@ public class MainWindow extends Application {
         continueBtn.setOnAction(e -> showMain());
 
         //Image
-        Image mainPicImg = new Image(getClass().getResourceAsStream("/img/mainPicTest.png"));
+        Image mainPicImg = new Image(getClass().getResourceAsStream("/img/napse.png"));
         ImageView mainPicImgV = new ImageView(mainPicImg);
 
         // Optional: set image size
