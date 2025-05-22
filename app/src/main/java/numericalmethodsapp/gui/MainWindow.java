@@ -51,6 +51,10 @@ public class MainWindow extends Application {
         primaryStage.setTitle("Xynapse: Numerical Methods Calculator");
         primaryStage.setResizable(false);
 
+        // Set window icon
+        Image icon = new Image(getClass().getResourceAsStream("/img/napse.png"));
+        primaryStage.getIcons().add(icon);
+
         root = new StackPane();
         root.setStyle("-fx-background-color: linear-gradient(to right, #101212 0%, #1E173D 50%, #291452 100%);");
 
