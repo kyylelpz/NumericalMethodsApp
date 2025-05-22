@@ -84,10 +84,17 @@ public class GaussianElimination {
                     i + 1, matrix[i][cols - 1], sum, matrix[i][i], solution[i]));
         }
 
-        sb.append("Final Solution:\n");
-        for (int i = 0; i < n; i++) {
-            sb.append("x").append(i + 1).append(" = ").append(String.format("%.6f", solution[i])).append("\n");
-        }
+        sb.append("Solution:\n");
+            if (n == 2) {
+                sb.append("[x = ").append(solution[0])
+                .append(", y = ").append(solution[1])
+                .append("]\n");
+            } else {
+                sb.append("[x = ").append(solution[0])
+                .append(", y = ").append(solution[1])
+                .append(", z = ").append(solution[2])
+                .append("]\n");
+        }           
 
         return solution;
     }

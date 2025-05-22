@@ -33,8 +33,14 @@ public class GaussSeidelPane extends VBox {
         MainWindow.styleWebflowInput(eq3Input);
 
         Label eq1Label = new Label("Equation 1:");
+        eq1Label.setStyle("-fx-font-size: 30; -fx-font-weight: bold; -fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";" +
+                "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
         Label eq2Label = new Label("Equation 2:");
+        eq2Label.setStyle("-fx-font-size: 30; -fx-font-weight: bold; -fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";" +
+                "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
         Label eq3Label = new Label("Equation 3:");
+        eq3Label.setStyle("-fx-font-size: 30; -fx-font-weight: bold; -fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";" +
+                "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
 
         for (Label label : new Label[]{eq1Label, eq2Label, eq3Label}) {
             label.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
@@ -58,13 +64,19 @@ public class GaussSeidelPane extends VBox {
         MainWindow.styleWebflowInput(maxIterInput);
 
         Label toleranceLabel = new Label("Tolerance:");
+        toleranceLabel.setStyle("-fx-font-size: 30; -fx-font-weight: bold; -fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";" +
+                "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
         Label maxIterLabel = new Label("Max Iterations:");
+        maxIterLabel.setStyle("-fx-font-size: 30; -fx-font-weight: bold; -fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";" +
+                "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
 
         for (Label label : new Label[]{toleranceLabel, maxIterLabel}) {
             label.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
         }
 
         Button runButton = new Button("Calculate");
+        runButton.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";" +
+                    "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
         MainWindow.styleCalculateButton(runButton);
 
         runButton.setOnAction(e -> {
