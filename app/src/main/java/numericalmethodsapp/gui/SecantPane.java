@@ -93,18 +93,22 @@ public class SecantPane extends VBox {
                 tolerance = Double.parseDouble(tolStr);
                 if (tolerance <= 0) {
                     outputArea.setText("Tolerance must be a positive number.");
+                    secondaryOutputArea.setText("");
                     return;
                 }
                 else if (tolerance < 0.00001) {
                     outputArea.setText("Tolerance must be at at least 0.00001.");
+                    secondaryOutputArea.setText("");
                     return;
                 }
                 else if (tolerance > 1){
                     outputArea.setText("Tolerance cannot exceed 1.");
+                    secondaryOutputArea.setText("");
                     return;
                 }
             } catch (NumberFormatException ex) {
                 outputArea.setText("Tolerance must be a valid decimal number.");
+                secondaryOutputArea.setText("");
                 return;
             }
 
@@ -115,9 +119,11 @@ public class SecantPane extends VBox {
                 Utils.evaluateFunction(exp4jExpr, x0, Utils.getDecimalPlacesFromTolerance(tolerance), var);
             } catch (NumberFormatException ex) {
                 outputArea.setText("x0 must be a valid number.");
+                secondaryOutputArea.setText("");
                 return;
             } catch (Exception ex) {
                 outputArea.setText("x0 caused evaluation error: " + ex.getMessage());
+                secondaryOutputArea.setText("");
                 return;
             }
 
@@ -128,9 +134,11 @@ public class SecantPane extends VBox {
                 Utils.evaluateFunction(exp4jExpr, x1, Utils.getDecimalPlacesFromTolerance(tolerance), var);
             } catch (NumberFormatException ex) {
                 outputArea.setText("x1 must be a valid number.");
+                secondaryOutputArea.setText("");
                 return;
             } catch (Exception ex) {
                 outputArea.setText("x1 caused evaluation error: " + ex.getMessage());
+                secondaryOutputArea.setText("");
                 return;
             }
 
