@@ -68,6 +68,14 @@ public class BisectionPane extends VBox {
                     outputArea.setText("Tolerance must be a positive number.");
                     return;
                 }
+                else if (tol < 0.00001) {
+                    outputArea.setText("Tolerance must be at at least 0.00001.");
+                    return;
+                }
+                else if (tol > 1){
+                    outputArea.setText("Tolerance cannot exceed 1.");
+                    return;
+                }
             } catch (NumberFormatException ex) {
                 outputArea.setText("Tolerance must be a valid decimal number.");
                 return;

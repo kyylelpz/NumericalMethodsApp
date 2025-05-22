@@ -1,5 +1,8 @@
 package numericalmethodsapp.gui;
 
+import java.util.Iterator;
+import java.util.Set;
+
 import org.matheclipse.core.eval.ExprEvaluator;
 import org.matheclipse.core.interfaces.IExpr;
 
@@ -50,21 +53,60 @@ public class FixedPointPane extends VBox {
             String guessStr = guessInput.getText().trim();
             StringBuilder sb = new StringBuilder();
 
-            // Validate g(x)
+            gx = Utils.convertExprToExp4jCompatible(gx);
+
+                        
+            //validate expression
             String symjaExpr = Utils.convertExprToSymjaCompatible(gx);
             if (!Utils.isValidSymjaExpression(symjaExpr)) {
-                outputArea.setText("Invalid g(x) expression syntax. Please check parentheses and functions.");
+                outputArea.setText("Invalid expression syntax. Please check parentheses and functions.");
+                return;
+            }
+
+            //extract variables
+            Set<Character> vars = Utils.extractVariables(gx);
+
+            if (vars.size() > 1){
+                sb.append("Expression: ").append(gx).append("\n");
+                sb.append("Variables: ").append(vars).append("\n\n");
+                sb.append("Multiple variables extracted. Re-enter another expression with only 1 variable.\n");
+                outputArea.setText(sb.toString());
+                return;
+            }
+            else if (vars.isEmpty()){
+                sb.append("No variables extracted. Re-enter another expression.\n");
+                outputArea.setText(sb.toString());
                 secondaryOutputArea.setText("");
                 return;
             }
 
-            // Validate tolerance
+            Iterator<Character> iterator = vars.iterator();
+
+            Character var = iterator.next();
+
+            //check tolerance
             double tol;
             try {
                 tol = Double.parseDouble(tolStr);
                 if (tol <= 0) {
                     outputArea.setText("Tolerance must be a positive number.");
                     secondaryOutputArea.setText("");
+                    return;
+                }
+                else if (tol < 0.00001) {
+                    outputArea.setText("Tolerance must be at at least 0.00001.");
+                    return;
+                }
+                else if (tol > 1){
+                    outputArea.setText("Tolerance cannot exceed 1.");
+                    return;
+                }
+                else if (tol < 0.00001) {
+                    outputArea.setText("Tolerance must be at at least 0.00001.");
+                    return;
+                }
+                else if (tol > 1){
+                    outputArea.setText("Tolerance cannot exceed 1.");
                     return;
                 }
             } catch (NumberFormatException ex) {
@@ -83,14 +125,26 @@ public class FixedPointPane extends VBox {
                 return;
             }
 
+            String dgofxStr;
+            double absDerivative;
+            gx = Utils.convertExprToExp4jCompatible(gx);
+
             try {
                 // Calculate derivative for convergence test
                 ExprEvaluator util = new ExprEvaluator();
-                IExpr derivative = util.evaluate("D(" + symjaExpr + ", x)");
-                String dgofxStr = Utils.convertExprToExp4jCompatible(derivative.toString());
-                double absDerivative = Math.abs(Utils.evaluateFunction(dgofxStr, guess, Utils.getDecimalPlacesFromTolerance(tol)));
+                IExpr dgofx = util.evaluate("D(" + symjaExpr + ", " + var + ")");
+                dgofxStr = Utils.convertExprToExp4jCompatible(dgofx.toString());
+                int decimalPlaces = Utils.getDecimalPlacesFromTolerance(tol);
+                guess = Utils.round(guess, decimalPlaces);
+                absDerivative = Math.abs(Utils.evaluateFunction(dgofxStr, guess, decimalPlaces, var));
+                
+            } catch (Exception ex) {
+                outputArea.setText("Error evaluating derivative: " + ex.getMessage());
+                return;
+            }
 
-                String result = FixedPoint.solve(gx, tol, guess, dgofxStr, absDerivative, sb);
+            try {
+                String result = FixedPoint.solve(gx, tol, guess, dgofxStr, absDerivative, sb, var);
                 outputArea.setText(result);
                 
                 // Extract and display the summary of iterations and final result in secondary output area
