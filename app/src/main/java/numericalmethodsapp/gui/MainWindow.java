@@ -147,8 +147,8 @@ public class MainWindow extends Application {
             createStyledButton("False Position", e -> showFalsePositionPane()),
             createStyledButton("Matrix", e -> {/* TODO */}),
             createStyledButton("Cramer's Rule", e -> showCramersRulePane()),
-            createStyledButton("Gaussian Elimination", e -> {/* TODO */}),
-            createStyledButton("Jacobi", e -> {/* TODO */}),
+            createStyledButton("Gaussian Elimination", e -> showGaussianEliminationPane()),
+            createStyledButton("Jacobi", e -> showJacobiPane()),
             createStyledButton("Gauss-Seidel", e -> {/* TODO */})
         };
 
@@ -259,6 +259,20 @@ public class MainWindow extends Application {
         outputInputBox.getChildren().clear();
         outputArea.clear();
         currentMethodPane = new CramersRulePane(outputArea);
+        outputInputBox.getChildren().addAll(currentMethodPane, outputArea);
+    }
+
+    private void showGaussianEliminationPane() {
+        outputInputBox.getChildren().clear();
+        outputArea.clear();
+        currentMethodPane = new GaussianEliminationPane(outputArea);
+        outputInputBox.getChildren().addAll(currentMethodPane, outputArea);
+    }
+
+    private void showJacobiPane() {
+        outputInputBox.getChildren().clear();
+        outputArea.clear();
+        currentMethodPane = new JacobiPane(outputArea);
         outputInputBox.getChildren().addAll(currentMethodPane, outputArea);
     }
 

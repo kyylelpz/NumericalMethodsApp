@@ -5,74 +5,24 @@
 
 package numericalmethodsapp.methods;
 
-import java.util.Arrays;
-import java.util.InputMismatchException;
-import java.util.Scanner;
-
-import numericalmethodsapp.utils.Utils;
-
 /**
  *
  * @author lopez
  */
 public class GaussianElimination {
-    public static void run (Scanner input){
-        int numEq = 0;
 
-        while (true){
-            try {
-                System.out.print("Enter number of linear equations (2 or 3): ");
-                numEq = input.nextInt();
-
-                if (numEq < 2 || numEq > 3) {
-                    System.out.println("Error: Number of linear equations should be 2 or 3.");
-                    continue;
-                }
-                
-                break;
-            } catch (InputMismatchException e) {
-                System.out.println("Invalid input! Please enter an integer.");
-                input.nextLine(); // clear buffer
-            }
-        }
-
-        String[] equations = new String[numEq];
-        input.nextLine();
-
-        System.out.println("Enter each equation (e.g., 3x + 2y - z = 4):");
-        for (int i = 0; i < numEq; i++) {
-            System.out.print("Equation " + (i + 1) + ": ");
-            equations[i] = input.nextLine();
-        }
-
-        double[][] matrix;
-
-        try {
-            matrix = Utils.parseEquation(equations);
-        } catch (IllegalArgumentException e) {
-            System.out.println("Error parsing equations: " + e.getMessage());
-            return;
-        }
-
-        // Display matrix (for testing)
-        System.out.println("\nParsed Matrix:");
-        for (int i = 0; i < numEq; i++) {
-            for (int j = 0; j < numEq + 1; j++) {
-                System.out.print(matrix[i][j] + "\t");
-            }
-            System.out.println();
-        }
-
-        // Gaussian Elimination
-        double[] solution = gaussianElimination(matrix);
-
-        System.out.println("The solutions are: " + Arrays.toString(solution));
-    }
-
-    public static double[] gaussianElimination (double[][] matrix){
+    public static double[] gaussianElimination(double[][] matrix, StringBuilder sb) {
         int n = matrix.length;
-        
-        for(int i = 0; i < n; i++){
+        int cols = matrix[0].length;
+
+        sb.append("Initial Augmented Matrix:\n");
+        printMatrix(matrix, sb);
+        sb.append("\n");
+
+        // Forward Elimination
+        for (int i = 0; i < n; i++) {
+            sb.append("Step ").append(i + 1).append(":\n");
+
             // Partial pivoting
             int maxRow = i;
             for (int j = i + 1; j < n; j++) {
@@ -85,36 +35,116 @@ public class GaussianElimination {
                 double[] temp = matrix[i];
                 matrix[i] = matrix[maxRow];
                 matrix[maxRow] = temp;
+                sb.append("Swapped row ").append(i + 1).append(" with row ").append(maxRow + 1).append(" (Partial Pivoting)\n");
+                printMatrix(matrix, sb);
             }
 
-            // Check for 0 or very small pivot value
+            // Check for zero pivot
             if (Math.abs(matrix[i][i]) < 1e-12) {
-                throw new ArithmeticException("Zero pivot encountered, system may have no unique solution.");
+                throw new ArithmeticException("Zero pivot encountered at row " + (i + 1) + ", system may have no unique solution.");
             }
 
-            // Eliminate elements below diagonal
-            for (int j = i + 1; j < matrix.length; j++) {
+            // Eliminate below
+            for (int j = i + 1; j < n; j++) {
                 double factor = matrix[j][i] / matrix[i][i];
-                for (int k = i; k <= matrix.length; k++) {
+                sb.append(String.format("Eliminating row %d using row %d (factor = %.4f)\n", j + 1, i + 1, factor));
+                for (int k = i; k < cols; k++) {
                     matrix[j][k] -= factor * matrix[i][k];
                 }
             }
-            
+
+            printMatrix(matrix, sb);
+            sb.append("\n");
         }
 
         // Back Substitution
         double[] solution = new double[n];
+        sb.append("Back Substitution:\n");
+
         for (int i = n - 1; i >= 0; i--) {
             double sum = 0;
             for (int j = i + 1; j < n; j++) {
                 sum += matrix[i][j] * solution[j];
             }
+
             if (Math.abs(matrix[i][i]) < 1e-12) {
-                throw new ArithmeticException("Division by zero during back substitution.");
+                throw new ArithmeticException("Division by zero during back substitution at row " + (i + 1));
             }
-            solution[i] = (matrix[i][matrix.length] - sum) / matrix[i][i];
+
+            solution[i] = (matrix[i][cols - 1] - sum) / matrix[i][i];
+
+            sb.append(String.format("%c = (%.4f - %.4f) / %.4f = %.6f\n",
+                    (char) ('x' + i),
+                    matrix[i][cols - 1],
+                    sum,
+                    matrix[i][i],
+                    solution[i]
+            ));
+        }
+
+        sb.append("\nFinal Solution:\n");
+        for (int i = 0; i < n; i++) {
+            sb.append((char) ('x' + i)).append(" = ").append(String.format("%.6f", solution[i])).append("\n");
         }
 
         return solution;
+    }
+
+    public static String solve(String[] equations, StringBuilder sb) {
+        int numEq = equations.length;
+
+        for (int i = 0; i < numEq; i++) {
+            sb.append("Equation #").append(i + 1).append(": ").append(equations[i]).append("\n");
+        }
+
+        sb.append("\n");
+
+        if (numEq < 2 || numEq > 3) {
+            sb.append("Error: Number of linear equations must be 2 or 3.\n");
+            return sb.toString();
+        }
+
+        double[][] matrix;
+        try {
+            matrix = numericalmethodsapp.utils.Utils.parseEquation(equations);
+        } catch (IllegalArgumentException e) {
+            sb.append("Error parsing equations: ").append(e.getMessage()).append("\n");
+            return sb.toString();
+        }
+
+        sb.append("Parsed Augmented Matrix:\n\n");
+        for (double[] row : matrix) {
+            for (double val : row) {
+                sb.append(String.format("%10.4f", val)).append(" ");
+            }
+            sb.append("\n");
+        }
+
+        sb.append("Start of Gaussian Elimination Method with ").append(numEq).append(" equations:\n\n");
+
+        double[] result;
+        try {
+            result = gaussianElimination(matrix, sb);  // assume this modifies matrix in place
+        } catch (ArithmeticException ex) {
+            sb.append("Error during Gaussian Elimination: ").append(ex.getMessage()).append("\n");
+            return sb.toString();
+        }
+
+        sb.append("Solution:\n");
+        char var = 'x';
+        for (double val : result) {
+            sb.append(var++).append(" = ").append(String.format("%.6f", val)).append("\n");
+        }
+
+        return sb.toString();
+    }
+
+    private static void printMatrix(double[][] matrix, StringBuilder sb) {
+        for (double[] row : matrix) {
+            for (double val : row) {
+                sb.append(String.format("%10.4f", val)).append(" ");
+            }
+            sb.append("\n");
+        }
     }
 }

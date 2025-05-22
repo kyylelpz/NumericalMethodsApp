@@ -191,8 +191,6 @@ public class Jacobi {
         
         iterations.add(nextGuess);
 
-
-
         boolean converged = true;
 
         for (int i = 0; i < n; i++) {
@@ -207,5 +205,68 @@ public class Jacobi {
         return jacobi(matrix, nextGuess, tolerance, decimalPlaces, iteration+1, iterations, maxIteration);
     }
 
+    public static String solve(String[] equations, StringBuilder sb, double tolerance, int maxIterations) {
+        int numEq = equations.length;
 
+        if (numEq < 2 || numEq > 3) {
+            sb.append("Error: Number of linear equations must be 2 or 3.\n");
+            return sb.toString();
+        }
+
+        for (int i = 0; i < numEq; i++) {
+            sb.append("Equation #").append(i + 1).append(": ").append(equations[i]).append("\n");
+        }
+        sb.append("\n");
+
+        double[][] matrix;
+        try {
+            matrix = Utils.parseEquation(equations);
+        } catch (IllegalArgumentException e) {
+            sb.append("Error parsing equations: ").append(e.getMessage()).append("\n");
+            return sb.toString();
+        }
+
+        sb.append("Parsed Augmented Matrix:\n\n");
+        for (int i = 0; i < numEq; i++) {
+            for (int j = 0; j < numEq + 1; j++) {
+                sb.append(String.format("%10.4f ", matrix[i][j]));
+            }
+            sb.append("\n");
+        }
+        sb.append("\n");
+
+        // Make matrix diagonally dominant if possible
+        double[][] diagMatrix = diagonallyDominant(matrix);
+        if (diagMatrix != matrix) {
+            sb.append("Diagonally Dominant Matrix:\n\n");
+            for (int i = 0; i < numEq; i++) {
+                for (int j = 0; j < numEq + 1; j++) {
+                    sb.append(String.format("%10.4f ", diagMatrix[i][j]));
+                }
+                sb.append("\n");
+            }
+            sb.append("\n");
+        } else {
+            sb.append("Warning: Matrix was NOT rearranged to be diagonally dominant.\nIterations may not converge.\n\n");
+        }
+
+        // Use default tolerance and maxIterations (you can modify this or add as parameters)
+        int decimalPlaces = Utils.getDecimalPlacesFromTolerance(tolerance);
+
+        Double[] initialGuess = new Double[numEq];
+        Arrays.fill(initialGuess, 0.0);
+
+        ArrayList<Double[]> iterations = new ArrayList<>();
+
+        Double[] solutions = jacobi(diagMatrix, initialGuess, tolerance, decimalPlaces, 1, iterations, maxIterations);
+
+        sb.append("Jacobi Iterations:\n");
+        for (int i = 0; i < iterations.size(); i++) {
+            sb.append("Iteration ").append(i + 1).append(": ")
+            .append(Arrays.toString(iterations.get(i))).append("\n");
+        }
+        sb.append("\nFinal Approximation:\n").append(Arrays.toString(solutions)).append("\n");
+
+        return sb.toString();
+    }
 }
