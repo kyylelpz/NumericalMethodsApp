@@ -135,8 +135,9 @@ public class BisectionPane extends VBox {
                 for (String line : lines) {
                     if (line.startsWith("Summary of Iterations:")) {
                         foundSummary = true;
-                        secondaryOutput.append(line).append("\n");
-                    } else if (foundSummary && line.startsWith("Iteration #")) {
+                        secondaryOutput.append(line).append("\n\n");
+                    } else if (foundSummary && !line.isEmpty() && !line.startsWith("The approximate solution is:")) {
+                        // Capture all lines between Summary and the solution
                         secondaryOutput.append(line).append("\n");
                     } else if (line.startsWith("The approximate solution is:")) {
                         foundRoot = true;
