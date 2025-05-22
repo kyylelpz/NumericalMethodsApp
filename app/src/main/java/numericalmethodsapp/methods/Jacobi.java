@@ -22,7 +22,7 @@ public class Jacobi {
         int n = currGuess.length;
 
         if (iteration > maxIteration){
-            sb.append("Max iteration (").append(maxIteration).append(") reached. Iteration stopped.\n");
+            sb.append("Max iteration (").append(maxIteration).append(") reached. Iteration stopped.\n\n");
             return currGuess;
         }
 
