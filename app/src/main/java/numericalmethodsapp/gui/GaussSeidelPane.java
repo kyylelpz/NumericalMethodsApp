@@ -101,19 +101,23 @@ public class GaussSeidelPane extends VBox {
                 tolerance = Double.parseDouble(toleranceInput.getText());
                 if (tolerance <= 0) {
                     outputArea.setText("Tolerance must be a positive number.");
+                    secondaryOutputArea.setText("");
                     return;
                 }
                 else if (tolerance < 0.00001) {
                     outputArea.setText("Tolerance must be at at least 0.00001.");
+                    secondaryOutputArea.setText("");
                     return;
                 }
                 else if (tolerance > 1){
                     outputArea.setText("Tolerance cannot exceed 1.");
+                    secondaryOutputArea.setText("");
                     return;
                 }
             }
             catch (NumberFormatException ex) {
                 outputArea.setText("Tolerance must be a valid decimal number.");
+                secondaryOutputArea.setText("");
                 return;
             }
 
@@ -157,11 +161,15 @@ public class GaussSeidelPane extends VBox {
                 if (line.startsWith("Iteration #") && line.contains("[")) {
                     foundIterations = true;
                     secondaryOutput.append(line).append("\n");
-                } else if (line.startsWith("Final Approximated Solution:")) {
+                } else if (line.startsWith("Final Approximation:")) {
                     if (foundIterations) {
                         secondaryOutput.append("\n");
                     }
-                    secondaryOutput.append(line);
+                    secondaryOutput.append(line).append("\n");
+                    int nextLineIndex = java.util.Arrays.asList(lines).indexOf(line) + 1;
+                    if (nextLineIndex < lines.length) {
+                        secondaryOutput.append(lines[nextLineIndex]);
+                    }
                     break;
                 }
             }
