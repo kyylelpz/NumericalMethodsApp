@@ -528,7 +528,7 @@ public class MainWindow extends Application {
             // Style the scroll bar thumbs
             area.lookupAll(".scroll-bar .thumb").forEach(node -> {
                 node.setStyle(
-                    "-fx-background-color: " + PRIMARY_COLOR + ";" +
+                    "-fx-background-color: #1E1E2A;" +
                     "-fx-background-radius: 2;" +
                     "-fx-background-insets: 0;"
                 );

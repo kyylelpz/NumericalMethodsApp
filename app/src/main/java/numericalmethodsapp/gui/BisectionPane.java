@@ -89,18 +89,22 @@ public class BisectionPane extends VBox {
                 tol = Double.parseDouble(tolStr);
                 if (tol <= 0) {
                     outputArea.setText("Tolerance must be a positive number.");
+                    secondaryOutputArea.setText("");
                     return;
                 }
                 else if (tol < 0.00001) {
                     outputArea.setText("Tolerance must be at at least 0.00001.");
+                    secondaryOutputArea.setText("");
                     return;
                 }
                 else if (tol > 1){
                     outputArea.setText("Tolerance cannot exceed 1.");
+                    secondaryOutputArea.setText("");
                     return;
                 }
             } catch (NumberFormatException ex) {
                 outputArea.setText("Tolerance must be a valid decimal number.");
+                secondaryOutputArea.setText("");
                 return;
             }
 
@@ -111,6 +115,7 @@ public class BisectionPane extends VBox {
                 bVal = Double.parseDouble(bStr);
             } catch (NumberFormatException ex) {
                 outputArea.setText("Initial guesses must be valid numbers.");
+                secondaryOutputArea.setText("");
                 return;
             }
 

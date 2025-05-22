@@ -93,10 +93,12 @@ public class NewtonRaphsonPane extends VBox {
                 }
                 else if (tol < 0.00001) {
                     outputArea.setText("Tolerance must be at at least 0.00001.");
+                    secondaryOutputArea.setText("");
                     return;
                 }
                 else if (tol > 1){
                     outputArea.setText("Tolerance cannot exceed 1.");
+                    secondaryOutputArea.setText("");
                     return;
                 }
             } catch (NumberFormatException ex) {
