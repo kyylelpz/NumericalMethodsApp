@@ -48,7 +48,7 @@ public class MainWindow extends Application {
     @Override
     public void start(Stage primaryStage) {
 
-        primaryStage.setTitle("Numerical Methods");
+        primaryStage.setTitle("Xynapse: Numerical Methods Calculator");
         primaryStage.setResizable(false);
 
         root = new StackPane();
