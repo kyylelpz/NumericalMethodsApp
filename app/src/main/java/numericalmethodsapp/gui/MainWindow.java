@@ -351,6 +351,7 @@ public class MainWindow extends Application {
             "-fx-background-color: " + INPUT_BACKGROUND + ";" +
             "-fx-text-fill: " + INPUT_TEXT_ACTIVE + ";" +
             "-fx-font-size: 12px;" +
+            "-fx-font-family: '" + MAIN_FONT + "';" +
             "-fx-padding: 4 20 4 10;" +
             "-fx-background-radius: 2px;" +
             "-fx-border-radius: 2px;" +
@@ -475,30 +476,39 @@ public class MainWindow extends Application {
     }
 
     public static void styleOutputArea(TextArea area) {
-    area.setStyle(
-        //"-fx-control-inner-background: rgba(68, 81, 124, 0.8);" +  // Proper inner background
-        "-fx-background-color: transparent;" +                 // Let parent style through
-        "-fx-text-fill: " + INPUT_TEXT_ACTIVE + ";" +          // Consistent text color
-        "-fx-font-size: 14px;" +
-        "-fx-padding: 8 12 8 12;" +
-        "-fx-background-insets: 0;" +
-        "-fx-border-color: transparent;" +
-        "-fx-highlight-fill: #818CF8;" +                       // Selection color
-        "-fx-highlight-text-fill: #161517;"                   // Selected text text color
-    );
+        String baseStyle = 
+            "-fx-background-color: transparent;" +
+            "-fx-text-fill: " + INPUT_TEXT_ACTIVE + ";" +
+            "-fx-font-size: 14px;" +
+            "-fx-padding: 8 12 8 12;" +
+            "-fx-background-insets: 0;" +
+            "-fx-border-color: transparent;" +
+            "-fx-highlight-fill: #818CF8;" +
+            "-fx-highlight-text-fill: #161517;";
 
-    // Defer scroll pane styling until layout is complete
-    javafx.application.Platform.runLater(() -> {
-        if (area.lookup(".scroll-pane") != null) {
-            area.lookup(".scroll-pane").setStyle("-fx-background-color: transparent;");
-        }
-        if (area.lookup(".viewport") != null) {
-            area.lookup(".viewport").setStyle("-fx-background-color: transparent;");
-        }
-        if (area.lookup(".content") != null) {
-            area.lookup(".content").setStyle("-fx-background-color: transparent;");
-        }
-    });
-}
+        area.setStyle(baseStyle);
+
+        // Add focus listeners to maintain styling
+        area.focusedProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal) {
+                area.setStyle(baseStyle + "-fx-background-color: rgba(68, 81, 124, 0.1);");
+            } else {
+                area.setStyle(baseStyle);
+            }
+        });
+
+        // Defer scroll pane styling until layout is complete
+        javafx.application.Platform.runLater(() -> {
+            if (area.lookup(".scroll-pane") != null) {
+                area.lookup(".scroll-pane").setStyle("-fx-background-color: transparent;");
+            }
+            if (area.lookup(".viewport") != null) {
+                area.lookup(".viewport").setStyle("-fx-background-color: transparent;");
+            }
+            if (area.lookup(".content") != null) {
+                area.lookup(".content").setStyle("-fx-background-color: transparent;");
+            }
+        });
+    }
 
 }
