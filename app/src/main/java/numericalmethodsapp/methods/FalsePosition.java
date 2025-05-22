@@ -4,9 +4,7 @@
  */
 
 package numericalmethodsapp.methods;
-import java.util.InputMismatchException;
 import java.util.LinkedList;
-import java.util.Scanner;
 
 import numericalmethodsapp.utils.Utils;
 /**
@@ -29,7 +27,6 @@ public class FalsePosition {
         String substituted1 = function.replaceAll("\\b"+var+"\\b", Double.toString(a));
         String substituted2 = function.replaceAll("\\b"+var+"\\b", Double.toString(b));
 
-        //Evaluate functions
         double fa = Utils.evaluateFunction(function, a, decimalPlaces, var);
         double fb = Utils.evaluateFunction(function, b, decimalPlaces, var);
 
@@ -52,7 +49,6 @@ public class FalsePosition {
             return null;
         }
         
-        // Compute c using Regula Falsi formula
         double i = (((b-a)*(-fa))/(fb-fa));
         i = Utils.round(i, decimalPlaces);
         double c = a + i;
@@ -141,11 +137,9 @@ public class FalsePosition {
             if (!iterations.isEmpty()) {
                 sb.append("Iterations:\n\n");
 
-                // Header row
                 sb.append(String.format("%-12s%-15s%-15s%-15s%-15s\n", 
                     "Iteration", var + "L", var + "R", var + "(n+1)", "F(n+1)"));
 
-                // Create a dynamic format string for the numbers
                 String format = "%-12d%-15." + decimalPlaces + "f%-15." + decimalPlaces + "f%-15." + decimalPlaces + "f%-15." + decimalPlaces + "f\n";
 
                 for (int i = 0; i < iterations.size(); i++) {
@@ -156,7 +150,6 @@ public class FalsePosition {
 
                 sb.append("\n");
             }
-
 
             if (solution == null) {
                 sb.append("Method diverged or failed. No approximate solution found.");

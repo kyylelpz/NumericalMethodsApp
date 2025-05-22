@@ -46,8 +46,6 @@ public class Bisection {
             return null;
         }
 
-        //CHECK LATER
-
         if (fa * fb > 0) {
             sb.append("f(").append(var).append("L) and f(").append(var).append("R) must have opposite signs.\n");
             return null;
@@ -143,15 +141,12 @@ public class Bisection {
         if (!iterations.isEmpty()) {
             sb.append("Summary of Iterations:\n\n");
 
-            // Header
             sb.append(String.format("%-12s%-15s%-15s%-15s%-15s\n", 
                 "Iteration", var + "L", var + "R", var + "M", "F(" + var + "M)"));
 
-            // Dynamic number format string based on decimalPlaces
             String format = String.format("%%-12d%%-15.%df%%-15.%df%%-15.%df%%-15.%df\n",
                 decimalPlaces, decimalPlaces, decimalPlaces, decimalPlaces);
-
-            // Rows
+                
             for (int i = 0; i < iterations.size(); i++) {
                 ArrayList<Double> row = iterations.get(i);
                 sb.append(String.format(format, i + 1, row.get(0), row.get(1), row.get(2), row.get(3)));

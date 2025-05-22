@@ -76,6 +76,8 @@ public class Utils {
     }
 
     public static String convertExprToSymjaCompatible(String expr) {
+        expr = expr.replaceAll("(?i)(sin|cos|tan|cot|csc|sec|sinh|cosh|tanh)\\^(\\d+)\\(([^\\)]+)\\)", "($1($3))^$2");
+    
         return expr
             .replace("X", "x")
             .replace("exp(", "Exp(")
@@ -97,6 +99,7 @@ public class Utils {
         expr = expr.replaceAll("E\\^([^\\s\\)]+)", "exp($1)");
         expr = expr.replaceAll("e\\^([^\\s\\)]+)", "exp($1)");
         expr = expr.replaceAll("(?i)exp\\(", "exp(");
+        expr = expr.replaceAll("(?i)(sin|cos|tan|cot|csc|sec|sinh|cosh|tanh)\\^(\\d+)\\(([^\\)]+)\\)", "($1($3))^$2");
         
         return expr
             .replace("X", "x")

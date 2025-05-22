@@ -59,6 +59,8 @@ public class CramersRulePane extends VBox {
         });
 
         Button runButton = new Button("Calculate");
+        runButton.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";" +
+                    "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
         MainWindow.styleCalculateButton(runButton);
 
         runButton.setOnAction(e -> {
@@ -96,7 +98,7 @@ public class CramersRulePane extends VBox {
                 String[] lines = result.split("\n");
                 for (int i = lines.length - 1; i >= 0; i--) {
                     if (lines[i].startsWith("Solution:")) {
-                        
+ 
                         String solutionLine = lines[i];
                         String valuesLine = lines[i + 1];
                         secondaryOutputArea.setText(solutionLine + "\n" + valuesLine);

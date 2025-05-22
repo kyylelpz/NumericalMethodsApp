@@ -19,11 +19,9 @@ public class GaussianElimination {
         printMatrix(matrix, sb);
         sb.append("\n");
 
-        // Forward Elimination
         for (int i = 0; i < n; i++) {
             sb.append("Step ").append(i + 1).append(" - Forward Elimination:\n");
 
-            // Partial pivoting
             int maxRow = i;
             for (int j = i + 1; j < n; j++) {
                 if (Math.abs(matrix[j][i]) > Math.abs(matrix[maxRow][i])) {
@@ -39,12 +37,10 @@ public class GaussianElimination {
                 printMatrix(matrix, sb);
             }
 
-            // Check for zero pivot
             if (Math.abs(matrix[i][i]) < 1e-12) {
                 throw new ArithmeticException("Zero pivot encountered at row " + (i + 1) + ", system may have no unique solution.");
             }
 
-            // Eliminate entries below pivot
             for (int j = i + 1; j < n; j++) {
                 double factor = matrix[j][i] / matrix[i][i];
                 sb.append(String.format("Eliminating row %d using row %d (factor = %.4f):\n", j + 1, i + 1, factor));
@@ -62,7 +58,6 @@ public class GaussianElimination {
             sb.append("\n");
         }
 
-        // Back Substitution
         double[] solution = new double[n];
         sb.append("Back Substitution:\n");
 
@@ -84,10 +79,17 @@ public class GaussianElimination {
                     i + 1, matrix[i][cols - 1], sum, matrix[i][i], solution[i]));
         }
 
-        sb.append("Final Solution:\n");
-        for (int i = 0; i < n; i++) {
-            sb.append("x").append(i + 1).append(" = ").append(String.format("%.6f", solution[i])).append("\n");
-        }
+        sb.append("Solution:\n");
+            if (n == 2) {
+                sb.append("[x = ").append(solution[0])
+                .append(", y = ").append(solution[1])
+                .append("]\n");
+            } else {
+                sb.append("[x = ").append(solution[0])
+                .append(", y = ").append(solution[1])
+                .append(", z = ").append(solution[2])
+                .append("]\n");
+        }           
 
         return solution;
     }

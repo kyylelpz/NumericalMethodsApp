@@ -50,6 +50,8 @@ public class FalsePositionPane extends VBox {
         MainWindow.styleWebflowInput(bInput);
 
         Button runButton = new Button("Calculate");
+        runButton.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";" +
+                    "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
         MainWindow.styleCalculateButton(runButton);
 
         runButton.setOnAction(e -> {
@@ -131,7 +133,6 @@ public class FalsePositionPane extends VBox {
                 String result = FalsePosition.solve(fx, a, b, tol, sb, var);
                 outputArea.setText(result);
                 
-                // display in secondary output area
                 StringBuilder secondaryOutput = new StringBuilder();
                 String[] lines = result.split("\n");
                 boolean foundIterations = false;
@@ -159,7 +160,6 @@ public class FalsePositionPane extends VBox {
             }
         });
 
-     
         getChildren().addAll(
             titleLabel,
             outputArea,

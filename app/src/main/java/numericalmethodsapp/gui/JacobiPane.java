@@ -59,7 +59,6 @@ public class JacobiPane extends VBox {
         TextField toleranceInput = new TextField();
         TextField maxIterInput = new TextField();
 
-       
         for (TextField field : new TextField[]{toleranceInput, maxIterInput}) {
             MainWindow.styleWebflowInput(field);
         }
@@ -73,6 +72,8 @@ public class JacobiPane extends VBox {
         }
 
         Button runButton = new Button("Calculate");
+        runButton.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";" +
+                    "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
         MainWindow.styleCalculateButton(runButton);
 
         runButton.setOnAction(e -> {
@@ -139,14 +140,14 @@ public class JacobiPane extends VBox {
             String result = Jacobi.solve(equations, sb, tolerance, maxIterations);
             outputArea.setText(result);
             
-            // If result contains an error or 'no unique solution', clear secondary output and return
+            
             String resultLower = result.toLowerCase();
             if (resultLower.contains("error") || resultLower.contains("no unique solution")) {
                 secondaryOutputArea.setText("");
                 return;
             }
             
-            // display in secondary output area
+            
             StringBuilder secondaryOutput = new StringBuilder();
             String[] lines = result.split("\n");
             boolean foundIterations = false;

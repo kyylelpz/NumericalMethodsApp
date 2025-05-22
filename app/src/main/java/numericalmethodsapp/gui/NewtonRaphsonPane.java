@@ -47,6 +47,8 @@ public class NewtonRaphsonPane extends VBox {
         MainWindow.styleWebflowInput(guessInput);
 
         Button runButton = new Button("Calculate");
+        runButton.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";" +
+                    "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
         MainWindow.styleCalculateButton(runButton);
 
         runButton.setOnAction(e -> {
@@ -132,7 +134,6 @@ public class NewtonRaphsonPane extends VBox {
                 String result = NewtonRaphson.solve(exp4jExpr, derivativeStr, tol, guess, sb, var);
                 outputArea.setText(result);
                 
-                // display in secondary output area
                 StringBuilder secondaryOutput = new StringBuilder();
                 String[] lines = result.split("\n");
                 boolean foundSummary = false;
@@ -157,7 +158,6 @@ public class NewtonRaphsonPane extends VBox {
             }
         });
 
-      
         getChildren().addAll(
             titleLabel,
             outputArea,

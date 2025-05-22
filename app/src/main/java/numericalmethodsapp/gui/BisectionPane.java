@@ -50,6 +50,8 @@ public class BisectionPane extends VBox {
         MainWindow.styleWebflowInput(bInput);
 
         Button runButton = new Button("Calculate");
+        runButton.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";" +
+                    "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
         MainWindow.styleCalculateButton(runButton);
 
         runButton.setOnAction(e -> {
@@ -132,7 +134,6 @@ public class BisectionPane extends VBox {
                 String result = Bisection.solve(fx, aVal, bVal, tol, sb, var);
                 outputArea.setText(result);
                 
-                // display in secondary output area
                 String[] lines = result.split("\n");
                 StringBuilder secondaryOutput = new StringBuilder();
                 boolean foundSummary = false;
@@ -165,7 +166,6 @@ public class BisectionPane extends VBox {
             }
         });
 
-        
         getChildren().addAll(
             titleLabel,
             outputArea,

@@ -48,6 +48,8 @@ public class FixedPointPane extends VBox {
         MainWindow.styleWebflowInput(guessInput);
 
         Button runButton = new Button("Calculate");
+        runButton.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";" +
+                    "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
         MainWindow.styleCalculateButton(runButton);
 
         runButton.setOnAction(e -> {
@@ -148,7 +150,6 @@ public class FixedPointPane extends VBox {
                 String result = FixedPoint.solve(gx, tol, guess, dgofxStr, absDerivative, sb, var);
                 outputArea.setText(result);
                 
-                // display in secondary output area
                 String[] lines = result.split("\n");
                 StringBuilder secondaryOutput = new StringBuilder();
                 boolean foundSummary = false;
