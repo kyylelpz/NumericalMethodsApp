@@ -134,12 +134,6 @@ public class GaussianElimination {
             return sb.toString();
         }
 
-        sb.append("Solution:\n");
-        char var = 'x';
-        for (double val : result) {
-            sb.append(var++).append(" = ").append(String.format("%.6f", val)).append("\n");
-        }
-
         return sb.toString();
     }
 

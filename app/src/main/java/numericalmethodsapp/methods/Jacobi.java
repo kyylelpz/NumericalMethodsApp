@@ -10,8 +10,6 @@ import java.util.Arrays;
 
 import numericalmethodsapp.utils.Utils;
 
-//import java.util.Scanner;
-
 /**
  *
  * @author lopez
