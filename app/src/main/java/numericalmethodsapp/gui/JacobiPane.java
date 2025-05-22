@@ -29,7 +29,7 @@ public class JacobiPane extends VBox {
         TextField eq2Input = new TextField();
         TextField eq3Input = new TextField();
 
-        // Apply consistent styling to text fields
+        
         for (TextField field : new TextField[]{eq1Input, eq2Input, eq3Input}) {
             MainWindow.styleWebflowInput(field);
         }
@@ -49,6 +49,7 @@ public class JacobiPane extends VBox {
 
         numEqSpinner.valueProperty().addListener((obs, oldValue, newValue) -> {
             outputArea.clear();
+            secondaryOutputArea.clear();
             boolean showThird = newValue == 3;
             eq3Label.setVisible(showThird);
             eq3Input.setVisible(showThird);
@@ -90,6 +91,7 @@ public class JacobiPane extends VBox {
             for (String eq : equations) {
                 if (eq.isEmpty()) {
                     outputArea.setText("Please enter all equations.");
+                    secondaryOutputArea.setText("");
                     return;
                 }
             }
@@ -99,19 +101,23 @@ public class JacobiPane extends VBox {
                 tolerance = Double.parseDouble(toleranceInput.getText());
                 if (tolerance <= 0) {
                     outputArea.setText("Tolerance must be a positive number.");
+                    secondaryOutputArea.setText("");
                     return;
                 }
                 else if (tolerance < 0.00001) {
                     outputArea.setText("Tolerance must be at at least 0.00001.");
+                    secondaryOutputArea.setText("");
                     return;
                 }
                 else if (tolerance > 1){
                     outputArea.setText("Tolerance cannot exceed 1.");
+                    secondaryOutputArea.setText("");
                     return;
                 }
             }
             catch (NumberFormatException ex) {
                 outputArea.setText("Tolerance must be a valid decimal number.");
+                secondaryOutputArea.setText("");
                 return;
             }
 
@@ -120,20 +126,31 @@ public class JacobiPane extends VBox {
                 maxIterations = Integer.parseInt(maxIterInput.getText());
                 if (maxIterations < 2) {
                     outputArea.setText("Max Iterations should be at least 2.");
+                    secondaryOutputArea.setText("");
                     return;
                 }
                 if (maxIterations >1000){
                     outputArea.setText("Max Iterations should not exceed 1000.");
+                    secondaryOutputArea.setText("");
                     return;
                 }
             } catch (NumberFormatException ex) {
                 outputArea.setText("Invalid tolerance or iteration count.");
+                secondaryOutputArea.setText("");
                 return;
             }
 
             StringBuilder sb = new StringBuilder();
             String result = Jacobi.solve(equations, sb, tolerance, maxIterations);
             outputArea.setText(result);
+            
+            
+            String resultLower = result.toLowerCase();
+            if (resultLower.contains("error") || resultLower.contains("no unique solution")) {
+                secondaryOutputArea.setText("");
+                return;
+            }
+            
             
             StringBuilder secondaryOutput = new StringBuilder();
             String[] lines = result.split("\n");
