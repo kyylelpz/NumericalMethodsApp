@@ -54,7 +54,7 @@ public class MainWindow extends Application {
         root = new StackPane();
         root.setStyle("-fx-background-color: linear-gradient(to right, #101212 0%, #1E173D 50%, #291452 100%);");
 
-        scene = new Scene(root, 1200, 720);
+        scene = new Scene(root, 1200, 900);
 
         // Main content container
         HBox mainBox = new HBox(10);

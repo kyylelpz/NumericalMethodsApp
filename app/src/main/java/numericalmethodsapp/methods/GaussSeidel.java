@@ -129,7 +129,20 @@ public class GaussSeidel {
                     .append(Arrays.toString(iterations.get(i))).append("\n");
         }
 
-        sb.append("\nFinal Approximated Solution: ").append(Arrays.toString(solutions)).append("\n");
+        String formatStr = "%." + decimalPlaces + "f";
+
+        sb.append("\nFinal Approximation:\n[");
+
+        if (solutions.length == 2) {
+            sb.append("x = ").append(String.format(formatStr, solutions[0]))
+            .append(", y = ").append(String.format(formatStr, solutions[1]));
+        } else if (solutions.length == 3) {
+            sb.append("x = ").append(String.format(formatStr, solutions[0]))
+            .append(", y = ").append(String.format(formatStr, solutions[1]))
+            .append(", z = ").append(String.format(formatStr, solutions[2]));
+        }
+        sb.append("]\n");
+
         return sb.toString();
     }
 
