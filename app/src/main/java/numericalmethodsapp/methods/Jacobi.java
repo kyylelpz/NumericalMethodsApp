@@ -126,7 +126,6 @@ public class Jacobi {
             sb.append("Warning: Matrix was NOT rearranged to be diagonally dominant.\nIterations may not converge.\n\n");
         }
 
-        // Use default tolerance and maxIterations (you can modify this or add as parameters)
         int decimalPlaces = Utils.getDecimalPlacesFromTolerance(tolerance);
 
         Double[] initialGuess = new Double[numEq];
