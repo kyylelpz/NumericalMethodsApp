@@ -291,7 +291,7 @@ public class MainWindow extends Application {
         outputInputBox.getChildren().addAll(currentMethodPane, outputArea);
     }
 
-}
+
     public static void styleWebflowInput(TextField input) {
         input.setStyle(
             "-fx-background-color: " + INPUT_BACKGROUND + ";" +
