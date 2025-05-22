@@ -3,14 +3,14 @@ package numericalmethodsapp.gui;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
-import numericalmethodsapp.methods.GaussSeidel;
+import numericalmethodsapp.methods.Jacobi;
 
-public class GaussSeidelPane extends VBox {
-    public GaussSeidelPane(TextArea outputArea) {
+public class JacobiPane extends VBox {
+    public JacobiPane(TextArea outputArea) {
         setSpacing(10);
         setPadding(new Insets(20));
 
-        Label titleLabel = new Label("Gauss-Seidel Method");
+        Label titleLabel = new Label("Jacobi Method");
         titleLabel.setStyle("-fx-font-size: 30; -fx-font-weight: bold; -fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";" +
                 "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
 
@@ -96,7 +96,7 @@ public class GaussSeidelPane extends VBox {
             }
 
             StringBuilder sb = new StringBuilder();
-            String result = GaussSeidel.solve(equations, sb, tolerance, maxIterations);
+            String result = Jacobi.solve(equations, sb, tolerance, maxIterations);
             outputArea.setText(result);
         });
 

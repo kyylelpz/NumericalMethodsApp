@@ -16,7 +16,7 @@ public class FalsePositionPane extends VBox {
         setPadding(new Insets(20));
 
         // Title label
-        Label titleLabel = new Label("False Position");
+        Label titleLabel = new Label("False Position or Regula-Falsi Method");
         titleLabel.setStyle("-fx-font-size: 30; -fx-font-weight: bold; -fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
             "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
 
@@ -84,6 +84,7 @@ public class FalsePositionPane extends VBox {
             String tolStr = tolInput.getText().trim();
             String aStr = aInput.getText().trim();
             String bStr = bInput.getText().trim();
+            StringBuilder sb = new StringBuilder();
 
             // Validate f(x)
             String symjaExpr = Utils.convertExprToSymjaCompatible(fx);
@@ -116,7 +117,7 @@ public class FalsePositionPane extends VBox {
             }
 
             try {
-                String result = FalsePosition.solve(fx, a, b, tol);
+                String result = FalsePosition.solve(fx, a, b, tol, sb);
                 outputArea.setText(result);
             } catch (Exception ex) {
                 outputArea.setText("An error occurred during solving: " + ex.getMessage());

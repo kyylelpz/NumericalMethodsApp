@@ -81,7 +81,7 @@ public class FixedPoint {
         }
 
         if (solution == null) {
-            sb.append("Method diverged. No approximate solution found.");
+            sb.append("Method diverged or stopped due to a mathematical error. No approximate root found.");
         } else {
             sb.append("The approximate root is: ").append(solution);
         }
