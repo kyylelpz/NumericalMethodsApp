@@ -206,6 +206,7 @@ public class MainWindow extends Application {
         secondaryOutputArea.setFont(Font.font("Courier New", 16));
         currentMethodPane = new FixedPointPane(outputArea, secondaryOutputArea, detailsLabel);
         outputInputBox.getChildren().addAll(currentMethodPane, secondaryOutputArea, detailsLabel, outputArea);
+        forceStyle();
     }
 
     private void showFalsePositionPane() {
@@ -215,6 +216,7 @@ public class MainWindow extends Application {
         detailsLabel.setVisible(false);
         currentMethodPane = new FalsePositionPane(outputArea, secondaryOutputArea, detailsLabel);
         outputInputBox.getChildren().addAll(currentMethodPane, secondaryOutputArea, detailsLabel, outputArea);
+        forceStyle();
     }
 
     private void showSecantPane() {
@@ -224,6 +226,7 @@ public class MainWindow extends Application {
         detailsLabel.setVisible(false);
         currentMethodPane = new SecantPane(outputArea, secondaryOutputArea, detailsLabel);
         outputInputBox.getChildren().addAll(currentMethodPane, secondaryOutputArea, detailsLabel, outputArea);
+        forceStyle();
     }
 
     private void showBisectionPane() {
@@ -233,6 +236,7 @@ public class MainWindow extends Application {
         detailsLabel.setVisible(false);
         currentMethodPane = new BisectionPane(outputArea, secondaryOutputArea, detailsLabel);
         outputInputBox.getChildren().addAll(currentMethodPane, secondaryOutputArea, detailsLabel, outputArea);
+        forceStyle();
     }
 
     private void showNewtonRaphsonPane() {
@@ -242,13 +246,7 @@ public class MainWindow extends Application {
         detailsLabel.setVisible(false);
         currentMethodPane = new NewtonRaphsonPane(outputArea, secondaryOutputArea, detailsLabel);
         outputInputBox.getChildren().addAll(currentMethodPane, secondaryOutputArea, detailsLabel, outputArea);
-    }
-
-    private void showMatrixPane() {
-        outputInputBox.getChildren().clear();
-        detailsLabel.setVisible(false);
-        currentMethodPane = new MatrixPane();
-        outputInputBox.getChildren().addAll(currentMethodPane);
+        forceStyle();
     }
 
     private void showCramersRulePane() {
@@ -258,6 +256,7 @@ public class MainWindow extends Application {
         detailsLabel.setVisible(false);
         currentMethodPane = new CramersRulePane(outputArea, secondaryOutputArea, detailsLabel);
         outputInputBox.getChildren().addAll(currentMethodPane, secondaryOutputArea, detailsLabel, outputArea);
+        forceStyle();
     }
 
     private void showGaussianEliminationPane() {
@@ -267,6 +266,7 @@ public class MainWindow extends Application {
         detailsLabel.setVisible(false);
         currentMethodPane = new GaussianEliminationPane(outputArea, secondaryOutputArea, detailsLabel);
         outputInputBox.getChildren().addAll(currentMethodPane, secondaryOutputArea, detailsLabel, outputArea);
+        forceStyle();
     }
 
     private void showJacobiPane() {
@@ -276,6 +276,7 @@ public class MainWindow extends Application {
         detailsLabel.setVisible(false);
         currentMethodPane = new JacobiPane(outputArea, secondaryOutputArea, detailsLabel);
         outputInputBox.getChildren().addAll(currentMethodPane, secondaryOutputArea, detailsLabel, outputArea);
+        forceStyle();
     }
 
     private void showGaussSeidelPane() {
@@ -285,6 +286,13 @@ public class MainWindow extends Application {
         detailsLabel.setVisible(false);
         currentMethodPane = new GaussSeidelPane(outputArea, secondaryOutputArea, detailsLabel);
         outputInputBox.getChildren().addAll(currentMethodPane, secondaryOutputArea, detailsLabel, outputArea);
+        forceStyle();
+    }
+
+    private void forceStyle(){
+        javafx.application.Platform.runLater(() -> {
+        outputArea.applyCss();
+        outputArea.layout();});
     }
 
     private Button createStyledButton(String text, javafx.event.EventHandler<javafx.event.ActionEvent> action) {
