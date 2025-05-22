@@ -70,6 +70,10 @@ public class GaussianEliminationPane extends VBox {
                     new String[]{eq1Input.getText().trim(), eq2Input.getText().trim()} :
                     new String[]{eq1Input.getText().trim(), eq2Input.getText().trim(), eq3Input.getText().trim()};
 
+            for (int i = 0; i < equations.length; i++) {
+                equations[i] = equations[i].toLowerCase();
+            }
+
             for (String eq : equations) {
                 if (eq.isEmpty()) {
                     outputArea.setText("Please enter all " + numEq + " equations.");

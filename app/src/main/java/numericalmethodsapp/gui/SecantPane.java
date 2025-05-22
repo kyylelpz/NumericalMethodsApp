@@ -55,6 +55,7 @@ public class SecantPane extends VBox {
 
         runButton.setOnAction(e -> {
             String fx = fxInput.getText().trim();
+            fx = fx.toLowerCase();
             String tolStr = tolInput.getText().trim();
             String x0Str = x0Input.getText().trim();
             String x1Str = x1Input.getText().trim();

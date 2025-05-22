@@ -33,17 +33,12 @@ public class GaussSeidelPane extends VBox {
         MainWindow.styleWebflowInput(eq3Input);
 
         Label eq1Label = new Label("Equation 1:");
-        eq1Label.setStyle("-fx-font-size: 30; -fx-font-weight: bold; -fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";" +
-                "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
         Label eq2Label = new Label("Equation 2:");
-        eq2Label.setStyle("-fx-font-size: 30; -fx-font-weight: bold; -fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";" +
-                "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
         Label eq3Label = new Label("Equation 3:");
-        eq3Label.setStyle("-fx-font-size: 30; -fx-font-weight: bold; -fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";" +
-                "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
 
         for (Label label : new Label[]{eq1Label, eq2Label, eq3Label}) {
-            label.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
+            label.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";" +
+                    "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
         }
 
         eq3Label.setVisible(false);
@@ -65,14 +60,11 @@ public class GaussSeidelPane extends VBox {
         MainWindow.styleWebflowInput(maxIterInput);
 
         Label toleranceLabel = new Label("Tolerance:");
-        toleranceLabel.setStyle("-fx-font-size: 30; -fx-font-weight: bold; -fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";" +
-                "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
         Label maxIterLabel = new Label("Max Iterations:");
-        maxIterLabel.setStyle("-fx-font-size: 30; -fx-font-weight: bold; -fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";" +
-                "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
 
         for (Label label : new Label[]{toleranceLabel, maxIterLabel}) {
-            label.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
+            label.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";" +
+                    "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
         }
 
         Button runButton = new Button("Calculate");
@@ -87,6 +79,10 @@ public class GaussSeidelPane extends VBox {
             String[] equations = (numEq == 2)
                     ? new String[]{eq1Input.getText().trim(), eq2Input.getText().trim()}
                     : new String[]{eq1Input.getText().trim(), eq2Input.getText().trim(), eq3Input.getText().trim()};
+
+            for (int i = 0; i < equations.length; i++) {
+                equations[i] = equations[i].toLowerCase();
+            }
 
             for (String eq : equations) {
                 if (eq.isEmpty()) {

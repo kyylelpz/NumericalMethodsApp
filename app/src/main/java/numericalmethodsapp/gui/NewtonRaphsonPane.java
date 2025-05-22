@@ -53,6 +53,7 @@ public class NewtonRaphsonPane extends VBox {
 
         runButton.setOnAction(e -> {
             String fx = fxInput.getText().trim();
+            fx = fx.toLowerCase();
             String tolStr = tolInput.getText().trim();
             String guessStr = guessInput.getText().trim();
             StringBuilder sb = new StringBuilder();
