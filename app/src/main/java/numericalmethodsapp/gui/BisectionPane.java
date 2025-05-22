@@ -131,7 +131,6 @@ public class BisectionPane extends VBox {
                 String result = Bisection.solve(fx, aVal, bVal, tol, sb, var);
                 outputArea.setText(result);
                 
-                // Extract and display the summary of iterations and final result in secondary output area
                 String[] lines = result.split("\n");
                 StringBuilder secondaryOutput = new StringBuilder();
                 boolean foundSummary = false;
@@ -164,7 +163,6 @@ public class BisectionPane extends VBox {
             }
         });
 
-        // Add nodes to VBox in the correct order
         getChildren().addAll(
             titleLabel,
             outputArea,

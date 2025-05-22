@@ -19,11 +19,9 @@ public class GaussianElimination {
         printMatrix(matrix, sb);
         sb.append("\n");
 
-        // Forward Elimination
         for (int i = 0; i < n; i++) {
             sb.append("Step ").append(i + 1).append(" - Forward Elimination:\n");
 
-            // Partial pivoting
             int maxRow = i;
             for (int j = i + 1; j < n; j++) {
                 if (Math.abs(matrix[j][i]) > Math.abs(matrix[maxRow][i])) {
@@ -39,12 +37,10 @@ public class GaussianElimination {
                 printMatrix(matrix, sb);
             }
 
-            // Check for zero pivot
             if (Math.abs(matrix[i][i]) < 1e-12) {
                 throw new ArithmeticException("Zero pivot encountered at row " + (i + 1) + ", system may have no unique solution.");
             }
 
-            // Eliminate entries below pivot
             for (int j = i + 1; j < n; j++) {
                 double factor = matrix[j][i] / matrix[i][i];
                 sb.append(String.format("Eliminating row %d using row %d (factor = %.4f):\n", j + 1, i + 1, factor));
@@ -62,7 +58,6 @@ public class GaussianElimination {
             sb.append("\n");
         }
 
-        // Back Substitution
         double[] solution = new double[n];
         sb.append("Back Substitution:\n");
 

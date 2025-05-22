@@ -52,7 +52,6 @@ public class FixedPoint {
         
         sb.append("Test of Convergence:\n\n");
         
-        //TEST
         sb.append("Expression = ").append(gofx).append("\n");
 
         sb.append("Variable: ").append(var).append("\n");
@@ -85,10 +84,8 @@ public class FixedPoint {
         if (iterations.size() > 1) {
             sb.append("Summary of Iterations:\n\n");
 
-            // Header
             sb.append(String.format("%-12s%-15s%-15s\n", "Iteration", var + "(n)", var + "(n+1)"));
 
-            // Format for rows
             String format = String.format("%%-12d%%-15.%df%%-15.%df\n", decimalPlaces, decimalPlaces);
 
             int i = 0;
@@ -101,8 +98,6 @@ public class FixedPoint {
 
             sb.append("\n");
         }
-
-
 
         if (solution == null) {
             sb.append("Method diverged or stopped due to a mathematical error. No approximate root found.");

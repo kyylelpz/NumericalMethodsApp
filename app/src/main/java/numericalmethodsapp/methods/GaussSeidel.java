@@ -105,7 +105,6 @@ public class GaussSeidel {
         }
         sb.append("\n");
 
-        // Make matrix diagonally dominant
         matrix = numericalmethodsapp.methods.Jacobi.diagonallyDominant(matrix);
 
         sb.append("Diagonally Dominant Matrix:\n\n");

@@ -95,18 +95,14 @@ public class NewtonRaphson {
         } else {
             sb.append("Summary of Iterations:\n\n");
 
-            // Header
             sb.append(String.format("%-12s%-20s%-20s\n", "Iteration", var + "(n)", var + "(n+1)"));
 
-            // Format with decimal places
             String format = String.format("%%-12d%%-20.%df%%-20.%df\n", decimalPlaces, decimalPlaces);
 
-            // Loop through iterations
             for (int i = 0; i < iterations.size() - 1; i++) {
                 sb.append(String.format(format, i + 1, iterations.get(i), iterations.get(i + 1)));
             }
 
-            // Print the final result
             sb.append("\nThe approximate root is: ").append(String.format("%." + decimalPlaces + "f", result));
 
         }

@@ -31,7 +31,6 @@ public class Secant {
         String substituted1 = function.replaceAll("\\b"+var+"\\b", Double.toString(a));
         String substituted2 = function.replaceAll("\\b"+var+"\\b", Double.toString(b));
 
-        //Evaluate functions
         double fa = Utils.evaluateFunction(function, a, decimalPlaces, var);
         double fb = Utils.evaluateFunction(function, b, decimalPlaces, var);
 
@@ -96,11 +95,9 @@ public class Secant {
         if (iterations.size() > 2) {
             sb.append("Summary of Iterations:\n\n");
 
-            // Header with dynamic variable name
             sb.append(String.format("%-12s%-15s%-15s%-15s\n", 
                 "Iteration", var + "(n-1)", var + "(n)", var + "(n+1)"));
 
-            // Format string for values with decimal places
             String format = String.format("%%-12d%%-15.%df%%-15.%df%%-15.%df\n", 
                                         decimalPlaces, decimalPlaces, decimalPlaces);
 

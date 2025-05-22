@@ -132,7 +132,6 @@ public class NewtonRaphsonPane extends VBox {
                 String result = NewtonRaphson.solve(exp4jExpr, derivativeStr, tol, guess, sb, var);
                 outputArea.setText(result);
                 
-                // Extract and display the summary of iterations and final result in secondary output area
                 StringBuilder secondaryOutput = new StringBuilder();
                 String[] lines = result.split("\n");
                 boolean foundSummary = false;
@@ -157,7 +156,6 @@ public class NewtonRaphsonPane extends VBox {
             }
         });
 
-        // Add nodes to VBox in order
         getChildren().addAll(
             titleLabel,
             outputArea,

@@ -130,7 +130,6 @@ public class FalsePositionPane extends VBox {
                 String result = FalsePosition.solve(fx, a, b, tol, sb, var);
                 outputArea.setText(result);
                 
-                // Extract and display both iterations and final result in secondary output area
                 StringBuilder secondaryOutput = new StringBuilder();
                 String[] lines = result.split("\n");
                 boolean foundIterations = false;
@@ -158,7 +157,6 @@ public class FalsePositionPane extends VBox {
             }
         });
 
-        // Add nodes to VBox in the correct order
         getChildren().addAll(
             titleLabel,
             outputArea,

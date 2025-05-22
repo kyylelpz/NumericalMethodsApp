@@ -192,7 +192,7 @@ public class CramersRule {
         try {
             if (numEq == 2) {
                 solution = cramer2(matrix, sb);
-            } else { // numEq == 3
+            } else {
                 solution = cramer3(matrix, sb);
             }
         } catch (ArithmeticException ex) {

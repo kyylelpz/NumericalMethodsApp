@@ -58,7 +58,6 @@ public class JacobiPane extends VBox {
         TextField toleranceInput = new TextField();
         TextField maxIterInput = new TextField();
 
-        // Apply consistent styling to parameter text fields
         for (TextField field : new TextField[]{toleranceInput, maxIterInput}) {
             MainWindow.styleWebflowInput(field);
         }
@@ -132,7 +131,6 @@ public class JacobiPane extends VBox {
             String result = Jacobi.solve(equations, sb, tolerance, maxIterations);
             outputArea.setText(result);
             
-            // Extract and display the iterations and final result in secondary output area
             StringBuilder secondaryOutput = new StringBuilder();
             String[] lines = result.split("\n");
             boolean foundIterations = false;

@@ -147,7 +147,6 @@ public class FixedPointPane extends VBox {
                 String result = FixedPoint.solve(gx, tol, guess, dgofxStr, absDerivative, sb, var);
                 outputArea.setText(result);
                 
-                // Extract and display the summary of iterations and final result in secondary output area
                 String[] lines = result.split("\n");
                 StringBuilder secondaryOutput = new StringBuilder();
                 boolean foundSummary = false;

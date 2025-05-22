@@ -85,11 +85,11 @@ public class CramersRulePane extends VBox {
                 String result = CramersRule.solve(equations, sb);
                 outputArea.setText(result);
                 
-                // Extract and display the complete solution in secondary output area
+
                 String[] lines = result.split("\n");
                 for (int i = lines.length - 1; i >= 0; i--) {
                     if (lines[i].startsWith("Solution:")) {
-                        // Get both the "Solution:" line and the actual solution line
+ 
                         String solutionLine = lines[i];
                         String valuesLine = lines[i + 1];
                         secondaryOutputArea.setText(solutionLine + "\n" + valuesLine);

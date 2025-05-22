@@ -135,7 +135,6 @@ public class GaussSeidelPane extends VBox {
             String result = GaussSeidel.solve(equations, sb, tolerance, maxIterations);
             outputArea.setText(result);
             
-            // Extract and display the iteration summary and final result in secondary output area
             String[] lines = result.split("\n");
             StringBuilder secondaryOutput = new StringBuilder();
             boolean foundIterations = false;

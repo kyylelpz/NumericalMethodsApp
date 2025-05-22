@@ -56,7 +56,6 @@ public class MainWindow extends Application {
 
         scene = new Scene(root, 1200, 900);
 
-        // Main content container
         HBox mainBox = new HBox(10);
         mainBox.setAlignment(Pos.CENTER);
         mainBox.setPadding(new Insets(20));
@@ -73,14 +72,12 @@ public class MainWindow extends Application {
         picBox.setPadding(new Insets(20));
         picBox.setMaxWidth(700);
 
-        // Title with line break
+
         Label title = new Label("Xynapse");
         title.setStyle("-fx-text-fill: " + PRIMARY_COLOR + ";");
         title.setFont(Font.font(MAIN_FONT, FontWeight.BOLD, 50));
         title.setAlignment(Pos.CENTER);
-        //title.setLineSpacing(0);
 
-        // Subtitle
         Label subtitle = new Label("Precision meets power. Solve numerical method\nequations with confidence.");
         subtitle.setStyle(
             "-fx-text-fill:rgb(213, 218, 228);" +
@@ -90,7 +87,6 @@ public class MainWindow extends Application {
         subtitle.setAlignment(Pos.CENTER);
         subtitle.setMaxWidth(400);
 
-        // Button with proper spacing
         Button continueBtn = new Button("Calculate");
         continueBtn.setStyle(
             "-fx-background-color: " + PRIMARY_COLOR + ";" +
@@ -102,20 +98,17 @@ public class MainWindow extends Application {
         );
         continueBtn.setOnAction(e -> showMain());
 
-        //Image
+
         Image mainPicImg = new Image(getClass().getResourceAsStream("/img/napse.png"));
         ImageView mainPicImgV = new ImageView(mainPicImg);
 
-        // Optional: set image size
         mainPicImgV.setFitWidth(600);
         mainPicImgV.setFitHeight(600);
 
-        // Add all elements to main content
         picBox.getChildren().add(mainPicImgV);
         mainContent.getChildren().addAll(title, subtitle, continueBtn);
         mainBox.getChildren().addAll(mainContent, picBox);
 
-        // Use BorderPane for better footer placement
         BorderPane borderPane = new BorderPane();
         borderPane.setCenter(mainBox);
 
@@ -146,7 +139,6 @@ public class MainWindow extends Application {
         label.setStyle("-fx-text-fill: " + PRIMARY_COLOR + ";");
         label.setFont(Font.font(MAIN_FONT, FontWeight.BOLD, 40));
 
-        // Create buttons with handlers that inject corresponding panes
         Button[] methodButtons = {
             createStyledButton("Fixed-Point Iteration", e -> showFixedPositionPane()),
             createStyledButton("Newton-Raphson", e -> showNewtonRaphsonPane()),
@@ -185,18 +177,15 @@ public class MainWindow extends Application {
         methodSelection.getChildren().addAll(label);
         methodSelection.getChildren().addAll(Arrays.asList(methodButtons));
 
-        // Initially empty outputInputBox children - will be replaced when clicking buttons
         outputInputBox.getChildren().clear();
 
         showMainBox.getChildren().addAll(methodSelection, outputInputBox);
         root.getChildren().add(showMainBox);
         
-        // Automatically load Fixed Point Iteration pane
         showFixedPositionPane();
     }
 
     //SHOW PANE METHODS
-
     private void showFixedPositionPane() {
         outputInputBox.getChildren().clear();
         outputArea.clear();
