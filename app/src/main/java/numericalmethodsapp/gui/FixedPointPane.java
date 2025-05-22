@@ -93,15 +93,26 @@ public class FixedPointPane extends VBox {
                 String result = FixedPoint.solve(gx, tol, guess, dgofxStr, absDerivative, sb);
                 outputArea.setText(result);
                 
-                // Extract and display the final result in secondary output area
+                // Extract and display the summary of iterations and final result in secondary output area
                 String[] lines = result.split("\n");
-                for (int i = lines.length - 1; i >= 0; i--) {
-                    if (lines[i].startsWith("The approximate root is:")) {
-                        secondaryOutputArea.setText(lines[i]);
+                StringBuilder secondaryOutput = new StringBuilder();
+                boolean foundSummary = false;
+                
+                for (String line : lines) {
+                    if (line.startsWith("Summary of Iterations:")) {
+                        foundSummary = true;
+                        secondaryOutput.append(line).append("\n");
+                    } else if (foundSummary && line.startsWith("Iteration #")) {
+                        secondaryOutput.append(line).append("\n");
+                    } else if (foundSummary && line.trim().isEmpty()) {
+                        secondaryOutput.append("\n");
+                    } else if (line.startsWith("The approximate root is:")) {
+                        secondaryOutput.append(line);
                         break;
                     }
                 }
                 
+                secondaryOutputArea.setText(secondaryOutput.toString());
                 detailsLabel.setVisible(true);
             } catch (Exception ex) {
                 outputArea.setText("Error during solving: " + ex.getMessage());

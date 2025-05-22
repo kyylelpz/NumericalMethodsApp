@@ -100,14 +100,31 @@ public class JacobiPane extends VBox {
             String result = Jacobi.solve(equations, sb, tolerance, maxIterations);
             outputArea.setText(result);
             
-            // Extract and display the final result in secondary output area
+            // Extract and display the iterations and final result in secondary output area
+            StringBuilder secondaryOutput = new StringBuilder();
             String[] lines = result.split("\n");
-            for (int i = lines.length - 1; i >= 0; i--) {
-                if (lines[i].startsWith("Final Approximated Solution:")) {
-                    secondaryOutputArea.setText(lines[i]);
+            boolean foundIterations = false;
+            String finalApproximation = "";
+            for (String line : lines) {
+                if (line.startsWith("Jacobi Iterations:")) {
+                    foundIterations = true;
+                    secondaryOutput.append(line).append("\n");
+                    continue;
+                }
+                if (foundIterations && line.startsWith("Final Approximation:")) {
+                    secondaryOutput.append(line).append("\n");
+                    continue;
+                }
+                if (foundIterations && line.startsWith("[")) {
+                    finalApproximation = line;
                     break;
                 }
+                if (foundIterations) {
+                    secondaryOutput.append(line).append("\n");
+                }
             }
+            secondaryOutput.append(finalApproximation);
+            secondaryOutputArea.setText(secondaryOutput.toString());
             
             detailsLabel.setVisible(true);
         });

@@ -87,15 +87,26 @@ public class FalsePositionPane extends VBox {
                 String result = FalsePosition.solve(fx, a, b, tol, sb);
                 outputArea.setText(result);
                 
-                // Extract and display the final result in secondary output area
+                // Extract and display both iterations and final result in secondary output area
+                StringBuilder secondaryOutput = new StringBuilder();
                 String[] lines = result.split("\n");
-                for (int i = lines.length - 1; i >= 0; i--) {
-                    if (lines[i].startsWith("The approximate root is:")) {
-                        secondaryOutputArea.setText(lines[i]);
+                boolean foundIterations = false;
+                
+                for (String line : lines) {
+                    if (line.startsWith("Iterations:")) {
+                        foundIterations = true;
+                        continue;
+                    }
+                    if (foundIterations && line.startsWith("The approximate solution is:")) {
+                        secondaryOutput.append("\n").append(line);
                         break;
+                    }
+                    if (foundIterations && !line.isEmpty()) {
+                        secondaryOutput.append(line).append("\n");
                     }
                 }
                 
+                secondaryOutputArea.setText(secondaryOutput.toString());
                 detailsLabel.setVisible(true);
             } catch (Exception ex) {
                 outputArea.setText("An error occurred during solving: " + ex.getMessage());

@@ -75,14 +75,19 @@ public class GaussianEliminationPane extends VBox {
                 String result = GaussianElimination.solve(equations, sb);
                 outputArea.setText(result);
                 
-                // Extract and display the final result in secondary output area
+                // Extract and display the complete solution in secondary output area
                 String[] lines = result.split("\n");
-                for (int i = lines.length - 1; i >= 0; i--) {
-                    if (lines[i].startsWith("Solution:")) {
-                        secondaryOutputArea.setText(lines[i]);
-                        break;
+                StringBuilder solutionText = new StringBuilder();
+                boolean foundSolution = false;
+                for (String line : lines) {
+                    if (line.startsWith("Solution:")) {
+                        foundSolution = true;
+                        solutionText.append(line).append("\n");
+                    } else if (foundSolution && line.trim().startsWith("x") || line.trim().startsWith("y") || line.trim().startsWith("z")) {
+                        solutionText.append(line).append("\n");
                     }
                 }
+                secondaryOutputArea.setText(solutionText.toString().trim());
                 
                 detailsLabel.setVisible(true);
             } catch (Exception ex) {

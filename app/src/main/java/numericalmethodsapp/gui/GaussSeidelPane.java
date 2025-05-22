@@ -93,15 +93,25 @@ public class GaussSeidelPane extends VBox {
             String result = GaussSeidel.solve(equations, sb, tolerance, maxIterations);
             outputArea.setText(result);
             
-            // Extract and display the final result in secondary output area
+            // Extract and display the iteration summary and final result in secondary output area
             String[] lines = result.split("\n");
-            for (int i = lines.length - 1; i >= 0; i--) {
-                if (lines[i].startsWith("Final Approximated Solution:")) {
-                    secondaryOutputArea.setText(lines[i]);
+            StringBuilder secondaryOutput = new StringBuilder();
+            boolean foundIterations = false;
+            
+            for (String line : lines) {
+                if (line.startsWith("Iteration #") && line.contains("[")) {
+                    foundIterations = true;
+                    secondaryOutput.append(line).append("\n");
+                } else if (line.startsWith("Final Approximated Solution:")) {
+                    if (foundIterations) {
+                        secondaryOutput.append("\n");
+                    }
+                    secondaryOutput.append(line);
                     break;
                 }
             }
             
+            secondaryOutputArea.setText(secondaryOutput.toString());
             detailsLabel.setVisible(true);
         });
 
