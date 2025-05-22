@@ -153,7 +153,6 @@ public class MainWindow extends Application {
             createStyledButton("Secant", e -> showSecantPane() ),
             createStyledButton("Bisection", e -> showBisectionPane()),
             createStyledButton("False Position", e -> showFalsePositionPane()),
-            createStyledButton("Matrix", e -> showMatrixPane()),
             createStyledButton("Cramer's Rule", e -> showCramersRulePane()),
             createStyledButton("Gaussian Elimination", e -> showGaussianEliminationPane()),
             createStyledButton("Jacobi", e -> showJacobiPane()),

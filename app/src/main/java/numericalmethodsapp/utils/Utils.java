@@ -16,10 +16,10 @@ import net.objecthunter.exp4j.ExpressionBuilder;
  */
 public class Utils {
     public static int getDecimalPlacesFromTolerance(double tolerance) {
-        // Get the number of decimal places by determining the magnitude of tolerance
+        
         String[] parts = String.format("%.10f", tolerance).split("\\.");
         String decimalPart = parts.length > 1 ? parts[1] : "";
-        // Trim trailing zeros
+        
         decimalPart = decimalPart.replaceAll("0+$", "");
         return decimalPart.length();
     }
@@ -32,7 +32,7 @@ public class Utils {
     public static double[][] parseEquation(String[] equations) throws IllegalArgumentException {
         int numEq = equations.length;
         String[] variables = (numEq == 2) ? new String[]{"x", "y"} : new String[]{"x", "y", "z"};
-        double[][] matrix = new double[numEq][numEq + 1]; // includes constant column
+        double[][] matrix = new double[numEq][numEq + 1];
 
         for (int i = 0; i < numEq; i++) {
             String equation = equations[i];
@@ -45,7 +45,7 @@ public class Utils {
 
             try {
                 for (int v = 0; v < variables.length; v++) {
-                    // Set the current variable to 1, others to 0
+                    
                     ExpressionBuilder builder = new ExpressionBuilder(lhs).variables(variables);
                     for (String var : variables) {
                         builder = builder.variable(var);
@@ -132,9 +132,9 @@ public class Utils {
         try {
             ExprEvaluator evaluator = new ExprEvaluator();
             evaluator.evaluate(expr);
-            return true; // ✅ Valid expression
+            return true;
         } catch (Exception e) {
-            return false; // ❌ Return detailed error
+            return false;
         }
     }
 

@@ -17,7 +17,8 @@ public class SecantPane extends VBox {
 
         // Title label
         Label titleLabel = new Label("Secant Method");
-        titleLabel.setStyle("-fx-font-size: 30; -fx-font-weight: bold; -fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
+        titleLabel.setStyle("-fx-font-size: 30; -fx-font-weight: bold; -fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
+                "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
 
         // Labels and inputs
         Label fxLabel = new Label("Enter f(x):");
