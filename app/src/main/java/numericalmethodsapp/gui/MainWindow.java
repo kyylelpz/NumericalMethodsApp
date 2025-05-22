@@ -161,13 +161,13 @@ public class MainWindow extends Application {
         };
 
         outputArea.setPrefWidth(920);
-        outputArea.setPrefHeight(450);
+        outputArea.setPrefHeight(300);
         outputArea.setEditable(false);
         outputArea.setFont(Font.font("Courier New", 16));
         styleOutputArea(outputArea);
 
         secondaryOutputArea.setPrefWidth(920);
-        secondaryOutputArea.setPrefHeight(50);
+        secondaryOutputArea.setPrefHeight(200);
         secondaryOutputArea.setEditable(false);
         secondaryOutputArea.setFont(Font.font("Courier New", 16));
         styleOutputArea(secondaryOutputArea);
@@ -202,9 +202,10 @@ public class MainWindow extends Application {
         outputInputBox.getChildren().clear();
         outputArea.clear();
         secondaryOutputArea.clear();
+        detailsLabel.setVisible(false);
         outputArea.setFont(Font.font("Courier New", 16));
         secondaryOutputArea.setFont(Font.font("Courier New", 16));
-        currentMethodPane = new FixedPointPane(outputArea, detailsLabel);
+        currentMethodPane = new FixedPointPane(outputArea, secondaryOutputArea, detailsLabel);
         outputInputBox.getChildren().addAll(currentMethodPane, secondaryOutputArea, detailsLabel, outputArea);
     }
 
@@ -212,7 +213,8 @@ public class MainWindow extends Application {
         outputInputBox.getChildren().clear();
         outputArea.clear();
         secondaryOutputArea.clear();
-        currentMethodPane = new FalsePositionPane(outputArea, detailsLabel);
+        detailsLabel.setVisible(false);
+        currentMethodPane = new FalsePositionPane(outputArea, secondaryOutputArea, detailsLabel);
         outputInputBox.getChildren().addAll(currentMethodPane, secondaryOutputArea, detailsLabel, outputArea);
     }
 
@@ -220,7 +222,8 @@ public class MainWindow extends Application {
         outputInputBox.getChildren().clear();
         outputArea.clear();
         secondaryOutputArea.clear();
-        currentMethodPane = new SecantPane(outputArea, detailsLabel);
+        detailsLabel.setVisible(false);
+        currentMethodPane = new SecantPane(outputArea, secondaryOutputArea, detailsLabel);
         outputInputBox.getChildren().addAll(currentMethodPane, secondaryOutputArea, detailsLabel, outputArea);
     }
 
@@ -228,7 +231,8 @@ public class MainWindow extends Application {
         outputInputBox.getChildren().clear();
         outputArea.clear();
         secondaryOutputArea.clear();
-        currentMethodPane = new BisectionPane(outputArea, detailsLabel);
+        detailsLabel.setVisible(false);
+        currentMethodPane = new BisectionPane(outputArea, secondaryOutputArea, detailsLabel);
         outputInputBox.getChildren().addAll(currentMethodPane, secondaryOutputArea, detailsLabel, outputArea);
     }
 
@@ -236,12 +240,14 @@ public class MainWindow extends Application {
         outputInputBox.getChildren().clear();
         outputArea.clear();
         secondaryOutputArea.clear();
+        detailsLabel.setVisible(false);
         currentMethodPane = new NewtonRaphsonPane(outputArea, secondaryOutputArea, detailsLabel);
         outputInputBox.getChildren().addAll(currentMethodPane, secondaryOutputArea, detailsLabel, outputArea);
     }
 
     private void showMatrixPane() {
         outputInputBox.getChildren().clear();
+        detailsLabel.setVisible(false);
         currentMethodPane = new MatrixPane();
         outputInputBox.getChildren().addAll(currentMethodPane);
     }
@@ -250,7 +256,8 @@ public class MainWindow extends Application {
         outputInputBox.getChildren().clear();
         outputArea.clear();
         secondaryOutputArea.clear();
-        currentMethodPane = new CramersRulePane(outputArea, detailsLabel);
+        detailsLabel.setVisible(false);
+        currentMethodPane = new CramersRulePane(outputArea, secondaryOutputArea, detailsLabel);
         outputInputBox.getChildren().addAll(currentMethodPane, secondaryOutputArea, detailsLabel, outputArea);
     }
 
@@ -258,7 +265,8 @@ public class MainWindow extends Application {
         outputInputBox.getChildren().clear();
         outputArea.clear();
         secondaryOutputArea.clear();
-        currentMethodPane = new GaussianEliminationPane(outputArea, detailsLabel);
+        detailsLabel.setVisible(false);
+        currentMethodPane = new GaussianEliminationPane(outputArea, secondaryOutputArea, detailsLabel);
         outputInputBox.getChildren().addAll(currentMethodPane, secondaryOutputArea, detailsLabel, outputArea);
     }
 
@@ -266,7 +274,8 @@ public class MainWindow extends Application {
         outputInputBox.getChildren().clear();
         outputArea.clear();
         secondaryOutputArea.clear();
-        currentMethodPane = new JacobiPane(outputArea, detailsLabel);
+        detailsLabel.setVisible(false);
+        currentMethodPane = new JacobiPane(outputArea, secondaryOutputArea, detailsLabel);
         outputInputBox.getChildren().addAll(currentMethodPane, secondaryOutputArea, detailsLabel, outputArea);
     }
 
@@ -274,7 +283,8 @@ public class MainWindow extends Application {
         outputInputBox.getChildren().clear();
         outputArea.clear();
         secondaryOutputArea.clear();
-        currentMethodPane = new GaussSeidelPane(outputArea, detailsLabel);
+        detailsLabel.setVisible(false);
+        currentMethodPane = new GaussSeidelPane(outputArea, secondaryOutputArea, detailsLabel);
         outputInputBox.getChildren().addAll(currentMethodPane, secondaryOutputArea, detailsLabel, outputArea);
     }
 

@@ -12,7 +12,7 @@ import numericalmethodsapp.utils.Utils;
 public class BisectionPane extends VBox {
 
     @SuppressWarnings("CallToPrintStackTrace")
-    public BisectionPane(TextArea outputArea, Label detailsLabel) {
+    public BisectionPane(TextArea outputArea, TextArea secondaryOutputArea, Label detailsLabel) {
         setSpacing(10);
         setPadding(new Insets(20));
 
@@ -20,10 +20,6 @@ public class BisectionPane extends VBox {
         Label titleLabel = new Label("Bisection Method");
         titleLabel.setStyle("-fx-font-size: 30; -fx-font-weight: bold; -fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
             "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
-
-        // Output area
-        outputArea.setEditable(false);
-        outputArea.setPrefHeight(300);
 
         // Labels and inputs
         Label fxLabel = new Label("Enter f(x):");
@@ -91,17 +87,44 @@ public class BisectionPane extends VBox {
             try {
                 String result = Bisection.solve(fx, aVal, bVal, tol, sb);
                 outputArea.setText(result);
+                
+                // Extract and display the summary of iterations and final result in secondary output area
+                String[] lines = result.split("\n");
+                StringBuilder secondaryOutput = new StringBuilder();
+                boolean foundSummary = false;
+                boolean foundRoot = false;
+                
+                for (String line : lines) {
+                    if (line.startsWith("Summary of Iterations:")) {
+                        foundSummary = true;
+                        secondaryOutput.append(line).append("\n");
+                    } else if (foundSummary && line.startsWith("Iteration #")) {
+                        secondaryOutput.append(line).append("\n");
+                    } else if (line.startsWith("The approximate solution is:")) {
+                        foundRoot = true;
+                        secondaryOutput.append("\n").append(line);
+                    }
+                }
+                
+                if (foundSummary && foundRoot) {
+                    secondaryOutputArea.setText(secondaryOutput.toString());
+                } else {
+                    secondaryOutputArea.setText("No valid results found.");
+                }
+                
                 detailsLabel.setVisible(true);
             } catch (Exception ex) {
                 outputArea.setText("An error occurred during solving: " + ex.getMessage());
+                secondaryOutputArea.setText("");
                 ex.printStackTrace();
             }
         });
 
-        // Add all to VBox
+        // Add nodes to VBox in the correct order
         getChildren().addAll(
             titleLabel,
             outputArea,
+            secondaryOutputArea,
             fxLabel, fxInput,
             tolLabel, tolInput,
             aLabel, aInput,

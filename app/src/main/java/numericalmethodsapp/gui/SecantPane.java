@@ -11,17 +11,13 @@ import numericalmethodsapp.utils.Utils;
 
 public class SecantPane extends VBox {
     @SuppressWarnings("CallToPrintStackTrace")
-    public SecantPane(TextArea outputArea, Label detailsLabel) {
+    public SecantPane(TextArea outputArea, TextArea secondaryOutputArea, Label detailsLabel) {
         setSpacing(10);
         setPadding(new Insets(20));
 
         // Title label
         Label titleLabel = new Label("Secant Method");
         titleLabel.setStyle("-fx-font-size: 30; -fx-font-weight: bold; -fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
-
-        // Output area first
-        outputArea.setEditable(false);
-        outputArea.setPrefHeight(300);
 
         // Labels and inputs
         Label fxLabel = new Label("Enter f(x):");
@@ -107,9 +103,29 @@ public class SecantPane extends VBox {
             try {
                 String result = Secant.solve(exp4jExpr, tolerance, x0, x1, sb);
                 outputArea.setText(result);
+                
+                // Extract and display the summary of iterations and final result in secondary output area
+                StringBuilder secondaryOutput = new StringBuilder();
+                String[] lines = result.split("\n");
+                boolean foundSummary = false;
+                
+                 for (String line : lines) {
+            if (line.trim().startsWith("Summary of Iterations:")) {
+                foundSummary = true;
+                secondaryOutput.append(line).append("\n");
+            } else if (foundSummary && line.trim().startsWith("The approximate solution is:")) {
+                secondaryOutput.append("\n").append(line);
+                break; // Done collecting
+            } else if (foundSummary) {
+                secondaryOutput.append(line).append("\n");
+            }
+        }
+                
+                secondaryOutputArea.setText(secondaryOutput.toString());
                 detailsLabel.setVisible(true);
             } catch (Exception ex) {
                 outputArea.setText("Error during solving: " + ex.getMessage());
+                secondaryOutputArea.setText("");
                 ex.printStackTrace();
             }
         });
@@ -117,6 +133,7 @@ public class SecantPane extends VBox {
         getChildren().addAll(
             titleLabel,
             outputArea,
+            secondaryOutputArea,
             fxLabel, fxInput,
             tolLabel, tolInput,
             x0Label, x0Input,

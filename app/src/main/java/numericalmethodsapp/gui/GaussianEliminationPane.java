@@ -11,16 +11,13 @@ import numericalmethodsapp.methods.GaussianElimination;
 
 public class GaussianEliminationPane extends VBox {
     @SuppressWarnings("CallToPrintStackTrace")
-    public GaussianEliminationPane(TextArea outputArea, Label detailsLabel) {
+    public GaussianEliminationPane(TextArea outputArea, TextArea secondaryOutputArea, Label detailsLabel) {
         setSpacing(10);
         setPadding(new Insets(20));
 
         Label titleLabel = new Label("Gaussian Elimination Method");
         titleLabel.setStyle("-fx-font-size: 30; -fx-font-weight: bold; -fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";" +
                 "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
-
-        outputArea.setEditable(false);
-        outputArea.setPrefHeight(300);
 
         Label numEqLabel = new Label("Number of Equations:");
         numEqLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
@@ -77,9 +74,20 @@ public class GaussianEliminationPane extends VBox {
             try {
                 String result = GaussianElimination.solve(equations, sb);
                 outputArea.setText(result);
+                
+                // Extract and display the final result in secondary output area
+                String[] lines = result.split("\n");
+                for (int i = lines.length - 1; i >= 0; i--) {
+                    if (lines[i].startsWith("Solution:")) {
+                        secondaryOutputArea.setText(lines[i]);
+                        break;
+                    }
+                }
+                
                 detailsLabel.setVisible(true);
             } catch (Exception ex) {
                 outputArea.setText("Error: " + ex.getMessage());
+                secondaryOutputArea.setText("");
                 ex.printStackTrace();
             }
         });
@@ -87,6 +95,7 @@ public class GaussianEliminationPane extends VBox {
         getChildren().addAll(
                 titleLabel,
                 outputArea,
+                secondaryOutputArea,
                 numEqLabel, numEqSpinner,
                 eq1Label, eq1Input,
                 eq2Label, eq2Input,

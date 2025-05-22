@@ -22,15 +22,7 @@ public class NewtonRaphsonPane extends VBox {
         // Title label
         Label titleLabel = new Label("Newton-Raphson Method");
         titleLabel.setStyle("-fx-font-size: 30; -fx-font-weight: bold; -fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
-            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
-
-        // Output area first
-        outputArea.setEditable(false);
-        outputArea.setPrefHeight(300);
-
-        // Secondary output area
-        secondaryOutputArea.setEditable(false);
-        secondaryOutputArea.setPrefHeight(50);
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");    
 
         // Labels and inputs
         Label fxLabel = new Label("Enter f(x):");
@@ -102,14 +94,22 @@ public class NewtonRaphsonPane extends VBox {
                 String result = NewtonRaphson.solve(exp4jExpr, derivativeStr, tol, guess, sb);
                 outputArea.setText(result);
                 
-                // Extract and display the final result in secondary output area
+                // Extract and display the summary of iterations and final result in secondary output area
+                StringBuilder secondaryOutput = new StringBuilder();
                 String[] lines = result.split("\n");
-                for (int i = lines.length - 1; i >= 0; i--) {
-                    if (lines[i].startsWith("The approximate root is:")) {
-                        secondaryOutputArea.setText(lines[i]);
+                boolean foundSummary = false;
+                for (String line : lines) {
+                    if (line.startsWith("Summary of Iterations:")) {
+                        foundSummary = true;
+                        secondaryOutput.append(line).append("\n\n");
+                    } else if (foundSummary && line.startsWith("The approximate root is:")) {
+                        secondaryOutput.append(line);
                         break;
+                    } else if (foundSummary && !line.isEmpty()) {
+                        secondaryOutput.append(line).append("\n");
                     }
                 }
+                secondaryOutputArea.setText(secondaryOutput.toString());
                 
                 detailsLabel.setVisible(true);
             } catch (Exception ex) {

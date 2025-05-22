@@ -11,7 +11,7 @@ import numericalmethodsapp.utils.Utils;
 
 public class FalsePositionPane extends VBox {
     @SuppressWarnings("CallToPrintStackTrace")
-    public FalsePositionPane(TextArea outputArea, Label detailsLabel) {
+    public FalsePositionPane(TextArea outputArea, TextArea secondaryOutputArea, Label detailsLabel) {
         setSpacing(10);
         setPadding(new Insets(20));
 
@@ -19,10 +19,6 @@ public class FalsePositionPane extends VBox {
         Label titleLabel = new Label("False Position or Regula-Falsi Method");
         titleLabel.setStyle("-fx-font-size: 30; -fx-font-weight: bold; -fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
             "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
-
-        // Output area first
-        outputArea.setEditable(false);
-        outputArea.setPrefHeight(300);
 
         // Labels for inputs
         Label fxLabel = new Label("Enter f(x):");
@@ -90,9 +86,20 @@ public class FalsePositionPane extends VBox {
             try {
                 String result = FalsePosition.solve(fx, a, b, tol, sb);
                 outputArea.setText(result);
+                
+                // Extract and display the final result in secondary output area
+                String[] lines = result.split("\n");
+                for (int i = lines.length - 1; i >= 0; i--) {
+                    if (lines[i].startsWith("The approximate root is:")) {
+                        secondaryOutputArea.setText(lines[i]);
+                        break;
+                    }
+                }
+                
                 detailsLabel.setVisible(true);
             } catch (Exception ex) {
                 outputArea.setText("An error occurred during solving: " + ex.getMessage());
+                secondaryOutputArea.setText("");
                 ex.printStackTrace();
             }
         });
@@ -101,6 +108,7 @@ public class FalsePositionPane extends VBox {
         getChildren().addAll(
             titleLabel,
             outputArea,
+            secondaryOutputArea,
             fxLabel, fxInput,
             tolLabel, tolInput,
             aLabel, aInput,

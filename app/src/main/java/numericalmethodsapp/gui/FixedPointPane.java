@@ -15,17 +15,13 @@ import numericalmethodsapp.utils.Utils;
 public class FixedPointPane extends VBox {
 
     @SuppressWarnings("CallToPrintStackTrace")
-    public FixedPointPane(TextArea outputArea, Label detailsLabel) {
-
+    public FixedPointPane(TextArea outputArea, TextArea secondaryOutputArea, Label detailsLabel) {
         setSpacing(10);
         setPadding(new Insets(20));
 
         Label titleLabel = new Label("Fixed Point Iteration Method");
         titleLabel.setStyle("-fx-font-size: 30; -fx-font-weight: bold; -fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
             "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
-
-        outputArea.setEditable(false);
-        outputArea.setPrefHeight(300);
 
         Label gxLabel = new Label("Enter g(x):");
         gxLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
@@ -54,73 +50,70 @@ public class FixedPointPane extends VBox {
             String guessStr = guessInput.getText().trim();
             StringBuilder sb = new StringBuilder();
 
+            // Validate g(x)
             String symjaExpr = Utils.convertExprToSymjaCompatible(gx);
             if (!Utils.isValidSymjaExpression(symjaExpr)) {
                 outputArea.setText("Invalid g(x) expression syntax. Please check parentheses and functions.");
+                secondaryOutputArea.setText("");
                 return;
             }
 
+            // Validate tolerance
             double tol;
             try {
                 tol = Double.parseDouble(tolStr);
                 if (tol <= 0) {
                     outputArea.setText("Tolerance must be a positive number.");
+                    secondaryOutputArea.setText("");
                     return;
                 }
             } catch (NumberFormatException ex) {
                 outputArea.setText("Tolerance must be a valid decimal number.");
+                secondaryOutputArea.setText("");
                 return;
             }
 
+            // Validate initial guess
             double guess;
-
             try {
                 guess = Double.parseDouble(guessStr);
             } catch (NumberFormatException ex) {
                 outputArea.setText("Initial guess must be a valid number.");
+                secondaryOutputArea.setText("");
                 return;
             }
-            String dgofxStr;
-            double absDerivative;
+
             try {
+                // Calculate derivative for convergence test
                 ExprEvaluator util = new ExprEvaluator();
-                IExpr dgofx = util.evaluate("D(" + symjaExpr + ", x)");
-                dgofxStr = Utils.convertExprToExp4jCompatible(dgofx.toString());
-                int decimalPlaces = Utils.getDecimalPlacesFromTolerance(tol);
-                guess = Utils.round(guess, decimalPlaces);
-                absDerivative = Math.abs(Utils.evaluateFunction(dgofxStr, guess, decimalPlaces));
+                IExpr derivative = util.evaluate("D(" + symjaExpr + ", x)");
+                String dgofxStr = Utils.convertExprToExp4jCompatible(derivative.toString());
+                double absDerivative = Math.abs(Utils.evaluateFunction(dgofxStr, guess, Utils.getDecimalPlacesFromTolerance(tol)));
 
-                if (absDerivative >= 1) {
-                    sb.append("Test of Convergence:\n\n");
-                    sb.append("g(x) = ").append(gx).append("\n");
-                    sb.append("g'(x) = ").append(dgofxStr).append("\n");
-        
-                    sb.append("x(n) = ").append(guess).append("\n");
-                    
-
-                    sb.append("| g'(").append(guess).append(") | = ").append(absDerivative).append(" >= 1: Iterations will NOT likely converge.\n\n");
-                    sb.append("Enter another initial guess.\n");
-                    outputArea.setText(sb.toString());
-                    return;
-                }
-            } catch (Exception ex) {
-                outputArea.setText("Error evaluating derivative: " + ex.getMessage());
-                return;
-            }
-
-            try {
                 String result = FixedPoint.solve(gx, tol, guess, dgofxStr, absDerivative, sb);
                 outputArea.setText(result);
+                
+                // Extract and display the final result in secondary output area
+                String[] lines = result.split("\n");
+                for (int i = lines.length - 1; i >= 0; i--) {
+                    if (lines[i].startsWith("The approximate root is:")) {
+                        secondaryOutputArea.setText(lines[i]);
+                        break;
+                    }
+                }
+                
+                detailsLabel.setVisible(true);
             } catch (Exception ex) {
-                outputArea.setText("An error occurred during solving: " + ex.getMessage());
+                outputArea.setText("Error during solving: " + ex.getMessage());
+                secondaryOutputArea.setText("");
                 ex.printStackTrace();
             }
-            detailsLabel.setVisible(true);
         });
 
         getChildren().addAll(
             titleLabel,
             outputArea,
+            secondaryOutputArea,
             gxLabel, gxInput,
             tolLabel, tolInput,
             guessLabel, guessInput,

@@ -6,16 +6,13 @@ import javafx.scene.layout.VBox;
 import numericalmethodsapp.methods.GaussSeidel;
 
 public class GaussSeidelPane extends VBox {
-    public GaussSeidelPane(TextArea outputArea, Label detailsLabel) {
+    public GaussSeidelPane(TextArea outputArea, TextArea secondaryOutputArea, Label detailsLabel) {
         setSpacing(10);
         setPadding(new Insets(20));
 
         Label titleLabel = new Label("Gauss-Seidel Method");
         titleLabel.setStyle("-fx-font-size: 30; -fx-font-weight: bold; -fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";" +
                 "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
-
-        outputArea.setEditable(false);
-        outputArea.setPrefHeight(300);
 
         Label numEqLabel = new Label("Number of Equations:");
         numEqLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";" +
@@ -95,12 +92,23 @@ public class GaussSeidelPane extends VBox {
             StringBuilder sb = new StringBuilder();
             String result = GaussSeidel.solve(equations, sb, tolerance, maxIterations);
             outputArea.setText(result);
+            
+            // Extract and display the final result in secondary output area
+            String[] lines = result.split("\n");
+            for (int i = lines.length - 1; i >= 0; i--) {
+                if (lines[i].startsWith("Final Approximated Solution:")) {
+                    secondaryOutputArea.setText(lines[i]);
+                    break;
+                }
+            }
+            
             detailsLabel.setVisible(true);
         });
 
         getChildren().addAll(
                 titleLabel,
                 outputArea,
+                secondaryOutputArea,
                 numEqLabel, numEqSpinner,
                 eq1Label, eq1Input,
                 eq2Label, eq2Input,
