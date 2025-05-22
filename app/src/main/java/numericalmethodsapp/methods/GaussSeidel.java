@@ -7,8 +7,6 @@ package numericalmethodsapp.methods;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.InputMismatchException;
-import java.util.Scanner;
 
 import numericalmethodsapp.utils.Utils;
 
@@ -18,32 +16,48 @@ import numericalmethodsapp.utils.Utils;
  */
 public class GaussSeidel {
 
-    public static Double[] gaussSeidel(double[][] matrix, Double[] currGuess, double tolerance, int decimalPlaces, int iteration, ArrayList<Double[]> iterations, int maxIteration){
+    public static Double[] gaussSeidel(double[][] matrix, Double[] currGuess, double tolerance, int decimalPlaces, int iteration, ArrayList<Double[]> iterations, int maxIteration, StringBuilder sb) {
         int n = currGuess.length;
 
-        if (iteration > maxIteration){
-            System.out.println("Max iteration (" + maxIteration + ") count reached. Iteration stopped.");
+        if (iteration > maxIteration) {
+            sb.append("Max iteration (").append(maxIteration).append(") count reached. Iteration stopped.\n");
             return currGuess;
         }
 
         if (iteration > 1000) {
-            System.out.println("Jacobi method did not converge.");
+            sb.append("Gauss-Seidel method did not converge.\n");
             return currGuess;
         }
+
+        sb.append("Iteration #").append(iteration).append(":\n");
 
         Double[] nextGuess = Arrays.copyOf(currGuess, n);
 
         for (int i = 0; i < n; i++) {
             double sum = matrix[i][n]; // RHS
+            sb.append("x").append(i + 1).append(" = (").append(matrix[i][n]);
+
             for (int j = 0; j < n; j++) {
                 if (j != i) {
-                    sum -= matrix[i][j] * nextGuess[j]; // Use updated value immediately
+                    sum -= matrix[i][j] * nextGuess[j]; // Use updated values
+                    sb.append(" - ").append(matrix[i][j]).append(" * x").append(j + 1)
+                    .append("(").append(nextGuess[j]).append(")");
                 }
             }
-            nextGuess[i] = Utils.round(sum / matrix[i][i], decimalPlaces);
+
+            double newVal = Utils.round(sum / matrix[i][i], decimalPlaces);
+            sb.append(") / ").append(matrix[i][i]).append(" = ").append(newVal).append("\n");
+
+            nextGuess[i] = newVal;
         }
 
         iterations.add(Arrays.copyOf(nextGuess, n));
+
+        sb.append("Updated values: ");
+        for (int i = 0; i < n; i++) {
+            sb.append("x").append(i + 1).append(" = ").append(nextGuess[i]).append(" ");
+        }
+        sb.append("\n\n");
 
         boolean converged = true;
         for (int i = 0; i < n; i++) {
@@ -53,9 +67,12 @@ public class GaussSeidel {
             }
         }
 
-        if (converged) return nextGuess;
+        if (converged) {
+            sb.append("Convergence achieved within tolerance ").append(tolerance).append("\n");
+            return nextGuess;
+        }
 
-        return gaussSeidel(matrix, nextGuess, tolerance, decimalPlaces, iteration + 1, iterations, maxIteration);
+        return gaussSeidel(matrix, nextGuess, tolerance, decimalPlaces, iteration + 1, iterations, maxIteration, sb);
     }
 
     public static String solve(String[] equations, StringBuilder sb, double tolerance, int maxIterations) {
@@ -105,7 +122,7 @@ public class GaussSeidel {
         ArrayList<Double[]> iterations = new ArrayList<>();
         int decimalPlaces = Utils.getDecimalPlacesFromTolerance(tolerance);
 
-        Double[] solutions = gaussSeidel(matrix, guess, tolerance, decimalPlaces, 1, iterations, maxIterations);
+        Double[] solutions = gaussSeidel(matrix, guess, tolerance, decimalPlaces, 1, iterations, maxIterations, sb);
 
         for (int i = 0; i < iterations.size(); i++) {
             sb.append("Iteration #").append(i + 1).append(": ")

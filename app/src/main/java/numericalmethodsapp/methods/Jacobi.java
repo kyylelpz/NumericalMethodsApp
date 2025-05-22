@@ -7,8 +7,6 @@ package numericalmethodsapp.methods;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.InputMismatchException;
-import java.util.Scanner;
 
 import numericalmethodsapp.utils.Utils;
 
@@ -20,46 +18,68 @@ import numericalmethodsapp.utils.Utils;
  */
 public class Jacobi {
 
-    public static Double[] jacobi(double[][] matrix, Double[] currGuess, double tolerance, int decimalPlaces, int iteration, ArrayList<Double[]> iterations, int maxIteration){
+    public static Double[] jacobi(double[][] matrix, Double[] currGuess, double tolerance,
+                              int decimalPlaces, int iteration, ArrayList<Double[]> iterations,
+                              int maxIteration, StringBuilder sb) {
         int n = currGuess.length;
-        
+
         if (iteration > maxIteration){
-            System.out.println("Max iteration (" + maxIteration + ") count reached. Iteration stopped.");
+            sb.append("Max iteration (").append(maxIteration).append(") reached. Iteration stopped.\n");
             return currGuess;
         }
 
         if (iteration > 1000) {
-            System.out.println("Jacobi method did not converge.");
+            sb.append("Jacobi method did not converge within 1000 iterations.\n");
             return currGuess;
         }
 
-        Double nextGuess[] = new Double[n];
+        Double[] nextGuess = new Double[n];
+        sb.append("Iteration ").append(iteration).append(":\n");
 
         for (int i = 0; i < n; i++) {
-            double sum = matrix[i][n]; // RHS value
-                for (int j = 0; j < n; j++) {
-                    if (j != i) {
-                        sum -= matrix[i][j] * currGuess[j];
-                    }
+            double sum = matrix[i][n]; // RHS constant
+            sb.append("  x").append(i + 1).append(" = (").append(sum);
+
+            for (int j = 0; j < n; j++) {
+                if (j != i) {
+                    sum -= matrix[i][j] * currGuess[j];
+                    sb.append(" - ").append(matrix[i][j])
+                    .append("*").append(currGuess[j]);
                 }
-            nextGuess[i] = Utils.round(sum / matrix[i][i], decimalPlaces);
+            }
+
+            double xi = sum / matrix[i][i];
+            nextGuess[i] = Utils.round(xi, decimalPlaces);
+
+            sb.append(") / ").append(matrix[i][i])
+            .append(" = ").append(nextGuess[i]).append("\n");
         }
-        
+
         iterations.add(nextGuess);
 
         boolean converged = true;
 
         for (int i = 0; i < n; i++) {
-        if (Math.abs(nextGuess[i] - currGuess[i]) > tolerance) {
-            converged = false;
-            break;
+            double diff = Math.abs(nextGuess[i] - currGuess[i]);
+            sb.append("  |x").append(i + 1).append(" (new - old)| = ")
+            .append(String.format("%.6f", diff))
+            .append(diff <= tolerance ? " <= " : " > ")
+            .append("tolerance (").append(tolerance).append(")\n");
+            if (diff > tolerance) {
+                converged = false;
             }
         }
 
-        if (converged) return nextGuess;
+        sb.append("\n");
 
-        return jacobi(matrix, nextGuess, tolerance, decimalPlaces, iteration+1, iterations, maxIteration);
+        if (converged) {
+            sb.append("Convergence achieved in ").append(iteration).append(" iterations.\n");
+            return nextGuess;
+        }
+
+        return jacobi(matrix, nextGuess, tolerance, decimalPlaces, iteration + 1, iterations, maxIteration, sb);
     }
+
 
     public static String solve(String[] equations, StringBuilder sb, double tolerance, int maxIterations) {
         int numEq = equations.length;
@@ -114,7 +134,7 @@ public class Jacobi {
 
         ArrayList<Double[]> iterations = new ArrayList<>();
 
-        Double[] solutions = jacobi(diagMatrix, initialGuess, tolerance, decimalPlaces, 1, iterations, maxIterations);
+        Double[] solutions = jacobi(diagMatrix, initialGuess, tolerance, decimalPlaces, 1, iterations, maxIterations, sb);
 
         sb.append("Jacobi Iterations:\n");
         for (int i = 0; i < iterations.size(); i++) {

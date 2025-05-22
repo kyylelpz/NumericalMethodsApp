@@ -21,7 +21,7 @@ public class GaussianElimination {
 
         // Forward Elimination
         for (int i = 0; i < n; i++) {
-            sb.append("Step ").append(i + 1).append(":\n");
+            sb.append("Step ").append(i + 1).append(" - Forward Elimination:\n");
 
             // Partial pivoting
             int maxRow = i;
@@ -44,15 +44,20 @@ public class GaussianElimination {
                 throw new ArithmeticException("Zero pivot encountered at row " + (i + 1) + ", system may have no unique solution.");
             }
 
-            // Eliminate below
+            // Eliminate entries below pivot
             for (int j = i + 1; j < n; j++) {
                 double factor = matrix[j][i] / matrix[i][i];
-                sb.append(String.format("Eliminating row %d using row %d (factor = %.4f)\n", j + 1, i + 1, factor));
+                sb.append(String.format("Eliminating row %d using row %d (factor = %.4f):\n", j + 1, i + 1, factor));
                 for (int k = i; k < cols; k++) {
+                    double before = matrix[j][k];
                     matrix[j][k] -= factor * matrix[i][k];
+                    sb.append(String.format("  M[%d][%d] = %.4f - (%.4f * %.4f) = %.4f\n",
+                            j + 1, k + 1, before, factor, matrix[i][k], matrix[j][k]));
                 }
+                sb.append("\n");
             }
 
+            sb.append("Matrix after Step ").append(i + 1).append(":\n");
             printMatrix(matrix, sb);
             sb.append("\n");
         }
@@ -63,8 +68,11 @@ public class GaussianElimination {
 
         for (int i = n - 1; i >= 0; i--) {
             double sum = 0;
+            sb.append(String.format("Solving for x%d:\n", i + 1));
             for (int j = i + 1; j < n; j++) {
                 sum += matrix[i][j] * solution[j];
+                sb.append(String.format("  sum += M[%d][%d] * x%d = %.4f * %.6f = %.6f\n",
+                        i + 1, j + 1, j + 1, matrix[i][j], solution[j], matrix[i][j] * solution[j]));
             }
 
             if (Math.abs(matrix[i][i]) < 1e-12) {
@@ -72,19 +80,13 @@ public class GaussianElimination {
             }
 
             solution[i] = (matrix[i][cols - 1] - sum) / matrix[i][i];
-
-            sb.append(String.format("%c = (%.4f - %.4f) / %.4f = %.6f\n",
-                    (char) ('x' + i),
-                    matrix[i][cols - 1],
-                    sum,
-                    matrix[i][i],
-                    solution[i]
-            ));
+            sb.append(String.format("  x%d = (%.4f - %.6f) / %.4f = %.6f\n\n",
+                    i + 1, matrix[i][cols - 1], sum, matrix[i][i], solution[i]));
         }
 
-        sb.append("\nFinal Solution:\n");
+        sb.append("Final Solution:\n");
         for (int i = 0; i < n; i++) {
-            sb.append((char) ('x' + i)).append(" = ").append(String.format("%.6f", solution[i])).append("\n");
+            sb.append("x").append(i + 1).append(" = ").append(String.format("%.6f", solution[i])).append("\n");
         }
 
         return solution;
