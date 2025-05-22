@@ -1,5 +1,8 @@
 package numericalmethodsapp.gui;
 
+import java.util.Iterator;
+import java.util.Set;
+
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -65,12 +68,40 @@ public class SecantPane extends VBox {
 
             String exp4jExpr = Utils.convertExprToExp4jCompatible(symjaExpr);
 
+            //extract variables
+            Set<Character> vars = Utils.extractVariables(fx);
+
+            if (vars.size() > 1){
+                sb.append("Expression: ").append(fx).append("\n");
+                sb.append("Variables: ").append(vars).append("\n\n");
+                sb.append("Multiple variables extracted. Re-enter another expression with only 1 variable.\n");
+                outputArea.setText(sb.toString());
+                return;
+            }
+            else if (vars.isEmpty()){
+                sb.append("No variables extracted. Re-enter another expression.\n");
+                outputArea.setText(sb.toString());
+                return;
+            }
+
+            Iterator<Character> iterator = vars.iterator();
+
+            Character var = iterator.next();
+
             // Validate tolerance
             double tolerance;
             try {
                 tolerance = Double.parseDouble(tolStr);
                 if (tolerance <= 0) {
                     outputArea.setText("Tolerance must be a positive number.");
+                    return;
+                }
+                else if (tolerance < 0.00001) {
+                    outputArea.setText("Tolerance must be at at least 0.00001.");
+                    return;
+                }
+                else if (tolerance > 1){
+                    outputArea.setText("Tolerance cannot exceed 1.");
                     return;
                 }
             } catch (NumberFormatException ex) {

@@ -5,6 +5,9 @@
 
 package numericalmethodsapp.utils;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.matheclipse.core.eval.ExprEvaluator;
 
 import net.objecthunter.exp4j.Expression;
@@ -127,6 +130,22 @@ public class Utils {
         }
     }
 
+    public static double evaluateFunction(String function, double x, int decimalPlaces, char variable) {
+        try {
+            Expression expr = new ExpressionBuilder(function)
+                    .variable(Character.toString(variable))
+                    .build()
+                    .setVariable(Character.toString(variable), x);
+
+            double result = expr.evaluate();
+            return Utils.round(result, decimalPlaces);
+        } catch (ArithmeticException e) {
+            throw new IllegalArgumentException("Math error during evaluation: " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid expression during evaluation: " + e.getMessage(), e);
+        }
+    }
+
 
     public static boolean isValidSymjaExpression(String expr) {
         try {
@@ -137,5 +156,46 @@ public class Utils {
             return false;
         }
     }
+
+    public static Set<Character> extractVariables(String expression) {
+    Set<Character> variables = new HashSet<>();
+    final Set<String> FUNCTIONS = Set.of("sin", "cos", "tan", "log", "ln", "sqrt", "exp");
+
+    int n = expression.length();
+    
+    for (int i = 0; i < n; i++) {
+        char c = expression.charAt(i);
+
+        // Case 1: Check for variable in the form (x)
+        if (c == '(' && i + 2 < n && Character.isLetter(expression.charAt(i + 1)) && expression.charAt(i + 2) == ')') {
+            variables.add(expression.charAt(i + 1));
+            i += 2;
+        }
+
+        // Case 2: Check for function name (sin, cos, etc.)
+        else if (Character.isLetter(c)) {
+            StringBuilder word = new StringBuilder();
+            int j = i;
+
+            while (j < n && Character.isLetter(expression.charAt(j))) {
+                word.append(expression.charAt(j));
+                j++;
+            }
+
+            String wordStr = word.toString();
+
+            if (FUNCTIONS.contains(wordStr)) {
+                i = j - 1; // Skip over the function
+            } else if (wordStr.length() == 1 && wordStr.charAt(0) != 'e') {
+                variables.add(wordStr.charAt(0)); // Single-letter variable (not 'e')
+            }
+
+            i = j - 1; // Move to last char of the word
+        }
+    }
+
+    return variables;
+}
+
 
 }

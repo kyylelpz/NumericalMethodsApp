@@ -1,7 +1,11 @@
 package numericalmethodsapp.gui;
 
 import javafx.geometry.Insets;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import numericalmethodsapp.methods.GaussSeidel;
 
@@ -49,8 +53,8 @@ public class GaussSeidelPane extends VBox {
             eq3Input.setManaged(showThird);
         });
 
-        TextField toleranceInput = new TextField("0.001");
-        TextField maxIterInput = new TextField("20");
+        TextField toleranceInput = new TextField();
+        TextField maxIterInput = new TextField();
 
         Label toleranceLabel = new Label("Tolerance:");
         Label maxIterLabel = new Label("Max Iterations:");
@@ -85,11 +89,37 @@ public class GaussSeidelPane extends VBox {
             }
 
             double tolerance;
-            int maxIterations;
             try {
                 tolerance = Double.parseDouble(toleranceInput.getText());
+                if (tolerance <= 0) {
+                    outputArea.setText("Tolerance must be a positive number.");
+                    return;
+                }
+                else if (tolerance < 0.00001) {
+                    outputArea.setText("Tolerance must be at at least 0.00001.");
+                    return;
+                }
+                else if (tolerance > 1){
+                    outputArea.setText("Tolerance cannot exceed 1.");
+                    return;
+                }
+            }
+            catch (NumberFormatException ex) {
+                outputArea.setText("Tolerance must be a valid decimal number.");
+                return;
+            }
+
+            int maxIterations;
+            try {
                 maxIterations = Integer.parseInt(maxIterInput.getText());
-                if (tolerance <= 0 || maxIterations < 2) throw new NumberFormatException();
+                if (maxIterations < 2) {
+                    outputArea.setText("Max Iterations should be at least 2.");
+                    return;
+                }
+                if (maxIterations >1000){
+                    outputArea.setText("Max Iterations should not exceed 1000.");
+                    return;
+                }
             } catch (NumberFormatException ex) {
                 outputArea.setText("Invalid tolerance or iteration count.");
                 return;

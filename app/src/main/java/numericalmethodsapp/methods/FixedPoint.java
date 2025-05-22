@@ -11,7 +11,7 @@ import numericalmethodsapp.utils.Utils;
  */
 public class FixedPoint {
 
-    public static Double fixedPoint (String gofx, double currGuess, double tolerance, int decimalPlaces, int iteration, Queue<Double> iterations, StringBuilder sb){
+    public static Double fixedPoint (String gofx, double currGuess, double tolerance, int decimalPlaces, int iteration, Queue<Double> iterations, StringBuilder sb, Character var){
         if (iteration > 1000) {
             System.out.println("Method did not converge after 1000 iterations.");
             sb.append("Method did not converge after 1000 iterations.\n");
@@ -19,11 +19,11 @@ public class FixedPoint {
         }
         sb.append("Iteration #").append(iteration).append(": \n");
 
-        gofx = gofx.replaceAll("(?<=[0-9])x", "*x");
-        String substituted = gofx.replaceAll("\\bx\\b", Double.toString(currGuess));
-        double nextGuess = Utils.evaluateFunction(gofx, currGuess, decimalPlaces);
+        gofx = gofx.replaceAll("(?<=[0-9])" + var, "*"+var);
+        String substituted = gofx.replaceAll("\\b"+var+"\\b", Double.toString(currGuess));
+        double nextGuess = Utils.evaluateFunction(gofx, currGuess, decimalPlaces, var);
 
-        sb.append("x(n+1) = ").append(substituted).append(" = ").append(nextGuess).append("\n");
+        sb.append(var).append("(n+1) = ").append(substituted).append(" = ").append(nextGuess).append("\n");
 
         if (Double.isNaN(nextGuess) || Double.isInfinite(nextGuess) || Math.abs(nextGuess) > 1e10) {
             System.out.println("Divergence detected. Iteration stopped.");
@@ -36,31 +36,40 @@ public class FixedPoint {
         double check = Math.abs(Utils.round(Math.abs(nextGuess - currGuess), decimalPlaces));
 
         if (check <= tolerance) {
-            sb.append("| x(n+1) - x(n) | = ").append(" | (").append(nextGuess).append(" - ").append(currGuess).append(") | = ").append(check).append(" is less than or equal to tolerance.\n");
+            sb.append("| ").append(var).append("(n+1) - ").append(var).append("(n) | = ").append(" | (").append(nextGuess).append(" - ").append(currGuess).append(") | = ").append(check).append(" is less than or equal to tolerance.\n");
             sb.append("Stopping the iteration...\n\n\n");
             return nextGuess;
         }
 
-        sb.append("| x(n+1) - x(n) | = ").append(" | (").append(nextGuess).append(" - ").append(currGuess).append(") | = ").append(check).append(" is greater than tolerance.\n");
+        sb.append("| ").append(var).append("(n+1) - ").append(var).append("(n) | = ").append(" | (").append(nextGuess).append(" - ").append(currGuess).append(") | = ").append(check).append(" is greater than tolerance.\n");
         sb.append("Continuing to next iteration...\n\n");
 
-        return fixedPoint(gofx, nextGuess, tolerance, decimalPlaces, iteration + 1, iterations, sb);
+        return fixedPoint(gofx, nextGuess, tolerance, decimalPlaces, iteration + 1, iterations, sb, var);
     }
 
-    public static String solve(String gofx, double tolerance, double iGuess, String dgofxStr, double absDerivative, StringBuilder sb) {
+    public static String solve(String gofx, double tolerance, double iGuess, String dgofxStr, double absDerivative, StringBuilder sb, Character var) {
+        gofx = Utils.convertExprToExp4jCompatible(gofx);
+        
         sb.append("Test of Convergence:\n\n");
         
         //TEST
-        sb.append("g(x) = ").append(gofx).append("\n");
-        sb.append("g'(x) = ").append(dgofxStr).append("\n");
+        sb.append("Expression = ").append(gofx).append("\n");
+
+        sb.append("Variable: ").append(var).append("\n");
         
-        sb.append("x(n) = ").append(iGuess).append("\n");
+        sb.append("g'(").append(var).append(") = ").append(dgofxStr).append("\n");
         
+        sb.append(var).append("(n) = ").append(iGuess).append("\n");
+        
+        if (absDerivative >= 1) {
+                sb.append("| g'(").append(iGuess).append(") | = ").append(absDerivative).append(" >= 1: Iterations will NOT likely converge.\n\n");
+                sb.append("Enter another initial guess.\n");
+                return sb.toString();
+            }
 
         sb.append("| g'(").append(iGuess).append(") | = ").append(absDerivative).append(" < 1: Iterations will likely converge.\n\n");
     
         int decimalPlaces = Utils.getDecimalPlacesFromTolerance(tolerance);
-        gofx = Utils.convertExprToExp4jCompatible(gofx);
 
         sb.append("Set tolerance to: ").append(tolerance).append("\n");
         sb.append("Set decimal figures to: ").append(decimalPlaces).append("\n\n");
@@ -68,7 +77,7 @@ public class FixedPoint {
         sb.append("Start of Fixed-Point Iteration Method:\n\n");
 
         Queue<Double> iterations = new LinkedList<>();
-        Double solution = fixedPoint(gofx, iGuess, tolerance, decimalPlaces, 1, iterations, sb);
+        Double solution = fixedPoint(gofx, iGuess, tolerance, decimalPlaces, 1, iterations, sb, var);
 
         if (iterations.size() > 1) {
             sb.append("Summary of Iterations:\n\n");
