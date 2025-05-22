@@ -50,6 +50,7 @@ public class GaussianEliminationPane extends VBox {
 
         numEqSpinner.valueProperty().addListener((obs, oldValue, newValue) -> {
             outputArea.clear();
+            secondaryOutputArea.clear();
             boolean showThird = newValue == 3;
             eq3Label.setVisible(showThird);
             eq3Input.setVisible(showThird);
@@ -78,7 +79,14 @@ public class GaussianEliminationPane extends VBox {
                 String result = GaussianElimination.solve(equations, sb);
                 outputArea.setText(result);
                 
-                // Extract and display the complete solution in secondary output area
+                
+                String resultLower = result.toLowerCase();
+                if (resultLower.contains("error") || resultLower.contains("no unique solution")) {
+                    secondaryOutputArea.setText("");
+                    return;
+                }
+                
+                // display in secondary output area
                 String[] lines = result.split("\n");
                 StringBuilder solutionText = new StringBuilder();
                 boolean foundSolution = false;

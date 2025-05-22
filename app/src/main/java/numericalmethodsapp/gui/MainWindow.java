@@ -42,7 +42,7 @@ public class MainWindow extends Application {
     private Label detailsLabel;
     
 
-    // Current method pane reference so you can clear/replace later
+    
     private VBox currentMethodPane;
 
     @Override
@@ -90,7 +90,7 @@ public class MainWindow extends Application {
         subtitle.setAlignment(Pos.CENTER);
         subtitle.setMaxWidth(400);
 
-        // Button with proper spacing
+        // Button
         Button continueBtn = new Button("Calculate");
         continueBtn.setStyle(
             "-fx-background-color: " + PRIMARY_COLOR + ";" +
@@ -106,16 +106,16 @@ public class MainWindow extends Application {
         Image mainPicImg = new Image(getClass().getResourceAsStream("/img/napse.png"));
         ImageView mainPicImgV = new ImageView(mainPicImg);
 
-        // Optional: set image size
+        
         mainPicImgV.setFitWidth(600);
         mainPicImgV.setFitHeight(600);
 
-        // Add all elements to main content
+        // Add all elements to main
         picBox.getChildren().add(mainPicImgV);
         mainContent.getChildren().addAll(title, subtitle, continueBtn);
         mainBox.getChildren().addAll(mainContent, picBox);
 
-        // Use BorderPane for better footer placement
+        
         BorderPane borderPane = new BorderPane();
         borderPane.setCenter(mainBox);
 
@@ -146,7 +146,7 @@ public class MainWindow extends Application {
         label.setStyle("-fx-text-fill: " + PRIMARY_COLOR + ";");
         label.setFont(Font.font(MAIN_FONT, FontWeight.BOLD, 40));
 
-        // Create buttons with handlers that inject corresponding panes
+        // buttons with corresponding panes
         Button[] methodButtons = {
             createStyledButton("Fixed-Point Iteration", e -> showFixedPositionPane()),
             createStyledButton("Newton-Raphson", e -> showNewtonRaphsonPane()),
@@ -185,13 +185,13 @@ public class MainWindow extends Application {
         methodSelection.getChildren().addAll(label);
         methodSelection.getChildren().addAll(Arrays.asList(methodButtons));
 
-        // Initially empty outputInputBox children - will be replaced when clicking buttons
+        
         outputInputBox.getChildren().clear();
 
         showMainBox.getChildren().addAll(methodSelection, outputInputBox);
         root.getChildren().add(showMainBox);
         
-        // Automatically load Fixed Point Iteration pane
+        
         showFixedPositionPane();
     }
 
@@ -298,47 +298,47 @@ public class MainWindow extends Application {
     private Button createStyledButton(String text, javafx.event.EventHandler<javafx.event.ActionEvent> action) {
         Button btn = new Button(text);
        btn.setStyle(
-            "-fx-background-color: #1E1E2A;" +  // Darker background
-            "-fx-text-fill: #818CF8;" +         // Lighter primary color for text
+            "-fx-background-color: #1E1E2A;" +  
+            "-fx-text-fill: #818CF8;" +         
             "-fx-font-size: 14;" +
             "-fx-font-family: '" + MAIN_FONT + "';" +
-            "-fx-font-weight: 500;" +           // Medium font weight
+            "-fx-font-weight: 500;" +           
             "-fx-padding: 12 16;" +
             "-fx-background-radius: 8;" +
-            "-fx-border-color: #4F46E5;" +      // Using your primary color for border
+            "-fx-border-color: #4F46E5;" +      
             "-fx-border-width: 1;" +
             "-fx-border-radius: 8;" +
-            "-fx-effect: dropshadow(gaussian, #4F46E5, 10, 0, 0, 0);" +  // Glow effect using primary color
-            "-fx-text-effect: dropshadow(gaussian, #818CF8, 5, 0, 0, 0);"  // Text glow effect
+            "-fx-effect: dropshadow(gaussian, #4F46E5, 10, 0, 0, 0);" +  
+            "-fx-text-effect: dropshadow(gaussian, #818CF8, 5, 0, 0, 0);"  
         );
         btn.setOnAction(action);
         btn.setOnMouseEntered(e -> btn.setStyle(
-            "-fx-background-color: #252535;" +  // Slightly lighter dark background on hover
-            "-fx-text-fill: #A5B4FC;" +         // Even lighter text color on hover
+            "-fx-background-color: #252535;" +  
+            "-fx-text-fill: #A5B4FC;" +         
             "-fx-font-size: 14;" +
             "-fx-font-family: '" + MAIN_FONT + "';" +
-            "-fx-font-weight: 600;" +           // Slightly bolder on hover
+            "-fx-font-weight: 600;" +           
             "-fx-padding: 12 16;" +
             "-fx-background-radius: 8;" +
-            "-fx-border-color: #6366F1;" +      // Lighter border on hover
+            "-fx-border-color: #6366F1;" +      
             "-fx-border-width: 1;" +
             "-fx-border-radius: 8;" +
-            "-fx-effect: dropshadow(gaussian, #6366F1, 15, 0, 0, 0);" +  // Stronger glow on hover
-            "-fx-text-effect: dropshadow(gaussian, #A5B4FC, 8, 0, 0, 0);"  // Stronger text glow on hover
+            "-fx-effect: dropshadow(gaussian, #6366F1, 15, 0, 0, 0);" +  
+            "-fx-text-effect: dropshadow(gaussian, #A5B4FC, 8, 0, 0, 0);"  
         ));
         btn.setOnMouseExited(e -> btn.setStyle(
-            "-fx-background-color: #1E1E2A;" +  // Back to darker background
-            "-fx-text-fill: #818CF8;" +         // Back to lighter primary color
+            "-fx-background-color: #1E1E2A;" +  
+            "-fx-text-fill: #818CF8;" +         
             "-fx-font-size: 14;" +
             "-fx-font-family: '" + MAIN_FONT + "';" +
-            "-fx-font-weight: 500;" +           // Back to medium weight
+            "-fx-font-weight: 500;" +           
             "-fx-padding: 12 16;" +
             "-fx-background-radius: 8;" +
             "-fx-border-color: #4F46E5;" +
             "-fx-border-width: 1;" +
             "-fx-border-radius: 8;" +
             "-fx-effect: dropshadow(gaussian, #4F46E5, 10, 0, 0, 0);" +
-            "-fx-text-effect: dropshadow(gaussian, #818CF8, 5, 0, 0, 0);"  // Back to normal text glow
+            "-fx-text-effect: dropshadow(gaussian, #818CF8, 5, 0, 0, 0);"  
         ));
         btn.setMaxWidth(Double.MAX_VALUE);
         HBox.setHgrow(btn, Priority.ALWAYS);
@@ -360,7 +360,7 @@ public class MainWindow extends Application {
             "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 0);"
         );
 
-        // Create the animated gradient border effect
+       
         input.setOnMouseEntered(e -> {
             input.setStyle(
                 input.getStyle() +
@@ -380,7 +380,7 @@ public class MainWindow extends Application {
     }
 
     public static void styleWebflowSpinner(Spinner<?> spinner) {
-    // Style the spinner's text field (editor)
+  
     styleWebflowInput(spinner.getEditor());
 
     spinner.setStyle(
@@ -388,11 +388,11 @@ public class MainWindow extends Application {
         "-fx-padding: 0;"
     );
 
-    // Listen for when the skin is applied
+    
     spinner.skinProperty().addListener((obs, oldSkin, newSkin) -> {
         if (newSkin != null) {
             javafx.application.Platform.runLater(() -> {
-                // Style the spinner buttons
+                
                 spinner.lookupAll(".increment-arrow-button, .decrement-arrow-button").forEach(node -> {
                     node.setStyle(
                         "-fx-background-color: " + PRIMARY_COLOR + ";" +
@@ -424,7 +424,7 @@ public class MainWindow extends Application {
         }
     });
 
-    // Add hover effect to the editor
+    
     spinner.getEditor().setOnMouseEntered(e -> {
         spinner.getEditor().setStyle(
             spinner.getEditor().getStyle() +
@@ -453,9 +453,9 @@ public class MainWindow extends Application {
             "-fx-effect: dropshadow(gaussian, rgba(79, 70, 229, 0.3), 10, 0, 0, 0);"
         );
 
-        // Add hover effects
+        
         button.setOnMouseEntered(e -> button.setStyle(
-            "-fx-background-color: #6366F1;" +  // Lighter purple on hover
+            "-fx-background-color: #6366F1;" +  
             "-fx-text-fill: white;" +
             "-fx-font-size: 12px;" +
             "-fx-padding: 8 20;" +
@@ -494,10 +494,10 @@ public class MainWindow extends Application {
 
         area.setStyle(baseStyle);
 
-        // Add focus listeners to maintain styling
+       
         area.focusedProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal) {
-                // When focused, ensure the styling remains
+                
                 area.setStyle(baseStyle + 
                     "-fx-background-color: #1E1E2A;" +
                     "-fx-text-fill: " + INPUT_TEXT_ACTIVE + ";");
@@ -506,7 +506,7 @@ public class MainWindow extends Application {
             }
         });
 
-        // Add additional styling for the scroll pane and viewport
+        
         javafx.application.Platform.runLater(() -> {
             if (area.lookup(".scroll-pane") != null) {
                 area.lookup(".scroll-pane").setStyle("-fx-background-color: transparent;");
@@ -517,7 +517,7 @@ public class MainWindow extends Application {
             if (area.lookup(".content") != null) {
                 area.lookup(".content").setStyle("-fx-background-color: transparent;");
             }
-            // Style the scroll bars
+          
             area.lookupAll(".scroll-bar").forEach(node -> {
                 node.setStyle(
                     "-fx-background-color: transparent;" +
@@ -525,7 +525,7 @@ public class MainWindow extends Application {
                     "-fx-padding: 0;"
                 );
             });
-            // Style the scroll bar thumbs
+           
             area.lookupAll(".scroll-bar .thumb").forEach(node -> {
                 node.setStyle(
                     "-fx-background-color: #1E1E2A;" +
@@ -533,7 +533,7 @@ public class MainWindow extends Application {
                     "-fx-background-insets: 0;"
                 );
             });
-            // Remove the white dots in the corners
+            
             area.lookupAll(".corner").forEach(node -> {
                 node.setStyle("-fx-background-color: transparent;");
             });

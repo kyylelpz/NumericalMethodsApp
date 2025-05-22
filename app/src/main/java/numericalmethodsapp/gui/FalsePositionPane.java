@@ -18,12 +18,12 @@ public class FalsePositionPane extends VBox {
         setSpacing(10);
         setPadding(new Insets(20));
 
-        // Title label
+        
         Label titleLabel = new Label("False Position or Regula-Falsi Method");
         titleLabel.setStyle("-fx-font-size: 30; -fx-font-weight: bold; -fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
             "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
 
-        // Labels for inputs
+        
         Label fxLabel = new Label("Enter f(x):");
         fxLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
             "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
@@ -63,6 +63,7 @@ public class FalsePositionPane extends VBox {
             String symjaExpr = Utils.convertExprToSymjaCompatible(fx);
             if (!Utils.isValidSymjaExpression(symjaExpr)) {
                 outputArea.setText("Invalid f(x) expression syntax. Please check parentheses and functions.");
+                secondaryOutputArea.setText("");
                 return;
             }
 
@@ -74,11 +75,13 @@ public class FalsePositionPane extends VBox {
                 sb.append("Variables: ").append(vars).append("\n\n");
                 sb.append("Multiple variables extracted. Re-enter another expression with only 1 variable.\n");
                 outputArea.setText(sb.toString());
+                secondaryOutputArea.setText("");
                 return;
             }
             else if (vars.isEmpty()){
                 sb.append("No variables extracted. Re-enter another expression.\n");
                 outputArea.setText(sb.toString());
+                secondaryOutputArea.setText("");
                 return;
             }
 
@@ -128,7 +131,7 @@ public class FalsePositionPane extends VBox {
                 String result = FalsePosition.solve(fx, a, b, tol, sb, var);
                 outputArea.setText(result);
                 
-                // Extract and display both iterations and final result in secondary output area
+                // display in secondary output area
                 StringBuilder secondaryOutput = new StringBuilder();
                 String[] lines = result.split("\n");
                 boolean foundIterations = false;
@@ -156,7 +159,7 @@ public class FalsePositionPane extends VBox {
             }
         });
 
-        // Add nodes to VBox in the correct order
+     
         getChildren().addAll(
             titleLabel,
             outputArea,

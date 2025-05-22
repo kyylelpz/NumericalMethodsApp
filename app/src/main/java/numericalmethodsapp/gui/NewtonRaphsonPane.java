@@ -22,12 +22,12 @@ public class NewtonRaphsonPane extends VBox {
         setSpacing(10);
         setPadding(new Insets(20));
 
-        // Title label
+       
         Label titleLabel = new Label("Newton-Raphson Method");
         titleLabel.setStyle("-fx-font-size: 30; -fx-font-weight: bold; -fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
             "-fx-font-family: " + MainWindow.MAIN_FONT + ";");    
 
-        // Labels and inputs
+        
         Label fxLabel = new Label("Enter f(x):");
         fxLabel.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
             "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
@@ -71,11 +71,13 @@ public class NewtonRaphsonPane extends VBox {
                 sb.append("Variables: ").append(vars).append("\n\n");
                 sb.append("Multiple variables extracted. Re-enter another expression with only 1 variable.\n");
                 outputArea.setText(sb.toString());
+                secondaryOutputArea.setText("");
                 return;
             }
             else if (vars.isEmpty()){
                 sb.append("No variables extracted. Re-enter another expression.\n");
                 outputArea.setText(sb.toString());
+                secondaryOutputArea.setText("");
                 return;
             }
 
@@ -130,14 +132,14 @@ public class NewtonRaphsonPane extends VBox {
                 String result = NewtonRaphson.solve(exp4jExpr, derivativeStr, tol, guess, sb, var);
                 outputArea.setText(result);
                 
-                // Extract and display the summary of iterations and final result in secondary output area
+                // display in secondary output area
                 StringBuilder secondaryOutput = new StringBuilder();
                 String[] lines = result.split("\n");
                 boolean foundSummary = false;
                 for (String line : lines) {
                     if (line.startsWith("Summary of Iterations:")) {
                         foundSummary = true;
-                        secondaryOutput.append(line).append("\n\n");
+                        secondaryOutput.append(line).append("\n\n\n");
                     } else if (foundSummary && line.startsWith("The approximate root is:")) {
                         secondaryOutput.append(line);
                         break;
@@ -155,7 +157,7 @@ public class NewtonRaphsonPane extends VBox {
             }
         });
 
-        // Add nodes to VBox in order
+      
         getChildren().addAll(
             titleLabel,
             outputArea,

@@ -15,7 +15,7 @@ public class CramersRulePane extends VBox {
         setSpacing(10);
         setPadding(new Insets(20));
 
-        // Title label
+        
         Label titleLabel = new Label("Cramer's Rule Method");
         titleLabel.setStyle("-fx-font-size: 30; -fx-font-weight: bold; -fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
             "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
@@ -51,6 +51,7 @@ public class CramersRulePane extends VBox {
 
         numEqSpinner.valueProperty().addListener((obs, oldValue, newValue) -> {
             outputArea.clear();
+            secondaryOutputArea.clear();
             boolean showThird = newValue == 3;
             eq3Label.setVisible(showThird);
             eq3Input.setVisible(showThird);
@@ -71,10 +72,11 @@ public class CramersRulePane extends VBox {
                 equations = new String[]{eq1Input.getText().trim(), eq2Input.getText().trim(), eq3Input.getText().trim()};
             }
 
-            // Basic validation: Check empty
+            
             for (int i = 0; i < numEq; i++) {
                 if (equations[i].isEmpty()) {
                     outputArea.setText("Please enter all " + numEq + " equations.");
+                    secondaryOutputArea.setText("");
                     return;
                 }
             }
@@ -83,11 +85,18 @@ public class CramersRulePane extends VBox {
                 String result = CramersRule.solve(equations, sb);
                 outputArea.setText(result);
                 
-                // Extract and display the complete solution in secondary output area
+               
+                String resultLower = result.toLowerCase();
+                if (resultLower.contains("error") || resultLower.contains("no unique solution")) {
+                    secondaryOutputArea.setText("");
+                    return;
+                }
+
+                //  display in secondary output area
                 String[] lines = result.split("\n");
                 for (int i = lines.length - 1; i >= 0; i--) {
                     if (lines[i].startsWith("Solution:")) {
-                        // Get both the "Solution:" line and the actual solution line
+                        
                         String solutionLine = lines[i];
                         String valuesLine = lines[i + 1];
                         secondaryOutputArea.setText(solutionLine + "\n" + valuesLine);

@@ -63,6 +63,7 @@ public class FixedPointPane extends VBox {
             String symjaExpr = Utils.convertExprToSymjaCompatible(gx);
             if (!Utils.isValidSymjaExpression(symjaExpr)) {
                 outputArea.setText("Invalid expression syntax. Please check parentheses and functions.");
+                secondaryOutputArea.setText("");
                 return;
             }
 
@@ -74,6 +75,7 @@ public class FixedPointPane extends VBox {
                 sb.append("Variables: ").append(vars).append("\n\n");
                 sb.append("Multiple variables extracted. Re-enter another expression with only 1 variable.\n");
                 outputArea.setText(sb.toString());
+                secondaryOutputArea.setText("");
                 return;
             }
             else if (vars.isEmpty()){
@@ -128,7 +130,7 @@ public class FixedPointPane extends VBox {
             gx = Utils.convertExprToExp4jCompatible(gx);
 
             try {
-                // Calculate derivative for convergence test
+                
                 ExprEvaluator util = new ExprEvaluator();
                 IExpr dgofx = util.evaluate("D(" + symjaExpr + ", " + var + ")");
                 dgofxStr = Utils.convertExprToExp4jCompatible(dgofx.toString());
@@ -138,6 +140,7 @@ public class FixedPointPane extends VBox {
                 
             } catch (Exception ex) {
                 outputArea.setText("Error evaluating derivative: " + ex.getMessage());
+                secondaryOutputArea.setText("");
                 return;
             }
 
@@ -145,7 +148,7 @@ public class FixedPointPane extends VBox {
                 String result = FixedPoint.solve(gx, tol, guess, dgofxStr, absDerivative, sb, var);
                 outputArea.setText(result);
                 
-                // Extract and display the summary of iterations and final result in secondary output area
+                // display in secondary output area
                 String[] lines = result.split("\n");
                 StringBuilder secondaryOutput = new StringBuilder();
                 boolean foundSummary = false;
@@ -153,13 +156,15 @@ public class FixedPointPane extends VBox {
                 for (String line : lines) {
                     if (line.startsWith("Summary of Iterations:")) {
                         foundSummary = true;
-                        secondaryOutput.append(line).append("\n");
-                    } else if (foundSummary && line.startsWith("Iteration #")) {
+                        secondaryOutput.append(line).append("\n\n");
+                    } else if (foundSummary && (line.startsWith("Iteration") || line.matches("^\\d+\\s+\\d+\\.\\d+\\s+\\d+\\.\\d+.*"))) {
                         secondaryOutput.append(line).append("\n");
                     } else if (foundSummary && line.trim().isEmpty()) {
-                        secondaryOutput.append("\n");
+                        if (secondaryOutput.charAt(secondaryOutput.length() - 1) != '\n') {
+                            secondaryOutput.append("\n");
+                        }
                     } else if (line.startsWith("The approximate root is:")) {
-                        secondaryOutput.append(line);
+                        secondaryOutput.append("\n").append(line);
                         break;
                     }
                 }

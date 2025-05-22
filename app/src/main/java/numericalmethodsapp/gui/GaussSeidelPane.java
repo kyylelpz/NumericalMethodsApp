@@ -46,6 +46,7 @@ public class GaussSeidelPane extends VBox {
 
         numEqSpinner.valueProperty().addListener((obs, oldValue, newValue) -> {
             outputArea.clear();
+            secondaryOutputArea.clear();
             boolean showThird = newValue == 3;
             eq3Label.setVisible(showThird);
             eq3Input.setVisible(showThird);
@@ -78,6 +79,7 @@ public class GaussSeidelPane extends VBox {
             for (String eq : equations) {
                 if (eq.isEmpty()) {
                     outputArea.setText("Please enter all equations.");
+                    secondaryOutputArea.setText("");
                     return;
                 }
             }
@@ -108,22 +110,32 @@ public class GaussSeidelPane extends VBox {
                 maxIterations = Integer.parseInt(maxIterInput.getText());
                 if (maxIterations < 2) {
                     outputArea.setText("Max Iterations should be at least 2.");
+                    secondaryOutputArea.setText("");
                     return;
                 }
                 if (maxIterations >1000){
                     outputArea.setText("Max Iterations should not exceed 1000.");
+                    secondaryOutputArea.setText("");
                     return;
                 }
             } catch (NumberFormatException ex) {
                 outputArea.setText("Invalid tolerance or iteration count.");
+                secondaryOutputArea.setText("");
                 return;
             }
 
             StringBuilder sb = new StringBuilder();
             String result = GaussSeidel.solve(equations, sb, tolerance, maxIterations);
             outputArea.setText(result);
+        
+           
+            String resultLower = result.toLowerCase();
+            if (resultLower.contains("error") || resultLower.contains("no unique solution")) {
+                secondaryOutputArea.setText("");
+                return;
+            }
             
-            // Extract and display the iteration summary and final result in secondary output area
+            // display in secondary output area
             String[] lines = result.split("\n");
             StringBuilder secondaryOutput = new StringBuilder();
             boolean foundIterations = false;
