@@ -28,17 +28,20 @@ public class CramersRulePane extends VBox {
         MainWindow.styleWebflowSpinner(numEqSpinner);
 
         Label eq1Label = new Label("Equation 1:");
-        eq1Label.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
+        eq1Label.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
         TextField eq1Input = new TextField();
         MainWindow.styleWebflowInput(eq1Input);
 
         Label eq2Label = new Label("Equation 2:");
-        eq2Label.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
+        eq2Label.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
         TextField eq2Input = new TextField();
         MainWindow.styleWebflowInput(eq2Input);
 
         Label eq3Label = new Label("Equation 3:");
-        eq3Label.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
+        eq3Label.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
+            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
         TextField eq3Input = new TextField();
         MainWindow.styleWebflowInput(eq3Input);
 
