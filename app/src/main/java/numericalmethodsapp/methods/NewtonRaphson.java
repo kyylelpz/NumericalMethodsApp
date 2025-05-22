@@ -94,10 +94,21 @@ public class NewtonRaphson {
             sb.append("Method diverged or stopped due to a mathematical error. No approximate root found.\n");
         } else {
             sb.append("Summary of Iterations:\n\n");
+
+            // Header
+            sb.append(String.format("%-12s%-20s%-20s\n", "Iteration", var + "(n)", var + "(n+1)"));
+
+            // Format with decimal places
+            String format = String.format("%%-12d%%-20.%df%%-20.%df\n", decimalPlaces, decimalPlaces);
+
+            // Loop through iterations
             for (int i = 0; i < iterations.size() - 1; i++) {
-                sb.append(String.format("Iteration #%2d", i+1)).append(":     x(n+1) = ").append(iterations.get(i+1)).append("\n");
+                sb.append(String.format(format, i + 1, iterations.get(i), iterations.get(i + 1)));
             }
-            sb.append("\nThe approximate root is: ").append(result);
+
+            // Print the final result
+            sb.append("\nThe approximate root is: ").append(String.format("%." + decimalPlaces + "f", result));
+
         }
 
         return sb.toString();

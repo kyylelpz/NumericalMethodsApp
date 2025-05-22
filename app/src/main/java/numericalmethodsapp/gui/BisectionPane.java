@@ -1,5 +1,8 @@
 package numericalmethodsapp.gui;
 
+import java.util.Iterator;
+import java.util.Set;
+
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -60,6 +63,26 @@ public class BisectionPane extends VBox {
                 return;
             }
 
+            //extract variables
+            Set<Character> vars = Utils.extractVariables(fx);
+
+            if (vars.size() > 1){
+                sb.append("Expression: ").append(fx).append("\n");
+                sb.append("Variables: ").append(vars).append("\n\n");
+                sb.append("Multiple variables extracted. Re-enter another expression with only 1 variable.\n");
+                outputArea.setText(sb.toString());
+                return;
+            }
+            else if (vars.isEmpty()){
+                sb.append("No variables extracted. Re-enter another expression.\n");
+                outputArea.setText(sb.toString());
+                return;
+            }
+
+            Iterator<Character> iterator = vars.iterator();
+            Character var = iterator.next();
+            var = Character.toLowerCase(var);
+
             // Validate tolerance
             double tol;
             try {
@@ -91,9 +114,11 @@ public class BisectionPane extends VBox {
                 return;
             }
 
+            fx = Utils.convertExprToExp4jCompatible(fx);
+
             // Run solver
             try {
-                String result = Bisection.solve(fx, aVal, bVal, tol, sb);
+                String result = Bisection.solve(fx, aVal, bVal, tol, sb, var);
                 outputArea.setText(result);
                 
                 // Extract and display the summary of iterations and final result in secondary output area

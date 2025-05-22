@@ -77,17 +77,32 @@ public class FixedPoint {
         sb.append("Start of Fixed-Point Iteration Method:\n\n");
 
         Queue<Double> iterations = new LinkedList<>();
+
+        iterations.offer(iGuess);
+
         Double solution = fixedPoint(gofx, iGuess, tolerance, decimalPlaces, 1, iterations, sb, var);
 
         if (iterations.size() > 1) {
             sb.append("Summary of Iterations:\n\n");
+
+            // Header
+            sb.append(String.format("%-12s%-15s%-15s\n", "Iteration", var + "(n)", var + "(n+1)"));
+
+            // Format for rows
+            String format = String.format("%%-12d%%-15.%df%%-15.%df\n", decimalPlaces, decimalPlaces);
+
             int i = 0;
-            while(!iterations.isEmpty()) {
-                sb.append(String.format("Iteration #%2d", i + 1)).append(":     x = ").append(iterations.poll()).append("\n");
+            while (iterations.size() > 1) {
+                double current = iterations.poll();
+                double next = iterations.peek(); // Peek the next without removing
+                sb.append(String.format(format, i + 1, current, next));
                 i++;
             }
+
             sb.append("\n");
         }
+
+
 
         if (solution == null) {
             sb.append("Method diverged or stopped due to a mathematical error. No approximate root found.");

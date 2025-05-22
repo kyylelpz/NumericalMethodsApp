@@ -17,7 +17,7 @@ public class Secant {
 
     public static Double secant(String function, double a, double b, double tolerance,
                             int decimalPlaces, int iteration, ArrayList<Double> iterations,
-                            StringBuilder sb) {
+                            StringBuilder sb, Character var) {
         if (iteration >= 1000) {
             String error = "Method did not converge after 1000 iterations.";
             System.out.println(error);
@@ -26,14 +26,14 @@ public class Secant {
         }
 
         sb.append("Iteration #").append(iteration).append("\n");
-        function = function.replaceAll("(?<=[0-9])x", "*x");
+        function = function.replaceAll("(?<=[0-9])"+var, "*"+var);
 
-        String substituted1 = function.replaceAll("\\bx\\b", Double.toString(a));
-        String substituted2 = function.replaceAll("\\bx\\b", Double.toString(b));
+        String substituted1 = function.replaceAll("\\b"+var+"\\b", Double.toString(a));
+        String substituted2 = function.replaceAll("\\b"+var+"\\b", Double.toString(b));
 
         //Evaluate functions
-        double fa = Utils.evaluateFunction(function, a, decimalPlaces);
-        double fb = Utils.evaluateFunction(function, b, decimalPlaces);
+        double fa = Utils.evaluateFunction(function, a, decimalPlaces, var);
+        double fb = Utils.evaluateFunction(function, b, decimalPlaces, var);
 
         if (Double.isNaN(fa) || Double.isInfinite(fa) ||
             Double.isNaN(fb) || Double.isInfinite(fb)) {
@@ -51,15 +51,15 @@ public class Secant {
         double c = b - fb * (b-a) / (fb-fa);
         c = Utils.round(c, decimalPlaces);
 
-        sb.append("x(n+1) = ").append(b).append(" - ").append(substituted2).append(" *\n\t(").append(b).append(" - ").append(a).append(") / (").append(substituted2).append(" - ").append(substituted1).append("\n");
-        sb.append("x(n+1) = ").append(c).append("\n");
+        sb.append(var).append("(n+1) = ").append(b).append(" - ").append(substituted2).append(" *\n\t(").append(b).append(" - ").append(a).append(") / (").append(substituted2).append(" - ").append(substituted1).append("\n");
+        sb.append(var).append("(n+1) = ").append(c).append("\n");
 
         iterations.add(c);
 
         double check = Math.abs(Utils.round(Math.abs(c - b), decimalPlaces));
         
         if (Math.abs(c-b) <= tolerance) {
-            sb.append("| x(n+1) - x(n) | = ").append(" | (").append(c).append(" - ").append(b).append(") | = ").append(check).append(" is less than or equal to tolerance.\n");
+            sb.append("| ").append(var).append("(n+1) - ").append(var).append("(n) | = ").append(" | (").append(c).append(" - ").append(b).append(") | = ").append(check).append(" is less than or equal to tolerance.\n");
             sb.append("Stopping the iteration...\n\n\n");
             return c;
         }
@@ -67,23 +67,23 @@ public class Secant {
         double check1 = Math.abs(Utils.round(Math.abs(c - a), decimalPlaces));
 
         if (Math.abs(c-a) <= tolerance){
-            sb.append("| x(n+1) - x(n-1) | = ").append(" | (").append(c).append(" - ").append(a).append(") | = ").append(check1).append(" is less than or equal to tolerance.\n");
+            sb.append("| ").append(var).append("(n+1) - ").append(var).append("(n-1) | = ").append(" | (").append(c).append(" - ").append(a).append(") | = ").append(check1).append(" is less than or equal to tolerance.\n");
             sb.append("Stopping the iteration...\n\n\n");
             return c;
         }
 
-        sb.append("| x(n+1) - x(n) | = ").append(" | (").append(c).append(" - ").append(b).append(") | = ").append(check).append(" is greater than tolerance.\n");
+        sb.append("| ").append(var).append("(n+1) - ").append(var).append("+(n) | = ").append(" | (").append(c).append(" - ").append(b).append(") | = ").append(check).append(" is greater than tolerance.\n");
         sb.append("Continuing to next iteration...\n\n");
 
-        return secant(function, b, c, tolerance, decimalPlaces, iteration + 1, iterations, sb);
+        return secant(function, b, c, tolerance, decimalPlaces, iteration + 1, iterations, sb, var);
     }
 
-    public static String solve(String expression, double tolerance, double x0, double x1, StringBuilder sb) {
+    public static String solve(String expression, double tolerance, double x0, double x1, StringBuilder sb, Character var) {
         int decimalPlaces = Utils.getDecimalPlacesFromTolerance(tolerance);
 
-        sb.append("f(x) = ").append(expression).append("\n");
-        sb.append("x(0) = ").append(x0).append("\n");
-        sb.append("x(1) = ").append(x1).append("\n\n");
+        sb.append("f(").append(var).append(") = ").append(expression).append("\n");
+        sb.append(var).append("(0) = ").append(x0).append("\n");
+        sb.append(var).append("(1) = ").append(x1).append("\n\n");
 
         ArrayList<Double> iterations = new ArrayList<>();
         iterations.add(x0);
@@ -91,15 +91,23 @@ public class Secant {
 
         sb.append("Start of Secant Method:\n\n");
 
-        Double solution = secant(expression, x0, x1, tolerance, decimalPlaces, 1, iterations, sb);
+        Double solution = secant(expression, x0, x1, tolerance, decimalPlaces, 1, iterations, sb, var);
     
         if (iterations.size() > 2) {
             sb.append("Summary of Iterations:\n\n");
-            String format = String.format("Iteration #%%d:\ta = %%.%df\tb = %%.%df\tc = %%.%df\n",
-                              decimalPlaces, decimalPlaces, decimalPlaces);
+
+            // Header with dynamic variable name
+            sb.append(String.format("%-12s%-15s%-15s%-15s\n", 
+                "Iteration", var + "(n-1)", var + "(n)", var + "(n+1)"));
+
+            // Format string for values with decimal places
+            String format = String.format("%%-12d%%-15.%df%%-15.%df%%-15.%df\n", 
+                                        decimalPlaces, decimalPlaces, decimalPlaces);
+
             for (int i = 0; i < iterations.size() - 2; i++) {
                 sb.append(String.format(format, i + 1, iterations.get(i), iterations.get(i + 1), iterations.get(i + 2)));
             }
+
             sb.append("\n");
         }
 
