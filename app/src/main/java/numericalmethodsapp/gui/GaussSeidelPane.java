@@ -53,7 +53,9 @@ public class GaussSeidelPane extends VBox {
         });
 
         TextField toleranceInput = new TextField();
+        MainWindow.styleWebflowInput(toleranceInput);
         TextField maxIterInput = new TextField();
+        MainWindow.styleWebflowInput(maxIterInput);
 
         Label toleranceLabel = new Label("Tolerance:");
         Label maxIterLabel = new Label("Max Iterations:");
