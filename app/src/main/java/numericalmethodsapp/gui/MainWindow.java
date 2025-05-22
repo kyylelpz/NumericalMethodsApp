@@ -8,6 +8,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Spinner;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -36,7 +37,9 @@ public class MainWindow extends Application {
     public static final String GRADIENT_COLORS = "#4F46E5, #6366F1, #818CF8";
 
     public static TextArea outputArea = new TextArea();
+    public static TextArea secondaryOutputArea = new TextArea();
     public VBox outputInputBox = new VBox();
+    private Label detailsLabel;
     
 
     // Current method pane reference so you can clear/replace later
@@ -150,7 +153,7 @@ public class MainWindow extends Application {
             createStyledButton("Secant", e -> showSecantPane() ),
             createStyledButton("Bisection", e -> showBisectionPane()),
             createStyledButton("False Position", e -> showFalsePositionPane()),
-            createStyledButton("Matrix", e -> {/* TODO */}),
+            createStyledButton("Matrix", e -> showMatrixPane()),
             createStyledButton("Cramer's Rule", e -> showCramersRulePane()),
             createStyledButton("Gaussian Elimination", e -> showGaussianEliminationPane()),
             createStyledButton("Jacobi", e -> showJacobiPane()),
@@ -158,9 +161,27 @@ public class MainWindow extends Application {
         };
 
         outputArea.setPrefWidth(920);
-        outputArea.setPrefHeight(500);
+        outputArea.setPrefHeight(450);
         outputArea.setEditable(false);
         outputArea.setFont(Font.font("Courier New", 16));
+        styleOutputArea(outputArea);
+
+        secondaryOutputArea.setPrefWidth(920);
+        secondaryOutputArea.setPrefHeight(50);
+        secondaryOutputArea.setEditable(false);
+        secondaryOutputArea.setFont(Font.font("Courier New", 16));
+        styleOutputArea(secondaryOutputArea);
+
+        detailsLabel = new Label("Details:");
+        detailsLabel.setStyle(
+            "-fx-text-fill: " + INPUT_TEXT_ACTIVE + ";" +
+            "-fx-font-family: '" + MAIN_FONT + "';" +
+            "-fx-font-size: 14px;" +
+            "-fx-padding: 0 0 0 20;"
+        );
+        detailsLabel.setAlignment(Pos.CENTER_LEFT);
+        detailsLabel.setMaxWidth(Double.MAX_VALUE);
+        detailsLabel.setVisible(false);
 
         methodSelection.getChildren().addAll(label);
         methodSelection.getChildren().addAll(Arrays.asList(methodButtons));
@@ -173,6 +194,88 @@ public class MainWindow extends Application {
         
         // Automatically load Fixed Point Iteration pane
         showFixedPositionPane();
+    }
+
+    //SHOW PANE METHODS
+
+    private void showFixedPositionPane() {
+        outputInputBox.getChildren().clear();
+        outputArea.clear();
+        secondaryOutputArea.clear();
+        outputArea.setFont(Font.font("Courier New", 16));
+        secondaryOutputArea.setFont(Font.font("Courier New", 16));
+        currentMethodPane = new FixedPointPane(outputArea, detailsLabel);
+        outputInputBox.getChildren().addAll(currentMethodPane, secondaryOutputArea, detailsLabel, outputArea);
+    }
+
+    private void showFalsePositionPane() {
+        outputInputBox.getChildren().clear();
+        outputArea.clear();
+        secondaryOutputArea.clear();
+        currentMethodPane = new FalsePositionPane(outputArea, detailsLabel);
+        outputInputBox.getChildren().addAll(currentMethodPane, secondaryOutputArea, detailsLabel, outputArea);
+    }
+
+    private void showSecantPane() {
+        outputInputBox.getChildren().clear();
+        outputArea.clear();
+        secondaryOutputArea.clear();
+        currentMethodPane = new SecantPane(outputArea, detailsLabel);
+        outputInputBox.getChildren().addAll(currentMethodPane, secondaryOutputArea, detailsLabel, outputArea);
+    }
+
+    private void showBisectionPane() {
+        outputInputBox.getChildren().clear();
+        outputArea.clear();
+        secondaryOutputArea.clear();
+        currentMethodPane = new BisectionPane(outputArea, detailsLabel);
+        outputInputBox.getChildren().addAll(currentMethodPane, secondaryOutputArea, detailsLabel, outputArea);
+    }
+
+    private void showNewtonRaphsonPane() {
+        outputInputBox.getChildren().clear();
+        outputArea.clear();
+        secondaryOutputArea.clear();
+        currentMethodPane = new NewtonRaphsonPane(outputArea, secondaryOutputArea, detailsLabel);
+        outputInputBox.getChildren().addAll(currentMethodPane, secondaryOutputArea, detailsLabel, outputArea);
+    }
+
+    private void showMatrixPane() {
+        outputInputBox.getChildren().clear();
+        currentMethodPane = new MatrixPane();
+        outputInputBox.getChildren().addAll(currentMethodPane);
+    }
+
+    private void showCramersRulePane() {
+        outputInputBox.getChildren().clear();
+        outputArea.clear();
+        secondaryOutputArea.clear();
+        currentMethodPane = new CramersRulePane(outputArea, detailsLabel);
+        outputInputBox.getChildren().addAll(currentMethodPane, secondaryOutputArea, detailsLabel, outputArea);
+    }
+
+    private void showGaussianEliminationPane() {
+        outputInputBox.getChildren().clear();
+        outputArea.clear();
+        secondaryOutputArea.clear();
+        currentMethodPane = new GaussianEliminationPane(outputArea, detailsLabel);
+        outputInputBox.getChildren().addAll(currentMethodPane, secondaryOutputArea, detailsLabel, outputArea);
+    }
+
+    private void showJacobiPane() {
+        outputInputBox.getChildren().clear();
+        outputArea.clear();
+        secondaryOutputArea.clear();
+        currentMethodPane = new JacobiPane(outputArea, detailsLabel);
+        outputInputBox.getChildren().addAll(currentMethodPane, secondaryOutputArea, detailsLabel, outputArea);
+    }
+
+    private void showGaussSeidelPane() {
+        outputInputBox.getChildren().clear();
+        outputArea.clear();
+        secondaryOutputArea.clear();
+        currentMethodPane = new GaussSeidelPane(outputArea, detailsLabel);
+        outputInputBox.getChildren().addAll(currentMethodPane, secondaryOutputArea, detailsLabel, outputArea);
     }
 
     private Button createStyledButton(String text, javafx.event.EventHandler<javafx.event.ActionEvent> action) {
@@ -225,72 +328,6 @@ public class MainWindow extends Application {
         return btn;
     }
 
-    //SHOW PANE METHODS
-
-    private void showFixedPositionPane() {
-        outputInputBox.getChildren().clear();
-        outputArea.clear();
-        outputArea.setFont(Font.font("Courier New", 16));
-        currentMethodPane = new FixedPointPane(outputArea);
-        outputInputBox.getChildren().addAll(currentMethodPane, outputArea);
-    }
-
-    private void showFalsePositionPane() {
-        outputInputBox.getChildren().clear();
-        outputArea.clear();
-        currentMethodPane = new FalsePositionPane(outputArea);
-        outputInputBox.getChildren().addAll(currentMethodPane, outputArea);
-    }
-
-    private void showSecantPane() {
-        outputInputBox.getChildren().clear();
-        outputArea.clear();
-        currentMethodPane = new SecantPane(outputArea);
-        outputInputBox.getChildren().addAll(currentMethodPane, outputArea);
-    }
-
-    private void showBisectionPane() {
-        outputInputBox.getChildren().clear();
-        outputArea.clear();
-        currentMethodPane = new BisectionPane(outputArea);
-        outputInputBox.getChildren().addAll(currentMethodPane, outputArea);
-    }
-
-    private void showNewtonRaphsonPane() {
-        outputInputBox.getChildren().clear();
-        outputArea.clear();
-        currentMethodPane = new NewtonRaphsonPane(outputArea);
-        outputInputBox.getChildren().addAll(currentMethodPane, outputArea);
-    }
-
-    private void showCramersRulePane() {
-        outputInputBox.getChildren().clear();
-        outputArea.clear();
-        currentMethodPane = new CramersRulePane(outputArea);
-        outputInputBox.getChildren().addAll(currentMethodPane, outputArea);
-    }
-
-    private void showGaussianEliminationPane() {
-        outputInputBox.getChildren().clear();
-        outputArea.clear();
-        currentMethodPane = new GaussianEliminationPane(outputArea);
-        outputInputBox.getChildren().addAll(currentMethodPane, outputArea);
-    }
-
-    private void showJacobiPane() {
-        outputInputBox.getChildren().clear();
-        outputArea.clear();
-        currentMethodPane = new JacobiPane(outputArea);
-        outputInputBox.getChildren().addAll(currentMethodPane, outputArea);
-    }
-
-    private void showGaussSeidelPane() {
-        outputInputBox.getChildren().clear();
-        outputArea.clear();
-        currentMethodPane = new GaussSeidelPane(outputArea);
-        outputInputBox.getChildren().addAll(currentMethodPane, outputArea);
-    }
-
 
     public static void styleWebflowInput(TextField input) {
         input.setStyle(
@@ -323,5 +360,128 @@ public class MainWindow extends Application {
             );
         });
     }
+
+    public static void styleWebflowSpinner(Spinner<?> spinner) {
+    // Style the spinner's text field (editor)
+    styleWebflowInput(spinner.getEditor());
+
+    spinner.setStyle(
+        "-fx-background-color: transparent;" +
+        "-fx-padding: 0;"
+    );
+
+    // Listen for when the skin is applied
+    spinner.skinProperty().addListener((obs, oldSkin, newSkin) -> {
+        if (newSkin != null) {
+            javafx.application.Platform.runLater(() -> {
+                // Style the spinner buttons
+                spinner.lookupAll(".increment-arrow-button, .decrement-arrow-button").forEach(node -> {
+                    node.setStyle(
+                        "-fx-background-color: " + PRIMARY_COLOR + ";" +
+                        "-fx-background-radius: 2px;" +
+                        "-fx-padding: 0;"
+                    );
+                    node.setOnMouseEntered(e -> node.setStyle(
+                        "-fx-background-color: #6366F1;" +
+                        "-fx-background-radius: 2px;" +
+                        "-fx-padding: 0;"
+                    ));
+                    node.setOnMouseExited(e -> node.setStyle(
+                        "-fx-background-color: " + PRIMARY_COLOR + ";" +
+                        "-fx-background-radius: 2px;" +
+                        "-fx-padding: 0;"
+                    ));
+                });
+
+                spinner.lookupAll(".increment-arrow, .decrement-arrow").forEach(node -> {
+                    node.setStyle(
+                        "-fx-background-color: transparent;" +
+                        "-fx-shape: null;" +
+                        "-fx-border-color: transparent;" +
+                        "-fx-padding: 0;" +
+                        "-fx-mark-color: " + INPUT_TEXT_ACTIVE + ";"
+                    );
+                });
+            });
+        }
+    });
+
+    // Add hover effect to the editor
+    spinner.getEditor().setOnMouseEntered(e -> {
+        spinner.getEditor().setStyle(
+            spinner.getEditor().getStyle() +
+            "-fx-border-color: linear-gradient(to right, " + GRADIENT_COLORS + ");" +
+            "-fx-border-width: 0 0 2 0;"
+        );
+    });
+    spinner.getEditor().setOnMouseExited(e -> {
+        spinner.getEditor().setStyle(
+            spinner.getEditor().getStyle().replace(
+                "-fx-border-color: linear-gradient(to right, " + GRADIENT_COLORS + ");",
+                "-fx-border-color: transparent;"
+            )
+        );
+    });
+}
+
+    public static void styleCalculateButton(Button button) {
+        button.setStyle(
+            "-fx-background-color: " + PRIMARY_COLOR + ";" +
+            "-fx-text-fill: white;" +
+            "-fx-font-size: 12px;" +
+            "-fx-padding: 8 20;" +
+            "-fx-background-radius: 4px;" +
+            "-fx-border-radius: 4px;" +
+            "-fx-effect: dropshadow(gaussian, rgba(79, 70, 229, 0.3), 10, 0, 0, 0);"
+        );
+
+        // Add hover effects
+        button.setOnMouseEntered(e -> button.setStyle(
+            "-fx-background-color: #6366F1;" +  // Lighter purple on hover
+            "-fx-text-fill: white;" +
+            "-fx-font-size: 12px;" +
+            "-fx-padding: 8 20;" +
+            "-fx-background-radius: 4px;" +
+            "-fx-border-radius: 4px;" +
+            "-fx-effect: dropshadow(gaussian, rgba(99, 102, 241, 0.4), 15, 0, 0, 0);"
+        ));
+
+        button.setOnMouseExited(e -> button.setStyle(
+            "-fx-background-color: " + PRIMARY_COLOR + ";" +
+            "-fx-text-fill: white;" +
+            "-fx-font-size: 12px;" +
+            "-fx-padding: 8 20;" +
+            "-fx-background-radius: 4px;" +
+            "-fx-border-radius: 4px;" +
+            "-fx-effect: dropshadow(gaussian, rgba(79, 70, 229, 0.3), 10, 0, 0, 0);"
+        ));
+    }
+
+    public static void styleOutputArea(TextArea area) {
+    area.setStyle(
+        //"-fx-control-inner-background: rgba(68, 81, 124, 0.8);" +  // Proper inner background
+        "-fx-background-color: transparent;" +                 // Let parent style through
+        "-fx-text-fill: " + INPUT_TEXT_ACTIVE + ";" +          // Consistent text color
+        "-fx-font-size: 14px;" +
+        "-fx-padding: 8 12 8 12;" +
+        "-fx-background-insets: 0;" +
+        "-fx-border-color: transparent;" +
+        "-fx-highlight-fill: #818CF8;" +                       // Selection color
+        "-fx-highlight-text-fill: #161517;"                   // Selected text text color
+    );
+
+    // Defer scroll pane styling until layout is complete
+    javafx.application.Platform.runLater(() -> {
+        if (area.lookup(".scroll-pane") != null) {
+            area.lookup(".scroll-pane").setStyle("-fx-background-color: transparent;");
+        }
+        if (area.lookup(".viewport") != null) {
+            area.lookup(".viewport").setStyle("-fx-background-color: transparent;");
+        }
+        if (area.lookup(".content") != null) {
+            area.lookup(".content").setStyle("-fx-background-color: transparent;");
+        }
+    });
+}
 
 }

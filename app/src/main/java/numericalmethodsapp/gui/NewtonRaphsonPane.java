@@ -15,7 +15,7 @@ import numericalmethodsapp.utils.Utils;
 public class NewtonRaphsonPane extends VBox {
 
     @SuppressWarnings("CallToPrintStackTrace")
-    public NewtonRaphsonPane(TextArea outputArea) {
+    public NewtonRaphsonPane(TextArea outputArea, TextArea secondaryOutputArea, Label detailsLabel) {
         setSpacing(10);
         setPadding(new Insets(20));
 
@@ -27,6 +27,10 @@ public class NewtonRaphsonPane extends VBox {
         // Output area first
         outputArea.setEditable(false);
         outputArea.setPrefHeight(300);
+
+        // Secondary output area
+        secondaryOutputArea.setEditable(false);
+        secondaryOutputArea.setPrefHeight(50);
 
         // Labels and inputs
         Label fxLabel = new Label("Enter f(x):");
@@ -46,36 +50,7 @@ public class NewtonRaphsonPane extends VBox {
         MainWindow.styleWebflowInput(guessInput);
 
         Button runButton = new Button("Calculate");
-        runButton.setStyle(
-            "-fx-background-color: " + MainWindow.PRIMARY_COLOR + ";" +
-            "-fx-text-fill: white;" +
-            "-fx-font-size: 12px;" +
-            "-fx-padding: 8 20;" +
-            "-fx-background-radius: 4px;" +
-            "-fx-border-radius: 4px;" +
-            "-fx-effect: dropshadow(gaussian, rgba(79, 70, 229, 0.3), 10, 0, 0, 0);"
-        );
-
-        // Add hover effects
-        runButton.setOnMouseEntered(e -> runButton.setStyle(
-            "-fx-background-color: #6366F1;" +  // Lighter purple on hover
-            "-fx-text-fill: white;" +
-            "-fx-font-size: 12px;" +
-            "-fx-padding: 8 20;" +
-            "-fx-background-radius: 4px;" +
-            "-fx-border-radius: 4px;" +
-            "-fx-effect: dropshadow(gaussian, rgba(99, 102, 241, 0.4), 15, 0, 0, 0);"
-        ));
-
-        runButton.setOnMouseExited(e -> runButton.setStyle(
-            "-fx-background-color: " + MainWindow.PRIMARY_COLOR + ";" +
-            "-fx-text-fill: white;" +
-            "-fx-font-size: 12px;" +
-            "-fx-padding: 8 20;" +
-            "-fx-background-radius: 4px;" +
-            "-fx-border-radius: 4px;" +
-            "-fx-effect: dropshadow(gaussian, rgba(79, 70, 229, 0.3), 10, 0, 0, 0);"
-        ));
+        MainWindow.styleCalculateButton(runButton);
 
         runButton.setOnAction(e -> {
             String fx = fxInput.getText().trim();
@@ -87,6 +62,7 @@ public class NewtonRaphsonPane extends VBox {
             String symjaExpr = Utils.convertExprToSymjaCompatible(fx);
             if (!Utils.isValidSymjaExpression(symjaExpr)) {
                 outputArea.setText("Invalid f(x) expression syntax. Please check parentheses and functions.");
+                secondaryOutputArea.setText("");
                 return;
             }
 
@@ -96,10 +72,12 @@ public class NewtonRaphsonPane extends VBox {
                 tol = Double.parseDouble(tolStr);
                 if (tol <= 0) {
                     outputArea.setText("Tolerance must be a positive number.");
+                    secondaryOutputArea.setText("");
                     return;
                 }
             } catch (NumberFormatException ex) {
                 outputArea.setText("Tolerance must be a valid decimal number.");
+                secondaryOutputArea.setText("");
                 return;
             }
 
@@ -109,6 +87,7 @@ public class NewtonRaphsonPane extends VBox {
                 guess = Double.parseDouble(guessStr);
             } catch (NumberFormatException ex) {
                 outputArea.setText("Initial guess must be a valid number.");
+                secondaryOutputArea.setText("");
                 return;
             }
 
@@ -122,8 +101,20 @@ public class NewtonRaphsonPane extends VBox {
 
                 String result = NewtonRaphson.solve(exp4jExpr, derivativeStr, tol, guess, sb);
                 outputArea.setText(result);
+                
+                // Extract and display the final result in secondary output area
+                String[] lines = result.split("\n");
+                for (int i = lines.length - 1; i >= 0; i--) {
+                    if (lines[i].startsWith("The approximate root is:")) {
+                        secondaryOutputArea.setText(lines[i]);
+                        break;
+                    }
+                }
+                
+                detailsLabel.setVisible(true);
             } catch (Exception ex) {
                 outputArea.setText("Error during solving: " + ex.getMessage());
+                secondaryOutputArea.setText("");
                 ex.printStackTrace();
             }
         });
@@ -132,6 +123,7 @@ public class NewtonRaphsonPane extends VBox {
         getChildren().addAll(
             titleLabel,
             outputArea,
+            secondaryOutputArea,
             fxLabel, fxInput,
             tolLabel, tolInput,
             guessLabel, guessInput,

@@ -11,7 +11,7 @@ import numericalmethodsapp.methods.GaussianElimination;
 
 public class GaussianEliminationPane extends VBox {
     @SuppressWarnings("CallToPrintStackTrace")
-    public GaussianEliminationPane(TextArea outputArea) {
+    public GaussianEliminationPane(TextArea outputArea, Label detailsLabel) {
         setSpacing(10);
         setPadding(new Insets(20));
 
@@ -27,22 +27,22 @@ public class GaussianEliminationPane extends VBox {
             "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
 
         Spinner<Integer> numEqSpinner = new Spinner<>(2, 3, 2);
-        numEqSpinner.setStyle("-fx-font-family: " + MainWindow.MAIN_FONT + ";");
+        MainWindow.styleWebflowSpinner(numEqSpinner);
 
         Label eq1Label = new Label("Equation 1:");
-        eq1Label.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
-            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
+        eq1Label.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
         TextField eq1Input = new TextField();
+        MainWindow.styleWebflowInput(eq1Input);
 
         Label eq2Label = new Label("Equation 2:");
-        eq2Label.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
-            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
+        eq2Label.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
         TextField eq2Input = new TextField();
+        MainWindow.styleWebflowInput(eq2Input);
 
         Label eq3Label = new Label("Equation 3:");
-        eq3Label.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";"+
-            "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
+        eq3Label.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
         TextField eq3Input = new TextField();
+        MainWindow.styleWebflowInput(eq3Input);
 
         eq3Label.setVisible(false);
         eq3Input.setVisible(false);
@@ -57,8 +57,7 @@ public class GaussianEliminationPane extends VBox {
         });
 
         Button runButton = new Button("Calculate");
-        runButton.setStyle("-fx-text-fill: " + MainWindow.BACKGROUND_COLOR + ";" +
-                "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
+        MainWindow.styleCalculateButton(runButton);
 
         runButton.setOnAction(e -> {
             int numEq = numEqSpinner.getValue();
@@ -78,16 +77,12 @@ public class GaussianEliminationPane extends VBox {
             try {
                 String result = GaussianElimination.solve(equations, sb);
                 outputArea.setText(result);
+                detailsLabel.setVisible(true);
             } catch (Exception ex) {
                 outputArea.setText("Error: " + ex.getMessage());
                 ex.printStackTrace();
             }
         });
-
-        runButton.setOnMouseEntered(e -> runButton.setStyle("-fx-background-color: #D1D5DB;" +
-                "-fx-font-family: " + MainWindow.MAIN_FONT + ";"));
-        runButton.setOnMouseExited(e -> runButton.setStyle("-fx-background-color: " + MainWindow.SECONDARY_COLOR + ";" +
-                "-fx-font-family: " + MainWindow.MAIN_FONT + ";"));
 
         getChildren().addAll(
                 titleLabel,

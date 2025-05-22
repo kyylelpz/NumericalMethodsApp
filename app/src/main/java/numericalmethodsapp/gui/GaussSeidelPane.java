@@ -6,7 +6,7 @@ import javafx.scene.layout.VBox;
 import numericalmethodsapp.methods.GaussSeidel;
 
 public class GaussSeidelPane extends VBox {
-    public GaussSeidelPane(TextArea outputArea) {
+    public GaussSeidelPane(TextArea outputArea, Label detailsLabel) {
         setSpacing(10);
         setPadding(new Insets(20));
 
@@ -22,19 +22,21 @@ public class GaussSeidelPane extends VBox {
                 "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
 
         Spinner<Integer> numEqSpinner = new Spinner<>(2, 3, 2);
-        numEqSpinner.setStyle("-fx-font-family: " + MainWindow.MAIN_FONT + ";");
+        MainWindow.styleWebflowSpinner(numEqSpinner);
 
         TextField eq1Input = new TextField();
+        MainWindow.styleWebflowInput(eq1Input);
         TextField eq2Input = new TextField();
+        MainWindow.styleWebflowInput(eq2Input);
         TextField eq3Input = new TextField();
+        MainWindow.styleWebflowInput(eq3Input);
 
         Label eq1Label = new Label("Equation 1:");
         Label eq2Label = new Label("Equation 2:");
         Label eq3Label = new Label("Equation 3:");
 
         for (Label label : new Label[]{eq1Label, eq2Label, eq3Label}) {
-            label.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";" +
-                    "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
+            label.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
         }
 
         eq3Label.setVisible(false);
@@ -50,24 +52,19 @@ public class GaussSeidelPane extends VBox {
         });
 
         TextField toleranceInput = new TextField("0.001");
+        MainWindow.styleWebflowInput(toleranceInput);
         TextField maxIterInput = new TextField("20");
+        MainWindow.styleWebflowInput(maxIterInput);
 
         Label toleranceLabel = new Label("Tolerance:");
         Label maxIterLabel = new Label("Max Iterations:");
 
         for (Label label : new Label[]{toleranceLabel, maxIterLabel}) {
-            label.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";" +
-                    "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
+            label.setStyle("-fx-text-fill: " + MainWindow.SECONDARY_COLOR + ";");
         }
 
         Button runButton = new Button("Calculate");
-        runButton.setStyle("-fx-text-fill: " + MainWindow.BACKGROUND_COLOR + ";" +
-                "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
-
-        runButton.setOnMouseEntered(e -> runButton.setStyle("-fx-background-color: #D1D5DB;" +
-                "-fx-font-family: " + MainWindow.MAIN_FONT + ";"));
-        runButton.setOnMouseExited(e -> runButton.setStyle("-fx-background-color: " + MainWindow.SECONDARY_COLOR + ";" +
-                "-fx-font-family: " + MainWindow.MAIN_FONT + ";"));
+        MainWindow.styleCalculateButton(runButton);
 
         runButton.setOnAction(e -> {
             outputArea.clear();
@@ -98,6 +95,7 @@ public class GaussSeidelPane extends VBox {
             StringBuilder sb = new StringBuilder();
             String result = GaussSeidel.solve(equations, sb, tolerance, maxIterations);
             outputArea.setText(result);
+            detailsLabel.setVisible(true);
         });
 
         getChildren().addAll(

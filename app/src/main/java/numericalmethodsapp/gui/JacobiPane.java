@@ -6,7 +6,7 @@ import javafx.scene.layout.VBox;
 import numericalmethodsapp.methods.Jacobi;
 
 public class JacobiPane extends VBox {
-    public JacobiPane(TextArea outputArea) {
+    public JacobiPane(TextArea outputArea, Label detailsLabel) {
         setSpacing(10);
         setPadding(new Insets(20));
 
@@ -22,11 +22,16 @@ public class JacobiPane extends VBox {
                 "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
 
         Spinner<Integer> numEqSpinner = new Spinner<>(2, 3, 2);
-        numEqSpinner.setStyle("-fx-font-family: " + MainWindow.MAIN_FONT + ";");
+        MainWindow.styleWebflowSpinner(numEqSpinner);
 
         TextField eq1Input = new TextField();
         TextField eq2Input = new TextField();
         TextField eq3Input = new TextField();
+
+        // Apply consistent styling to text fields
+        for (TextField field : new TextField[]{eq1Input, eq2Input, eq3Input}) {
+            MainWindow.styleWebflowInput(field);
+        }
 
         Label eq1Label = new Label("Equation 1:");
         Label eq2Label = new Label("Equation 2:");
@@ -52,6 +57,11 @@ public class JacobiPane extends VBox {
         TextField toleranceInput = new TextField("0.001");
         TextField maxIterInput = new TextField("20");
 
+        // Apply consistent styling to parameter text fields
+        for (TextField field : new TextField[]{toleranceInput, maxIterInput}) {
+            MainWindow.styleWebflowInput(field);
+        }
+
         Label toleranceLabel = new Label("Tolerance:");
         Label maxIterLabel = new Label("Max Iterations:");
 
@@ -61,13 +71,7 @@ public class JacobiPane extends VBox {
         }
 
         Button runButton = new Button("Calculate");
-        runButton.setStyle("-fx-text-fill: " + MainWindow.BACKGROUND_COLOR + ";" +
-                "-fx-font-family: " + MainWindow.MAIN_FONT + ";");
-
-        runButton.setOnMouseEntered(e -> runButton.setStyle("-fx-background-color: #D1D5DB;" +
-                "-fx-font-family: " + MainWindow.MAIN_FONT + ";"));
-        runButton.setOnMouseExited(e -> runButton.setStyle("-fx-background-color: " + MainWindow.SECONDARY_COLOR + ";" +
-                "-fx-font-family: " + MainWindow.MAIN_FONT + ";"));
+        MainWindow.styleCalculateButton(runButton);
 
         runButton.setOnAction(e -> {
             outputArea.clear();
@@ -98,6 +102,7 @@ public class JacobiPane extends VBox {
             StringBuilder sb = new StringBuilder();
             String result = Jacobi.solve(equations, sb, tolerance, maxIterations);
             outputArea.setText(result);
+            detailsLabel.setVisible(true);
         });
 
         getChildren().addAll(

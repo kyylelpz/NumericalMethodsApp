@@ -11,7 +11,7 @@ import numericalmethodsapp.utils.Utils;
 
 public class SecantPane extends VBox {
     @SuppressWarnings("CallToPrintStackTrace")
-    public SecantPane(TextArea outputArea) {
+    public SecantPane(TextArea outputArea, Label detailsLabel) {
         setSpacing(10);
         setPadding(new Insets(20));
 
@@ -46,36 +46,7 @@ public class SecantPane extends VBox {
         MainWindow.styleWebflowInput(x1Input);
 
         Button runButton = new Button("Calculate");
-        runButton.setStyle(
-            "-fx-background-color: " + MainWindow.PRIMARY_COLOR + ";" +
-            "-fx-text-fill: white;" +
-            "-fx-font-size: 12px;" +
-            "-fx-padding: 8 20;" +
-            "-fx-background-radius: 4px;" +
-            "-fx-border-radius: 4px;" +
-            "-fx-effect: dropshadow(gaussian, rgba(79, 70, 229, 0.3), 10, 0, 0, 0);"
-        );
-
-        // Add hover effects
-        runButton.setOnMouseEntered(e -> runButton.setStyle(
-            "-fx-background-color: #6366F1;" +  // Lighter purple on hover
-            "-fx-text-fill: white;" +
-            "-fx-font-size: 12px;" +
-            "-fx-padding: 8 20;" +
-            "-fx-background-radius: 4px;" +
-            "-fx-border-radius: 4px;" +
-            "-fx-effect: dropshadow(gaussian, rgba(99, 102, 241, 0.4), 15, 0, 0, 0);"
-        ));
-
-        runButton.setOnMouseExited(e -> runButton.setStyle(
-            "-fx-background-color: " + MainWindow.PRIMARY_COLOR + ";" +
-            "-fx-text-fill: white;" +
-            "-fx-font-size: 12px;" +
-            "-fx-padding: 8 20;" +
-            "-fx-background-radius: 4px;" +
-            "-fx-border-radius: 4px;" +
-            "-fx-effect: dropshadow(gaussian, rgba(79, 70, 229, 0.3), 10, 0, 0, 0);"
-        ));
+        MainWindow.styleCalculateButton(runButton);
 
         runButton.setOnAction(e -> {
             String fx = fxInput.getText().trim();
@@ -136,6 +107,7 @@ public class SecantPane extends VBox {
             try {
                 String result = Secant.solve(exp4jExpr, tolerance, x0, x1, sb);
                 outputArea.setText(result);
+                detailsLabel.setVisible(true);
             } catch (Exception ex) {
                 outputArea.setText("Error during solving: " + ex.getMessage());
                 ex.printStackTrace();

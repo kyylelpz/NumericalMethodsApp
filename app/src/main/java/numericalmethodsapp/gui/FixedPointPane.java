@@ -15,7 +15,7 @@ import numericalmethodsapp.utils.Utils;
 public class FixedPointPane extends VBox {
 
     @SuppressWarnings("CallToPrintStackTrace")
-    public FixedPointPane(TextArea outputArea) {
+    public FixedPointPane(TextArea outputArea, Label detailsLabel) {
 
         setSpacing(10);
         setPadding(new Insets(20));
@@ -46,36 +46,7 @@ public class FixedPointPane extends VBox {
         MainWindow.styleWebflowInput(guessInput);
 
         Button runButton = new Button("Calculate");
-        runButton.setStyle(
-            "-fx-background-color: " + MainWindow.PRIMARY_COLOR + ";" +
-            "-fx-text-fill: white;" +
-            "-fx-font-size: 12px;" +
-            "-fx-padding: 8 20;" +
-            "-fx-background-radius: 4px;" +
-            "-fx-border-radius: 4px;" +
-            "-fx-effect: dropshadow(gaussian, rgba(79, 70, 229, 0.3), 10, 0, 0, 0);"
-        );
-
-        // Add hover effects
-        runButton.setOnMouseEntered(e -> runButton.setStyle(
-            "-fx-background-color: #6366F1;" +  // Lighter purple on hover
-            "-fx-text-fill: white;" +
-            "-fx-font-size: 12px;" +
-            "-fx-padding: 8 20;" +
-            "-fx-background-radius: 4px;" +
-            "-fx-border-radius: 4px;" +
-            "-fx-effect: dropshadow(gaussian, rgba(99, 102, 241, 0.4), 15, 0, 0, 0);"
-        ));
-
-        runButton.setOnMouseExited(e -> runButton.setStyle(
-            "-fx-background-color: " + MainWindow.PRIMARY_COLOR + ";" +
-            "-fx-text-fill: white;" +
-            "-fx-font-size: 12px;" +
-            "-fx-padding: 8 20;" +
-            "-fx-background-radius: 4px;" +
-            "-fx-border-radius: 4px;" +
-            "-fx-effect: dropshadow(gaussian, rgba(79, 70, 229, 0.3), 10, 0, 0, 0);"
-        ));
+        MainWindow.styleCalculateButton(runButton);
 
         runButton.setOnAction(e -> {
             String gx = gxInput.getText().trim();
@@ -144,6 +115,7 @@ public class FixedPointPane extends VBox {
                 outputArea.setText("An error occurred during solving: " + ex.getMessage());
                 ex.printStackTrace();
             }
+            detailsLabel.setVisible(true);
         });
 
         getChildren().addAll(
