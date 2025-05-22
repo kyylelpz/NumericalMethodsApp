@@ -14,135 +14,41 @@ import numericalmethodsapp.utils.Utils;
  * @author lopez
  */
 public class FalsePosition {
-    public static void run (Scanner input){
-        input.nextLine();
 
-        //Enter f(x)
-        String expression = "";
-        while (true) {
-            System.out.print("Enter f(x): ");
-            expression = input.nextLine();
-            expression = Utils.convertExprToSymjaCompatible(expression);
-
-            if (Utils.isValidSymjaExpression(expression)) {
-                break;
-            } else {
-                System.out.println("Invalid mathematical expression. Please check your syntax (e.g., unmatched parentheses, invalid functions). Try again.");
-            }
-        }
-
-        //Enter tolerance
-        double tolerance = 0.001;
-        while (true) {
-            try {
-                System.out.print("Enter tolerance: ");
-                tolerance = input.nextDouble();
-                if (tolerance <= 0) throw new IllegalArgumentException("Tolerance must be positive.");
-                break;
-            } catch (InputMismatchException e) {
-                System.out.println("Invalid input. Please enter a valid decimal number.");
-                input.nextLine();  // Clear invalid input
-            } catch (IllegalArgumentException e) {
-                System.out.println(e.getMessage());
-                input.nextLine();
-            }
-        }
-
-        int decimalPlaces = Utils.getDecimalPlacesFromTolerance(tolerance);
-        expression = Utils.convertExprToExp4jCompatible(expression);
-        
-        //Enter initial guesses
-        double x0 = 0.0, x1 = 0.0;
-        while (true) {
-            try {
-                System.out.print("Enter x0: ");
-                x0 = input.nextDouble();
-                Math.abs(Utils.evaluateFunction(expression, x0, decimalPlaces));
-                break;
-            } catch (InputMismatchException e) {
-                System.out.println("Invalid input. Please enter a valid decimal number.");
-                input.nextLine();  // Clear invalid input
-            } catch (Exception e) {
-                System.out.println("Evaluation error: " + e.getMessage());
-                input.nextLine();
-            }
-        }
-
-        while (true) {
-            try {
-                System.out.print("Enter x1: ");
-                x1 = input.nextDouble();
-                Math.abs(Utils.evaluateFunction(expression, x1, decimalPlaces));
-                break;
-            } catch (InputMismatchException e) {
-                System.out.println("Invalid input. Please enter a valid decimal number.");
-                input.nextLine();  // Clear invalid input
-            } catch (Exception e) {
-                System.out.println("Evaluation error: " + e.getMessage());
-                input.nextLine();
-            }
-        }
-        
-        //Start iteration
-        LinkedList<LinkedList<Double>> iterations = new LinkedList<>();
-        try {
-            Double solution = falsePosition(expression, x0, x1, tolerance, decimalPlaces, 1, iterations, null);
-
-            for (int i = 0; i < iterations.size(); i++) {
-                LinkedList<Double> row = iterations.get(i);
-                System.out.println("Iteration #" + (i+1) + ": a = " + row.get(0) + " b = " + row.get(1) + " c = "
-                                    + row.get(2) + " f(c) = " + row.get(3));
-            }
-
-            if (solution == null) {
-                System.out.println("Method diverged. No approximate solution found.");
-            } else {
-                System.out.printf("The approximate solution is: " + solution);
-            }
-        } catch (IllegalArgumentException e) {
-            System.out.println("Error: " + e.getMessage());
-        }
-    }
-
-    //False Position Start/Recursive
     public static Double falsePosition(String function, double a, double b, double tolerance,
-                    int decimalPlaces, int iteration, LinkedList<LinkedList<Double>> iterations, StringBuilder sb) {
+                    int decimalPlaces, int iteration, LinkedList<LinkedList<Double>> iterations, StringBuilder sb, Character var) {
+
         if (iteration > 1000) {
-            System.out.println("Method did not converge after 1000 iterations.");
-            sb.append("Method did not converge after 1000 iterations.");
+            sb.append("Method did not converge after 1000 iterations.\n");
             return null;
         }
 
         sb.append("Iteration #").append(iteration).append(":\n");
-        function = function.replaceAll("(?<=[0-9])x", "*x");
+        function = function.replaceAll("(?<=[0-9])"+var, "*"+var);
 
-        String substituted1 = function.replaceAll("\\bx\\b", Double.toString(a));
-        String substituted2 = function.replaceAll("\\bx\\b", Double.toString(b));
+        String substituted1 = function.replaceAll("\\b"+var+"\\b", Double.toString(a));
+        String substituted2 = function.replaceAll("\\b"+var+"\\b", Double.toString(b));
 
         //Evaluate functions
-        double fa = Utils.evaluateFunction(function, a, decimalPlaces);
-        double fb = Utils.evaluateFunction(function, b, decimalPlaces);
+        double fa = Utils.evaluateFunction(function, a, decimalPlaces, var);
+        double fb = Utils.evaluateFunction(function, b, decimalPlaces, var);
 
-        sb.append("f(xL) = ").append(substituted1).append(" = ").append(fa).append("\n");
-        sb.append("f(xR) = ").append(substituted2).append(" = ").append(fb).append("\n");
+        sb.append("f(").append(var).append("L) = ").append(substituted1).append(" = ").append(fa).append("\n");
+        sb.append("f(").append(var).append("R) = ").append(substituted2).append(" = ").append(fb).append("\n");
 
         if (Double.isNaN(fa) || Double.isInfinite(fa) ||
             Double.isNaN(fb) || Double.isInfinite(fb)) {
-            System.out.println("Invalid function evaluation at interval endpoints (NaN or Infinity). Iteration stopped.");
-            sb.append("");
+            sb.append("Invalid function evaluation at interval endpoints (NaN or Infinity). Iteration stopped\n");
             return null;
         }
         
         if (fa * fb >= 0) {
-            System.out.println("f(xL) and f(xR) must have opposite signs.");
             sb.append("f(xL) and f(xR) must have opposite signs.\n");
             return null;
         }
 
         if (Math.abs(fb - fa) < 1e-10) {
-            String error = "Possible division by zero: f(xR) and f(xL) are too close. Iteration stopped.";
-            System.out.println(error);
-            sb.append(error).append("\n");
+            sb.append("Possible division by zero: f(xR) and f(xL) are too close. Iteration stopped.\n");
             return null;
         }
         
@@ -152,22 +58,20 @@ public class FalsePosition {
         double c = a + i;
         c = Utils.round(c, decimalPlaces);
 
-        String substituted3 = function.replaceAll("\\bx\\b", Double.toString(c));
-        double fc = Utils.evaluateFunction(function, c, decimalPlaces);
+        String substituted3 = function.replaceAll("\\b"+var+"\\b", Double.toString(c));
+        double fc = Utils.evaluateFunction(function, c, decimalPlaces, var);
 
-        sb.append("xM = xL + I = ").append(a).append(" + ").append(i).append(" = ").append(c).append("\n");
-        sb.append("f(xM) = ").append(substituted3).append(" = ").append(fc).append("\n");
+        sb.append(var).append("M = xL + I = ").append(a).append(" + ").append(i).append(" = ").append(c).append("\n");
+        sb.append("f(").append(var).append("M) = ").append(substituted3).append(" = ").append(fc).append("\n");
         
 
         if (Double.isNaN(c) || Double.isInfinite(c)) {
-            System.out.println("Invalid function evaluation at x(n+1) (NaN or Infinity). Iteration stopped.");
-            sb.append("Invalid function evaluation at x(n+1) (NaN or Infinity). Iteration stopped.");
+            sb.append("Invalid function evaluation at ").append(var).append("(n+1) (NaN or Infinity). Iteration stopped.");
             return null;
         }
 
         if (Math.abs(c) > 1e10) {
-            System.out.println("Divergence detected due to very large x(n+1) value. Iteration stopped.");
-            sb.append("Divergence detected due to very large x(n+1) value. Iteration stopped.");
+            sb.append("Divergence detected due to very large ").append(var).append("(n+1) value. Iteration stopped.");
             return null;
         }
 
@@ -180,72 +84,79 @@ public class FalsePosition {
         iterations.add(row);
 
         if (Math.abs(fc) <= tolerance){ //|| c == a || c == b) { // check if kailangan pa ung Math.abs(c - a) <= tolerance || Math.abs(c - b) <= tolerance
-            sb.append("| f(xM) | = | ").append(Math.abs(fc)).append(" is less than or equal to tolerance.\n");
+            sb.append("| f(").append(var).append("M) | = | ").append(Math.abs(fc)).append(" is less than or equal to tolerance.\n");
             sb.append("Stopping the iteration...\n\n\n");
             return c;
         }
         
         if (c == a){
-            sb.append("xM == xL (").append(c).append(" == ").append(a).append(")\n");
+            sb.append(var).append("M == ").append(var).append("L (").append(c).append(" == ").append(a).append(")\n");
             sb.append("Stopping the iteration...\n\n\n");
             return c;
         }
 
         if (c == b){
-            sb.append("xM == xR (").append(c).append(" == ").append(b).append(")\n");
+            sb.append(var).append("M == ").append(var).append("R (").append(c).append(" == ").append(b).append(")\n");
             sb.append("Stopping the iteration...\n\n\n");
             return c;
         }
 
-        sb.append("| f(xM) | = ").append(Math.abs(fc)).append(" is greater than tolerance.\n");
+        sb.append("| f(").append(var).append("M) | = ").append(Math.abs(fc)).append(" is greater than tolerance.\n");
 
         double nextIteration = Utils.round((fa*fc), decimalPlaces);
         double nextIteration2 = Utils.round((fb*fc), decimalPlaces);
 
         if (fa * fc < 0) {
-            sb.append("f(xL)*f(xM) = ").append(fa).append(" * ").append(fc).append("\n\t= ").append(nextIteration).append(" is less than 0.\n");
-            sb.append("Setting xR = xM\n");
+            sb.append("f(").append(var).append("L)*f(").append(var).append("M) = ").append(fa).append(" * ").append(fc).append("\n\t= ").append(nextIteration).append(" is less than 0.\n");
+            sb.append("Setting ").append(var).append("R = ").append(var).append("M\n");
             sb.append("Continuing to next iteration...\n\n");
 
-            return falsePosition(function, a, c, tolerance, decimalPlaces, iteration + 1, iterations, sb);
+            return falsePosition(function, a, c, tolerance, decimalPlaces, iteration + 1, iterations, sb, var);
         } else {
-            sb.append("f(xR)*f(xM) = ").append(fb).append(" * ").append(fc).append("\n\t= ").append(nextIteration2).append(" is less than 0.\n");
-            sb.append("Setting xL = xM\n");
+            sb.append("f(").append(var).append("R)*f(").append(var).append("M) = ").append(fb).append(" * ").append(fc).append("\n\t= ").append(nextIteration2).append(" is less than 0.\n");
+            sb.append("Setting ").append(var).append("L = ").append(var).append("M\n");
             sb.append("Continuing to next iteration...\n\n");
 
-            return falsePosition(function, c, b, tolerance, decimalPlaces, iteration + 1, iterations, sb);
+            return falsePosition(function, c, b, tolerance, decimalPlaces, iteration + 1, iterations, sb, var);
         }
 
     }
 
-    public static String solve(String fx, double a, double b, double tolerance, StringBuilder sb) {
+    public static String solve(String fx, double a, double b, double tolerance, StringBuilder sb, Character var) {
         int decimalPlaces = Utils.getDecimalPlacesFromTolerance(tolerance);
         fx = Utils.convertExprToExp4jCompatible(fx);
 
-        sb.append("f(x) = ").append(fx).append("\n");
-        sb.append("xL = ").append(a).append("\n");
-        sb.append("xR = ").append(b).append("\n\n");
-        sb.append("I (interpolation term) = [(xR-XL)(-f(xL)]/[f(xR)-f(xL)] will be evaluated without detailed solution.").append("\n\n");
+        sb.append("f(").append(var).append(") = ").append(fx).append("\n");
+        sb.append(var).append("L = ").append(a).append("\n");
+        sb.append(var).append("R = ").append(b).append("\n\n");
+        sb.append("I (interpolation term) = [(").append(var).append("R-").append(var).append("L)(-f(").append(var).append("L)]/[f(").append(var).append("R)-f(").append(var).append("L)]\n")
+        .append("will be evaluated without detailed solution.").append("\n\n");
 
         sb.append("Start of False Position or Regula-Falsi Method:\n\n");
 
         LinkedList<LinkedList<Double>> iterations = new LinkedList<>();
         try {
-            Double solution = falsePosition(fx, a, b, tolerance, decimalPlaces, 1, iterations, sb);
+            Double solution = falsePosition(fx, a, b, tolerance, decimalPlaces, 1, iterations, sb, var);
 
             if (!iterations.isEmpty()) {
                 sb.append("Iterations:\n\n");
+
+                // Header row
+                sb.append(String.format("%-12s%-15s%-15s%-15s%-15s\n", 
+                    "Iteration", var + "L", var + "R", var + "(n+1)", "F(n+1)"));
+
+                // Create a dynamic format string for the numbers
+                String format = "%-12d%-15." + decimalPlaces + "f%-15." + decimalPlaces + "f%-15." + decimalPlaces + "f%-15." + decimalPlaces + "f\n";
+
                 for (int i = 0; i < iterations.size(); i++) {
                     LinkedList<Double> row = iterations.get(i);
-                    sb.append("Iteration #").append(i + 1)
-                        .append(": a = ").append(row.get(0))
-                        .append(" b = ").append(row.get(1))
-                        .append(" c = ").append(row.get(2))
-                        .append(" f(c) = ").append(row.get(3))
-                        .append("\n");
+                    sb.append(String.format(format,
+                        i + 1, row.get(0), row.get(1), row.get(2), row.get(3)));
                 }
+
                 sb.append("\n");
             }
+
 
             if (solution == null) {
                 sb.append("Method diverged or failed. No approximate solution found.");

@@ -85,8 +85,8 @@ public class SecantPane extends VBox {
             }
 
             Iterator<Character> iterator = vars.iterator();
-
             Character var = iterator.next();
+            var = Character.toLowerCase(var);
 
             // Validate tolerance
             double tolerance;
@@ -113,7 +113,7 @@ public class SecantPane extends VBox {
             double x0;
             try {
                 x0 = Double.parseDouble(x0Str);
-                Math.abs(Utils.evaluateFunction(exp4jExpr, x0, Utils.getDecimalPlacesFromTolerance(tolerance)));
+                Utils.evaluateFunction(exp4jExpr, x0, Utils.getDecimalPlacesFromTolerance(tolerance), var);
             } catch (NumberFormatException ex) {
                 outputArea.setText("x0 must be a valid number.");
                 return;
@@ -126,7 +126,7 @@ public class SecantPane extends VBox {
             double x1;
             try {
                 x1 = Double.parseDouble(x1Str);
-                Math.abs(Utils.evaluateFunction(exp4jExpr, x1, Utils.getDecimalPlacesFromTolerance(tolerance)));
+                Utils.evaluateFunction(exp4jExpr, x1, Utils.getDecimalPlacesFromTolerance(tolerance), var);
             } catch (NumberFormatException ex) {
                 outputArea.setText("x1 must be a valid number.");
                 return;
@@ -137,7 +137,7 @@ public class SecantPane extends VBox {
 
             // Solve
             try {
-                String result = Secant.solve(exp4jExpr, tolerance, x0, x1, sb);
+                String result = Secant.solve(exp4jExpr, tolerance, x0, x1, sb, var);
                 outputArea.setText(result);
             } catch (Exception ex) {
                 outputArea.setText("Error during solving: " + ex.getMessage());

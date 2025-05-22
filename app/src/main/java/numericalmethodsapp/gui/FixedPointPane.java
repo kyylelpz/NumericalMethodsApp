@@ -88,6 +88,7 @@ public class FixedPointPane extends VBox {
             Iterator<Character> iterator = vars.iterator();
 
             Character var = iterator.next();
+            var = Character.toLowerCase(var);
 
             //check tolerance
             double tol;
