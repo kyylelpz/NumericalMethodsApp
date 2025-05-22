@@ -54,6 +54,7 @@ public class FixedPointPane extends VBox {
 
         runButton.setOnAction(e -> {
             String gx = gxInput.getText().trim();
+            gx = gx.toLowerCase();
             String tolStr = tolInput.getText().trim();
             String guessStr = guessInput.getText().trim();
             StringBuilder sb = new StringBuilder();

@@ -56,6 +56,7 @@ public class BisectionPane extends VBox {
 
         runButton.setOnAction(e -> {
             String fx = fxInput.getText().trim();
+            fx = fx.toLowerCase();
             String tolStr = tolInput.getText().trim();
             String aStr = aInput.getText().trim();
             String bStr = bInput.getText().trim();

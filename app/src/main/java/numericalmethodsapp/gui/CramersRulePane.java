@@ -73,6 +73,10 @@ public class CramersRulePane extends VBox {
                 equations = new String[]{eq1Input.getText().trim(), eq2Input.getText().trim(), eq3Input.getText().trim()};
             }
 
+            for (int i = 0; i < equations.length; i++) {
+                equations[i] = equations[i].toLowerCase();
+            }
+
             // Basic validation: Check empty
             for (int i = 0; i < numEq; i++) {
                 if (equations[i].isEmpty()) {
