@@ -477,27 +477,36 @@ public class MainWindow extends Application {
 
     public static void styleOutputArea(TextArea area) {
         String baseStyle = 
-            "-fx-background-color: transparent;" +
+            "-fx-background-color: #1E1E2A;" +
             "-fx-text-fill: " + INPUT_TEXT_ACTIVE + ";" +
             "-fx-font-size: 14px;" +
             "-fx-padding: 8 12 8 12;" +
             "-fx-background-insets: 0;" +
             "-fx-border-color: transparent;" +
             "-fx-highlight-fill: #818CF8;" +
-            "-fx-highlight-text-fill: #161517;";
+            "-fx-highlight-text-fill: #161517;" +
+            "-fx-control-inner-background: #1E1E2A;" +
+            "-fx-focus-color: transparent;" +
+            "-fx-faint-focus-color: transparent;" +
+            "-fx-background-radius: 4;" +
+            "-fx-border-radius: 4;" +
+            "-fx-cursor: text;";
 
         area.setStyle(baseStyle);
 
         // Add focus listeners to maintain styling
         area.focusedProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal) {
-                area.setStyle(baseStyle + "-fx-background-color: rgba(68, 81, 124, 0.1);");
+                // When focused, ensure the styling remains
+                area.setStyle(baseStyle + 
+                    "-fx-background-color: #1E1E2A;" +
+                    "-fx-text-fill: " + INPUT_TEXT_ACTIVE + ";");
             } else {
                 area.setStyle(baseStyle);
             }
         });
 
-        // Defer scroll pane styling until layout is complete
+        // Add additional styling for the scroll pane and viewport
         javafx.application.Platform.runLater(() -> {
             if (area.lookup(".scroll-pane") != null) {
                 area.lookup(".scroll-pane").setStyle("-fx-background-color: transparent;");
@@ -508,6 +517,26 @@ public class MainWindow extends Application {
             if (area.lookup(".content") != null) {
                 area.lookup(".content").setStyle("-fx-background-color: transparent;");
             }
+            // Style the scroll bars
+            area.lookupAll(".scroll-bar").forEach(node -> {
+                node.setStyle(
+                    "-fx-background-color: transparent;" +
+                    "-fx-background-insets: 0;" +
+                    "-fx-padding: 0;"
+                );
+            });
+            // Style the scroll bar thumbs
+            area.lookupAll(".scroll-bar .thumb").forEach(node -> {
+                node.setStyle(
+                    "-fx-background-color: " + PRIMARY_COLOR + ";" +
+                    "-fx-background-radius: 2;" +
+                    "-fx-background-insets: 0;"
+                );
+            });
+            // Remove the white dots in the corners
+            area.lookupAll(".corner").forEach(node -> {
+                node.setStyle("-fx-background-color: transparent;");
+            });
         });
     }
 
