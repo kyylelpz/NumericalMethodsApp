@@ -77,19 +77,7 @@ public class GaussianElimination {
             solution[i] = (matrix[i][cols - 1] - sum) / matrix[i][i];
             sb.append(String.format("  x%d = (%.4f - %.6f) / %.4f = %.6f\n\n",
                     i + 1, matrix[i][cols - 1], sum, matrix[i][i], solution[i]));
-        }
-
-        sb.append("Solution:\n");
-            if (n == 2) {
-                sb.append("[x = ").append(solution[0])
-                .append(", y = ").append(solution[1])
-                .append("]\n");
-            } else {
-                sb.append("[x = ").append(solution[0])
-                .append(", y = ").append(solution[1])
-                .append(", z = ").append(solution[2])
-                .append("]\n");
-        }           
+        }          
 
         return solution;
     }
@@ -134,6 +122,12 @@ public class GaussianElimination {
             return sb.toString();
         }
 
+        sb.append("Solution:\n");
+        char var = 'x';
+        for (double val : result) {
+            sb.append(var++).append(" = ").append(String.format("%.6f", val)).append("\n");
+        }
+        
         return sb.toString();
     }
 
